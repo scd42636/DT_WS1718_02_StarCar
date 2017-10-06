@@ -1,0 +1,23 @@
+Sitzung vom 6.10.2017
+Start 12:12
+Anwesenheit: alle
+Versionskontrolle: git via github.com
+Taskmanagement: ausstehend, bis dato git
+
+Fahrtauglichkeit Testen
+Sensoren testen & anbinden
+Sound
+
+Grundrissmessung/Raumkartierung
+Spurhaltefunktion
+Abstandhaltung
+Ortungsfunktionen
+LED / Display ?
+Wireless Verbindung : Bluetooth, Wireless
+Echtzeitdaten/Echtzeitsteuerung
+Einparkhilfe (Warnend bzw vollautomatisch)
+Rumfahren, piepsen, leuchten, nervig sein
+
+
+Generelles Projektziel:
+interaktiver Reinigungsroboter/Haushaltsroboter modular Erweiterbar
