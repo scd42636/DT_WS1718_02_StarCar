@@ -1,5 +1,6 @@
 Sitzung vom 6.10.2017
 Start 12:12
+End 12:50
 Anwesenheit: alle
 Versionskontrolle: git via github.com
 Taskmanagement: ausstehend, bis dato git
