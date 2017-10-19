@@ -1,0 +1,36 @@
+Dieses Pflichtenheft ist derzeit noch nicht vollständig.
+Es wurde ein Template verwendet und bis zu einem gewissen Grad auch schon ausgefüllt.
+
+
+--------------------------------------------------------------
+Unter Linux könnt ihr ganze kompilieren indem ihr in dem Verzeichnis dieser README :
+
+$ make
+
+aufruft.
+Erzeugte Dateien könnt ihr daraufhin mit dem Befehl
+
+$ make clean
+
+wieder aufräume/löschen.
+
+Sollte es dabei probleme geben kann es sein das euch GNUmake oder texlive packages auf eurer mashine fehlen.
+
+--------------------------------------------------------------
+
+Unter Windows müsst ihr gucken was ihr verwendet, da weis ichs nicht.
+
+--------------------------------------------------------------
+
+Alternativ kann man auch den kostenlosen, webbasierten Latex-Dienst overleaf.com verwenden
+
+--------------------------------------------------------------
+
+Die wichtigsten Dinge sollten drin sein, aber halt auch noch der komplette Rest des verwendeten Templates, also nicht verwirren lassen ;)
+
+Außerdem gefällt mir die Titelseite noch nicht, würde mir ein OTH-Logo usw wünschen, das erfordert jedoch noch etwas Zeit mich ordentlich einzulesen.
+
+An passender Stelle würde ich auch gerne das Gantt Diagramm einfügen
+
+Gruesse,
+Robert

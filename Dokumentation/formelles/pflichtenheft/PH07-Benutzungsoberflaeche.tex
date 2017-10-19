@@ -1,0 +1,70 @@
+\section{Benutzungsoberfläche}
+
+\comment{Was sind die grundlegenden Anforderungen an die Benutzungsoberfläche (Bildschirmlayout, Dialogstruktur, ...)?}
+
+\subsection{Dialogstruktur}
+
+Im Folgenden wird die grobe Dialogstruktur einer fehlerfreien bzw. konfliktfreien Benutzung des Systems gezeigt.
+Fehlereingaben haben in der Regel einen Rücksprung auf die Ausgangsseite mit einer akkumulierten Fehlermeldung zur Folge.
+
+\subsubsection{Startseite}
+
+\spaceline
+\btexdraw
+  \rmove(3 3)
+   \xstartpage \xhline \currentpos \sx\sy
+    \rlvec(0 \yheightb) \xharrow \xtext{4.5}{Registrierung \textbf{/F0010/}} \xhline \currentpos \jx\jy
+      \rlvec(0 \yheightd) \xharrow \xmainpage \xnext
+      \move({\jx} \jy)
+      \rlvec(0 -\yheightd) \xharrow \xaccount
+    \move({\sx} \sy)
+    \rlvec(0 -\yheightd) \currentpos \px\py \xharrow \xtext{4.1}{Anmeldung \textbf{/F0020/}} \xharrow \xmainpage \xnext
+    \move({\px} \py)
+    \rlvec(0 -\yheightb) \xharrow \xtext{5.5}{Passwort vergessen! \textbf{/F0040/}} \xharrow \xaccount
+\etexdraw
+\spaceline
+
+\subsubsection{Hauptseite}
+
+Die \textit{Hauptseite} ist die Startseite des angemeldeten Benutzers, die der Benutzer gemäß der Funktion \textit{/F0220/}
+konfigurieren kann.\\
+Unabhängig von der \textit{persönlichen Konfiguration der Hauptseite} liegt folgende Dialogstruktur vor.
+
+\spaceline
+\btexdraw
+  \rmove(3 3)
+  \xmainpage \xhline \currentpos \sx\sy
+    \rlvec(0 \yheighte) \currentpos \mx\my
+    \rlvec(0 \yheightb) \xharrow \xusermenu \xnext
+    \move({\mx} \my)
+    \xharrow \xgamelist \xnext
+    \move({\sx} \sy)
+    \rlvec(0 -\yheighte) \currentpos \nx\ny \xharrow \xportfolio \xnext
+    \move({\nx} \ny)
+    \rlvec(0 -\yheightb) \xharrow \xtext{4.1}{Abmeldung \textbf{/F0030/}} \xharrow \xstartpage \xnext
+\etexdraw
+\spaceline
+
+\subsubsection{Benutzermenü}
+
+\spaceline
+\btexdraw
+  \rmove(7 7)
+  \xusermenu \xhline \currentpos \sx\sy \xharrow \xtext{6.8}{Pers. Konfiguration anzeigen \textbf{/F0210/}}
+    \move({\sx} \sy) \rlvec(0 \yheightb) \currentpos \mx\my \xharrow \xtext{4.8}{Passwort ändern \textbf{/F0050/}} \xharrow \xaccount
+    \move({\mx} \my) \rlvec(0 \yheightb) \currentpos \nx\ny \xharrow \xtext{6.7}{Sichtbarkeit der pers. Daten \textbf{/F0130/}}
+    \move({\nx} \ny) \rlvec(0 \yheightb) \currentpos \ox\oy \xharrow \xtext{5.3}{Pers. Daten ändern \textbf{/F0120/}}
+    \move({\ox} \oy) \rlvec(0 \yheightb) \xharrow \xtext{5.6}{Pers. Daten anzeigen \textbf{/F0110/}}
+    
+    \move({\sx} \sy) \rlvec(0 -\yheightb) \currentpos \ax\ay \xharrow \xtext{6.5}{Pers. Konfiguration ändern \textbf{/F0220/}}
+    \move({\ax} \ay) \rlvec(0 -\yheightb) \currentpos \bx\by \xharrow \xtext{6.9}{Pers. Konfiguration speichern \textbf{/F0230/}}
+    \move({\bx} \by) \rlvec(0 -\yheightb) \currentpos \cx\cy \xharrow \xtext{5.5}{Pers. Profil anzeigen \textbf{/F0310/}}
+    \move({\cx} \cy) \rlvec(0 -\yheightb) \xharrow \xtext{6.9}{Sichtbarkeit des pers. Profils \textbf{/F0320/}}
+\etexdraw
+\spaceline
+
+\subsection{Bildschirmlayout}
+
+Das Layout sowie das Design des Systems wird überwiegend durch JavaScript-Komponenten der Bibliothek \textit{dynAPI} bestimmt
+und ist über das gesamte System konsistent bzw. einheitlich \textit{(Ausnahme: die Administrator-Funktionen)}.
+
