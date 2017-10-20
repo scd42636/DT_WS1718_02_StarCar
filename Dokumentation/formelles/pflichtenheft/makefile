@@ -2,13 +2,10 @@
 
 default: Pflichtenheft.pdf
 
+# must be compiled twice , so table of contents actually shows up, so dont be confused ;D
 Pflichtenheft.pdf:
 	pdflatex Pflichtenheft.tex
 	pdflatex Pflichtenheft.tex
-
-#previous toc sometimes is needed to create tableofcontents
-clean_notoc:
-	rm *.log *.aux *.pdf *.out
 
 clean:
 	rm *.log *.aux *.pdf *.toc *.out
