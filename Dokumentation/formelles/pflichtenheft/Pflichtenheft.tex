@@ -5,6 +5,9 @@
 \usepackage{coordsys,logsys,color}
 \usepackage{hyperref}
 \usepackage{texdraw}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+
 \input{txdtools}
 
 \NeedsTeXFormat{LaTeX2e}
@@ -19,13 +22,14 @@
 \begin{document}
   \input{PH00-Titelblatt} \newpage
   \tableofcontents \newpage
+  \input{Teamaufstellung.tex} \newpage
   \input{PH01-Zielbestimmungen} \newpage
   \input{PH02-Produkteinsatz} \newpage
   \input{PH03-Produktumgebung} \newpage
   \input{PH04-Produktfunktionen} \newpage
   \input{PH05-Produktdaten} \newpage
   \input{PH06-Produktleistungen} \newpage
-  \input{PH07-Benutzungsoberflaeche} \newpage
+%  \input{PH07-Benutzungsoberflaeche} \newpage
   \input{PH08-Qualitaetszielbestimmungen} \newpage
   \input{PH09-Testszenarien} \newpage
   \input{PH10-Entwicklungsumgebung} \newpage
