@@ -6,6 +6,7 @@ Das \textbf{Inter Board Protocoll} dient als Kommunikationsschnittstelle zwische
 \item Der Kontext, d.h. die Zugehörigkeit, der Nachricht soll erkennbar sein.
 \item Eine Option mit dynamischer Nachrichtengröße soll vorhanden sein.
 \item Für einige Nachrichten muss eine Echtzeitbegünstigende Option bestehen.
+\item Die fehlerfreie Übertragung der Nachricht soll gewährleistet sein.
 
 \end{itemize}
 
@@ -41,13 +42,39 @@ Maximale Dynamische Nachrichtengröße : Diese hängt hauptsächlich von der Üb
 \normalsize
 Einzelne Nachrichtenids können durch bevorzugte Behandlung echtzeitbegünstigend behandelt werden. Die Vereinbarung dieser Eigenschaft kann wiederum statisch durchgeführt werden.
 
+\Large Fehlerfreie Übertragung
+Realisiert durch redundancy checks. Beispiele : Parity Bits, CRC Checksum
+
+Parity Bit:
+pro:
+\begin{itemize}
+	\item einfach zu implementieren
+	\item einfach zu berechnen
+\end{itemize}
+con:
+\begin{itemize}
+	\item nicht besonders sicher (doppelte Fehler werden nicht erkannt)
+\end{itemize}
+
+CRC :
+pro:
+\begin{itemize}
+	\item sicherer als andere Methoden
+\end{itemize}
+con:
+\begin{itemize}
+	unter Umständen ist zur Realisierung mehr Code nötig, woraus folgt
+	\item mehr Aufwand
+	\item höhere Laufzeit
+\end{itemize}
+
 \LARGE Header :
 \normalsize
 \begin{itemize}
 
-\begin{bytefield}[bitwidth=1.1em][32]
+\begin{bytefield}[bitwidth=1.1em][64]
 	\bitheader{0-31}
-	\bitbox{8}{Message-ID} & \bitbox{8}{optional size} & \bitbox {16} {data}
+	\bitbox{8}{Message-ID} & \bitbox{16}{data / optional:size} & \bitbox {40} {data} & \bitbox{8}{Checksum}
 \end{bytefield}
 
 \end{itemize}
