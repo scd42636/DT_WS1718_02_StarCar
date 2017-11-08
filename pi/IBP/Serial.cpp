@@ -30,7 +30,7 @@ Serial::Serial(std::string devicename)
 
 Serial::~Serial()
 {
-	
+	close(fd);
 }
 
 void Serial::config()

@@ -18,6 +18,12 @@ public:
 	 */
 	Serial(std::string devicename);
 
+
+	/**
+	 * @brief closes file descriptor
+	 */
+	~Serial();
+
 	/**
 	 * @brief Sends data.
 	 *	Sends data using the specified serial device.
