@@ -42,7 +42,14 @@ Maximale Dynamische Nachrichtengröße : Diese hängt hauptsächlich von der Üb
 \normalsize
 Einzelne Nachrichtenids können durch bevorzugte Behandlung echtzeitbegünstigend behandelt werden. Die Vereinbarung dieser Eigenschaft kann wiederum statisch durchgeführt werden.
 
+Mögliche Strategien:
+\begin{itemize}
+	\item Hinterlegung einer Priorität
+	\item Wahl der Priorität anhand der ID (kleiner ist wichtiger "a la CAN")
+\end{itemize}
+
 \Large Fehlerfreie Übertragung
+\normalsize
 Realisiert durch redundancy checks. Beispiele : Parity Bits, CRC Checksum
 
 Parity Bit:
@@ -50,6 +57,7 @@ pro:
 \begin{itemize}
 	\item einfach zu implementieren
 	\item einfach zu berechnen
+	\item idealerweise in Hardware => no computational overhead
 \end{itemize}
 con:
 \begin{itemize}
@@ -68,13 +76,24 @@ con:
 	\item höhere Laufzeit
 \end{itemize}
 
+hash:
+pro:
+\begin{itemize}
+	\item einfacher zu implementieren
+	\item variabel implementierbar
+\end{itemize}
+con:
+\begin{itemize}
+	\item Braucht möglicherweise viel Rechenzeit (kommt auf die Komplexität der hash-Funktion an)
+\end{itemize}
+
 \LARGE Header :
 \normalsize
 \begin{itemize}
 
 \begin{bytefield}[bitwidth=1.1em][64]
 	\bitheader{0-31}
-	\bitbox{8}{Message-ID} & \bitbox{16}{data / optional:size} & \bitbox {40} {data} & \bitbox{8}{Checksum}
+	\bitbox{8}{Message-ID} & \bitbox{16}{data / optional:size} & \bitbox {40} {data} & \bitbox{8}{hash}
 \end{bytefield}
 
 \end{itemize}
