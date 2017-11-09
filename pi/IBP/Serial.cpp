@@ -16,7 +16,7 @@ Serial::Serial(std::string devicename)
 		fd(-1)
 {
 
-   	fd = open(devicename.c_str(),O_RDWR | O_NOCTTY | O_NDELAY); // ttyUSB0 is the connected arduino
+   	fd = open(devicename.c_str(),O_RDWR | O_NOCTTY /*| O_NDELAY*/); // ttyUSB0 is the connected arduino
 																// O_RDWR Read/Write access to serial port
 																// O_NOCTTY - Serial port should not kill the process is a ctrl-c is received
 																// O_NDELAY - Non Blocking Mode                                       
@@ -26,12 +26,27 @@ Serial::Serial(std::string devicename)
 		throw std::runtime_error("openSerialPortArduino: Unable to open " + devicename);	
 	}
 
-																//existence of file descriptor is assured
+	usleep(200000);												// wait some time ... otherwise it will cause problems with the serial port
+	tcflush(fd, TCIOFLUSH);										// clar input / output buffer and discard old data
+																// existence of file descriptor is assured
 	config();
-	send("HelloMSG",8);
-	char buffer[8];
-	recv(buffer, 8);
-	std::cout << buffer << std::endl;
+	
+	send("HelloMSG",8);											// send hello message to arduino
+	char buffer[9];
+	buffer[8] = '\0';
+	
+	std::cout << "|       Sending hello message to arduino...          |" << std::endl;
+	
+	if (recv(buffer, 8) == 8){
+	
+		std::cout << "|        hello message received from arduino         |" << std::endl;
+		std::cout << "|              Serial Port is ready !!               |" << std::endl;
+		std::cout << "+----------------------------------------------------+" << std::endl;	
+	}else{
+	
+		std::cout << "Serial.recv: Error receiving data with error number: " << errno << " Error message: "<< strerror(errno) << std::endl;
+		std::cout << "+----------------------------------------------------+" << std::endl;
+	}
 }
 
 Serial::~Serial()
@@ -65,12 +80,12 @@ void Serial::config()
 	SerialPortSettings.c_cflag |= CREAD | CLOCAL; // Enable receiver,Ignore Modem Control lines 
 		
 		
-	SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          // Disable XON/XOFF flow control both i/p and o/p 
-	SerialPortSettings.c_iflag &= ~(ICANON | ECHO | ECHOE | ISIG);  // Non Cannonical mode                           
+	SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          // Disable XON/XOFF flow control both i/p and o/p
+	SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); 
+	SerialPortSettings.c_iflag &= ~(ICANON | ECHO | ECHONL | ISIG | IEXTEN);  // Non Cannonical mode
+	                           
 
 	SerialPortSettings.c_oflag &= ~OPOST;							// No Output Processing
-	
-	SerialPortSettings.c_cc[VTIME] = 0;
 
 	if((tcsetattr(fd,TCSANOW,&SerialPortSettings)) != 0){ 			// Set the attributes to the termios structure
 	
@@ -81,18 +96,11 @@ void Serial::config()
 		std::cout << "| BaudRate = 57600    StopBits = 1   Parity = none   |" << std::endl;
 	}	
 	       
-	sleep(3);														// Wait until Arduino restarts !!
-
-	//tcflush(fd, TCIFLUSH);   										// Discards old data in the buffer
-	
-	std::cout << "|              Serial Port is ready !!               |" << std::endl;
-	std::cout << "+----------------------------------------------------+" << std::endl;
-	
+	sleep(3);														// Wait until Arduino restarts !!	
 }
 
 int Serial::send(const void * data , int size) const
 {
-	char * buffer = (char *)data;
 	
 	return write(fd, data, size);									// use write() to send data to port                                            
 																	// "fd"                   - file descriptor pointing to the opened serial port 
@@ -113,6 +121,5 @@ int Serial::recv(void * data , int maxsize) const
 		std::cout << "Serial.recv: Error receiving data with error number: " << errno << " Error message: "<< strerror(errno) << std::endl;
 		}
 	
-	//tcflush(fd, TCIFLUSH);   					// Discards old data in the buffer
 	return bytes_read;
 }
