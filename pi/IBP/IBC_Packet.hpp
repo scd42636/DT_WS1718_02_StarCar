@@ -4,22 +4,16 @@
 class IBC_Packet
 {
 	uint8_t id;
-	class Content
-	{
-		uint16_t size;
-		void * data;
-		bool copy;
-		public:
-		Content(void * data, uint16_size = IBC_PACKET_NOSIZE, bool copy = true);
-		~Content();
-	};
-	uint8_t hash;	
+	uint16_t size;
+	void * data;
+
+	uint8_t m_hash;	
+	bool copy;
 
 public:
-	IBC_Packet(uint8_t id, void * data, uint16_t size = IBC_PACKET_NOSIZE );
-	IBC_Packet(uint8_t id, IBC_Packet::Content content);
+	IBC_Packet(uint8_t id, void * data, uint16_t size = IBC_PACKET_NOSIZE, bool copy = true );
+	IBC_Packet(void * data);
 	~IBC_Packet();
-
 
 	//Copy constructor and assignment
 	IBC_Packet(const IBC_Packet&);
@@ -32,19 +26,19 @@ public:
 	 *
 	 * @return Pointer to the beginning of content-data 
 	 */
-	void * content()const;
+	void * content() const;
 
 	/**
 	 * @return 16Bit integer with number of data in bytes
 	 */
-	uint16_t size()const;
+	uint16_t size() const;
 
 	/**
 	 * @brief Computes a 8Bit long hash value from the contents of the packet.
 	 *
 	 * @return hash value
 	 */
-	uint8_t hash();
+	uint8_t hash() const;
 
 	/**
 	 * @brief Set the hash value in the packet.
@@ -58,6 +52,5 @@ public:
 	 *	Can be used to detect if a received package has been damaged in transmission.
 	 * @return true/false whether hash is correct or not
 	 */
-	bool verify();
-
+	bool verify() const;
 };
