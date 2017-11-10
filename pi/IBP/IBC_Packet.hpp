@@ -11,6 +11,10 @@ class IBC_Packet
 public:
 	IBC_Packet(uint8_t id, uint8_t * data, uint8_t size = IBC_PACKET_SIZE_DEFAULT);
 	IBC_Packet(uint8_t * data, uint8_t maxsize);
+
+public:
+	IBC_Packet(uint8_t id, void * data, uint16_t size = IBC_PACKET_NOSIZE, bool copy = true );
+	IBC_Packet(void * data);
 	~IBC_Packet();
 
 	//Copy constructor and assignment

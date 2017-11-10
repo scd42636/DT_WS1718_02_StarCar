@@ -7,7 +7,6 @@ IBC_Packet::IBC_Packet(uint8_t id, void * data , uint8_t size)
 id(id),
 size(size)
 {
-	
 }
 
 IBC_Packet::IBC_Packet(void * data)
