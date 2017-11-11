@@ -1,0 +1,24 @@
+protocoll views:
+
+0        8        16                               x      x+7
+
+member view
+id------|size----|content-------------------------|hash----|
+internal view
+data----+--------+--------------------------------+--------|
+creator view
+--------|input---+--------------------------------|~~~~~~~~|
+receiver view
+message-+--------+--------------------------------|~~~~~~~~|
+
+\+++++++++++++buffersize+++++++++++++++++++++++++++++++++++/
+                 \+++++++++++++contentsize++++++++/
+
+Legend :
+- bit
+| section border
++ nothing
+~ generated
+/\ size indicator
+
+

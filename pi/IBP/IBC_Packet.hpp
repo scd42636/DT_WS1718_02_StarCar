@@ -3,23 +3,22 @@
 
 #define IBC_PACKET_SIZE_DEFAULT 0
 
-class IBC_Packet
+namespace IBC
+{
+
+class Packet
 {
 	uint8_t size;
 	uint8_t * data;
 
 public:
-	IBC_Packet(uint8_t id, uint8_t * data, uint8_t size = IBC_PACKET_SIZE_DEFAULT);
-	IBC_Packet(uint8_t * data, uint8_t maxsize);
-
-public:
-	IBC_Packet(uint8_t id, void * data, uint16_t size = IBC_PACKET_NOSIZE, bool copy = true );
-	IBC_Packet(void * data);
-	~IBC_Packet();
+	Packet(uint8_t id, uint8_t * data, uint8_t contentsize = IBC_PACKET_NOSIZE);
+	Packet(uint8_t * data);
+	~Packet();
 
 	//Copy constructor and assignment
-	IBC_Packet(const IBC_Packet&);
-	IBC_Packet& operator= (const IBC_Packet&);
+	Packet(const Packet&);
+	Packet& operator= (const Packet&);
 
 	/**
 	 * @brief Get access to the content data of the packet.
@@ -28,7 +27,7 @@ public:
 	 *
 	 * @return Pointer to the beginning of content-data 
 	 */
-	uint8_t * content() const;
+	uint8_t* content() const;
 
 	uint8_t id() const;
 
@@ -49,7 +48,7 @@ public:
 	/**
 	 * @brief Set the hash value in the packet.
 	 *
-	 * @param nhash The new has value
+	 * @param nhash The new hash value (per default the value hash() returns)
 	 */
 	void sethash(uint8_t nhash = hash());
 
@@ -60,5 +59,7 @@ public:
 	 */
 	bool verify() const;
 };
+
+}
 
 #endif /* IBC_PACKET_HPP */
