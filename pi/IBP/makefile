@@ -4,7 +4,7 @@ CXX=g++
 CXXFLAGS=-std=c++14
 
 
-IBCTest: IBC.o IBC.test.o
+IBCRuleTest: IBC_Rule.o IBC_Rule.test.o
 	$(LINK.cpp) $^ -o $@
 
 SerialTest:Serial.o Serial.test.o
@@ -16,6 +16,6 @@ SerialTest:Serial.o Serial.test.o
 clean:
 	-rm *.o
 	-rm SerialTest
-	-rm IBCTest
+	-rm IBCRuleTest
 
 .PHONY:clean
