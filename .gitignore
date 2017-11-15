@@ -292,3 +292,5 @@ __pycache__/
 *.toc
 *.aux
 
+#swap files
+*.swp
