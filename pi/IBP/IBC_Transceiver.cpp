@@ -60,18 +60,18 @@ void IBC::Transceiver::body()
 
 		unsigned int bytestosend = next->size();
 
-		uint8_t * content = next->content();
+		uint8_t * data = next->data();
 
 		while(bytestosend > 0)
 		{
 			unsigned int sent = 0;
-			sent = s.send(content , bytestosend);
+			sent = s.send(data , bytestosend);
 			if(!sent)
 			{
 				std::this_thread::sleep(IBC_TRANSCEIVER_IDLE_TIME)
 			}
 			bytestosend -= sent;
-			content += sent;
+			data += sent;
 		}
 
 		//package is sent, so get rid of it in the queue
@@ -85,20 +85,20 @@ void IBC::Transceiver::body()
 		std::shared_ptr<Packet> answer = new Packet(answersize);
 		
 		unsigned int torecv = answer.size();
-		content = answer->content();
+		data = answer->data();
 
 	//TODO dynamic answer !
 
 		while(torecv > 0)
 		{
 			unsigned int received = 0;
-			received = s.recv(content, torecv);
+			received = s.recv(data, torecv);
 			if(!received)
 			{
 				std::this_thread::sleep(IBC_TRANSCEIVER_IDLE_TIME)
 			}
 			torecv -= received ;
-			content += received;
+			data += received;
 		}
 
 		store(answer);
