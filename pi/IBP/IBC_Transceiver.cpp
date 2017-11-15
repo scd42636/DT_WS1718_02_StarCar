@@ -9,6 +9,24 @@ IBC::Transceiver::Transceiver()
 	
 }
 
+IBC::Transceiver::~Transceiver()
+{
+	//stop the worker
+	runworker(false);
+
+	//we need to detach all remote inboxes from us to safely destruct
+	for (unsigned int i = 0; i < 256 ; i++)
+	{
+		for(Inbox* ptr : receivers[i])
+		{
+			//invalidate the pointer inside of all referenced Inboxes
+			ptr->t = nullptr;
+			// also trigger a mute on the inbox
+			ptr->mute(i);
+		}
+	}
+}
+
 void IBC::Transceiver::runworker(bool running)
 {
 	//set flag accordingly
@@ -94,7 +112,22 @@ void IBC::Transceiver::send(Packet & p)
 	tosend.emplace(p);
 }
 
-void IBC::Transceiver::store(std::shared_ptr<Packet>)
+void IBC::Transceiver::addreceiver(Inbox& i , uint8_t id)
 {
-	
+	receivers[id].insert(&i);
+}
+
+void IBC::Transceiver::removereceiver(Inbox& i, uint8_t id)
+{
+	receivers[id].erase(&i);
+}
+
+void IBC::Transceiver::store(std::shared_ptr<const Packet> answer)
+{
+	//we will give every receiver a shared ptr to the packet
+	//the last actual holder will delete the package
+	for (auto r : receivers[answer->id()])
+	{
+		r.push_back(answer);
+	}
 }

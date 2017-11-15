@@ -6,9 +6,11 @@
 #include <thread>
 #include <queue>
 #include <vector>
+#include <set>
 #include <functional>
 
 #include "Serial.hpp"
+#include "IBC_Inbox.hpp"
 
 namespace IBC
 {
@@ -36,7 +38,9 @@ class Transceiver
 						>	tosend																			//queue name
 							([](const Packet & lhs , const Packet & rhs){return lhs.id() > rhs.id();}		//comparison code as parameter lambda
 
-	
+
+	//TODO OPT vectors dynamically on heap and only if needed	 
+	std::set<Inbox*> receivers [256];
 
 public:
 	Transceiver();
@@ -57,11 +61,12 @@ public:
 	 */
 	void send(IBC_Packet &) const;
 
-
+	void addreceiver(const Inbox& i, uint8_t id);
+	void removereceiver(const Inbox& i, uint8_t id);
 
 private:
 
-	void store (std::shared_ptr<Packet>&);
+	void store (std::shared_ptr<const Packet>&);
 
 };
 

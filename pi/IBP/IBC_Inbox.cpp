@@ -3,23 +3,23 @@
 
 IBC::Inbox::Inbox(Transceiver& t)
 	:
-	t(t)
+	t(&t)
 {}
 
 
 IBC::Inbox::Inbox(Transceiver& t, uint8_t id)
 	:
-	t(t)
+	Inbox(t)
 {
-	listen(id)
+	listen(id);
 }
 
 
 IBC::Inbox::Inbox(Transceiver& t, std::vector<uint8_t> ids)
 	:
-	t(t)
+	Inbox(t)
 {
-	listen(ids)
+	listen(ids);
 }
 
 IBC::Inbox::~Inbox()
@@ -33,7 +33,7 @@ IBC::Inbox::~Inbox()
 
 void IBC::Inbox::listen(uint8_t id) 
 {
-	//TODO log into t
+	
 	
 	//add to own track
 	listening.insert(id);
@@ -50,7 +50,7 @@ void IBC::Inbox::listen(std::vector<uint8_t> ids)
 
 void IBC::Inbox::mute(uint8_t id)
 {
-	//TODO log out of t
+	t.removereceiver(*this, id);
 	
 	//remove from own track
 	listening.erase(id);
