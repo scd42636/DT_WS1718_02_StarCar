@@ -1,7 +1,7 @@
 
 CXX=g++
 
-CXXFLAGS=-std=c++14 -lpthread
+CXXFLAGS=-std=c++14
 
 
 SerialTest:Serial.o Serial.test.o
