@@ -19,6 +19,7 @@ class Transceiver
 {
 	Serial s;
 
+	//TODO IBC_Rule has to go here somewhere
 
 	bool running;
 	void body();
