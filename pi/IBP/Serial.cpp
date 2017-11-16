@@ -56,7 +56,7 @@ Serial::~Serial()
 
 void Serial::config()
 {
-	
+	//TODO: FLAGS anschauen, OUTPUT löschen,
    	
 	//---------- Setting the Attributes of the serial port using termios structure ---------
 	
@@ -112,14 +112,12 @@ int Serial::send(const void * data , int size) const
 int Serial::recv(void * data , int maxsize) const
 {
 	
-	int bytes_read = read(fd, data , maxsize); 		// Read the data
+	return read(fd, data , maxsize); 		// Read the data
 													// Write it to the location at <data>
 													// Write <maxsize> bytes at maximum to not overrun buffersizes
-	
-	if(bytes_read < 0)
+	/*if(bytes_read < 0)
 	{
 		std::cout << "Serial.recv: Error receiving data with error number: " << errno << " Error message: "<< strerror(errno) << std::endl;
 		}
-	
-	return bytes_read;
+	*/
 }
