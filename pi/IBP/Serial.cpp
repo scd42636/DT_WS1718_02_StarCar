@@ -63,29 +63,42 @@ void Serial::config()
 	std::cout << "+----------------------------------------------------+" << std::endl;
 	std::cout << "|              Open Serial Port Arduino              |" << std::endl;
 	std::cout << "+----------------------------------------------------+" << std::endl;
-		
+
+    // Info zu Membern in termios
+    /*struct termios
+      {
+       Bitmaske für die Eingabe-Flags          tcflag_t c_iflag
+       Bitmaske für die Ausgabe-Flags          tcflag_t c_oflag
+       Bitmaske für die Control-Flags          tcflag_t c_cflag
+       Bitmaske für lokale Einstellungen       tcflag_t c_lflag
+       line discipline                         char    __c_line
+       Array für Sonderzeichen/-funktionen     cc_t c_cc[NCCS]
+      }*/
+
 	struct termios SerialPortSettings;
 
 	tcgetattr(fd, &SerialPortSettings);			// Get the current attributes of the Serial port 
 
-	cfsetispeed(&SerialPortSettings,B57600); 	// Set Read Speed as 57600                    
-	cfsetospeed(&SerialPortSettings,B57600);	// Set Write Speed as 57600
+    cfsetispeed(&SerialPortSettings,B57600); 	// Set Read Speed as 57600
+    cfsetospeed(&SerialPortSettings,B57600);	// Set Write Speed as 57600
 
 	SerialPortSettings.c_cflag &= ~PARENB;   	// Disables the Parity Enable bit(PARENB),So No Parity
 	SerialPortSettings.c_cflag &= ~CSTOPB;   	// CSTOPB = 2 Stop bits,here it is cleared so 1 Stop bit
 	SerialPortSettings.c_cflag &= ~CSIZE;	 	// Clears the mask for setting the data size ... enables set own data bits... see next line           
 	SerialPortSettings.c_cflag |=  CS8;      	// Set the data bits = 8                                 
 	
-	SerialPortSettings.c_cflag &= ~CRTSCTS;       // No Hardware flow Control                         
-	SerialPortSettings.c_cflag |= CREAD | CLOCAL; // Enable receiver,Ignore Modem Control lines 
+    //SerialPortSettings.c_cflag &= ~CRTSCTS;         // No Hardware flow Control
+    SerialPortSettings.c_cflag |= (CREAD | CLOCAL); // Enable receiver,Ignore Modem Control lines
 		
 		
-	SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          // Disable XON/XOFF flow control both i/p and o/p
+    /*SerialPortSettings.c_iflag &= ~(IXON | IXOFF | IXANY);          // Disable XON/XOFF flow control both i/p and o/p
 	SerialPortSettings.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG); 
 	SerialPortSettings.c_iflag &= ~(ICANON | ECHO | ECHONL | ISIG | IEXTEN);  // Non Cannonical mode
-	                           
+
 
 	SerialPortSettings.c_oflag &= ~OPOST;							// No Output Processing
+*/
+    cfmakeraw(&SerialPortSettings);                                 // Setup Raw-Mode automatically
 
 	if((tcsetattr(fd,TCSANOW,&SerialPortSettings)) != 0){ 			// Set the attributes to the termios structure
 	
