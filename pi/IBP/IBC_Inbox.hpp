@@ -21,7 +21,8 @@ namespace IBC
 		Inbox(Transceiver& t, std::vector<uint8_t> ids);
 		~Inbox();
 
-
+		Inbox(const Inbox&);
+		Inbox& operator= (const Inbox&);
 
 		//for usage :
 		//front()

@@ -44,7 +44,9 @@ class Transceiver
 	std::set<Inbox*> receivers [256];
 
 public:
-	Transceiver();
+	IBC::Rule rule;
+
+	Transceiver(std::string device, std::string configfile);
 	~Transceiver();
 
 	/**

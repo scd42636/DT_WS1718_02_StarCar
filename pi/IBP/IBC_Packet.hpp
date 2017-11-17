@@ -22,8 +22,6 @@ namespace IBC
 		uint8_t id () const;
 		uint8_t * content() const;
 		uint8_t contentsize() const;
-
-	private:
 	};
 }	//namespace IBC
 #endif /* IBC_PACKET_HPP */

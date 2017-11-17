@@ -5,62 +5,40 @@
 #include <iostream>
 #include <regex>
 
-IBC::IBC(std::string configfile)
+IBC::IBC::IBC(std::string device , std::string configfile)
 :
-	properties{0}
-{
-	reloadcfg(configfile);
-}
-
-IBC::~IBC()
+	t(device, configfile)
 {}
 
-void IBC::reloadcfg(std::string configfile)
+IBC::IBC::~IBC()
+{}
+
+IBC::Packet IBC::IBC::makePacket(uint8_t id, void * content, uint8_t dyncontentsize) const
 {
-	std::ifstream ifs (configfile);
-
-	std::string line;
-
-	std::regex e ("[[:space:]]*[[:digit:]]+[[:space:]]+[[:digit:]]+[[:space:]]+[[:digit:]]+[[:space:]]*");
-
-	unsigned int linecounter = 0 ; 
-	while(std::getline(ifs , line))
+	uint8_t reqsize = t.rule.reqsize();
+	bool dyn = false;
+	if(reqsize == IBC_SIZE_DYNAMIC)
 	{
-		linecounter++;
-		//check comment
-		if(line[0] == '#') continue;
-		//check empty
-
-		if(!regex_match(line, e)) continue;
-
-		std::istringstream iss (line);
-		
-		int id, req, answ;
-		
-		if(!(iss >> id >> req >> answ)) 
-		{
-			std::cerr << "IBC_config critical read error in line " << linecounter << " !\n";
-			break; // error
-		}
-
-		//out of bound fehlererkennung
-		if( id < 0 || id > 255 || req < 0 || req > 255 || answ < 0 || answ > 255 )
-		{
-			std::cerr << "IBC_config [Line " << linecounter << "]: Number out of bound !\n";
-		}
-
-		//write values
-		properties[id].reqsize = req;
-		properties[id]. anssize = answ;
+		reqsize = dyncontentsize;
+		dyn = true;
 	}
+	return IBC::Packet (id, reqsize, content, dyn);
 }
 
-uint8_t IBC::requestsize(uint8_t id) const
+IBC::Inbox IBC::IBC::getInbox()
+{}
+
+IBC::Inbox IBC::IBC::getInbox(uint8_t id)
 {
-	return properties[id].reqsize;
+	return IBC::Inbox(t, id);
 }
 
-uint8_t IBC::answersize(uint8_t id) const
+IBC::Inbox IBC::IBC::getInbox(std::vector<uint8_t> ids)
 {
-	return properties[id].anssize;
+	return IBC::Inbox(t, ids);
+}
+
+void IBC::IBC::send(IBC::Packet & p)
+{
+	t.send(p);
 }

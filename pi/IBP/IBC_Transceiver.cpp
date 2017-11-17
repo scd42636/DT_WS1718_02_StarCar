@@ -1,9 +1,10 @@
 
 #include "IBC_Transceiver.hpp"
 
-IBC::Transceiver::Transceiver()
+IBC::Transceiver::Transceiver(std::string device, std::string configfile)
 	:
-	s("/dev/ttyUSB0"),
+	s(device),
+	rule(configfile)
 	running(false)
 {
 	
