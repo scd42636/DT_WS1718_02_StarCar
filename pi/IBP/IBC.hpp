@@ -18,7 +18,6 @@ class IBC
 
 public:
 	IBC(std::string device, std::string configfile);
-	~IBC();
 
 	Packet makePacket(uint8_t id , void * content, uint8_t dyncontentsize = 0 ) const;
 

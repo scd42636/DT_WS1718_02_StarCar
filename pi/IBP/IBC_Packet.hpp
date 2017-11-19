@@ -8,9 +8,9 @@ namespace IBC
 	class Packet
 	{
 		friend class IBC;
-		uint8_t * data;
-		uint8_t size;
-		uint8_t contentsize;
+		uint8_t * m_data;
+		uint8_t m_size;
+		uint8_t m_contentsize;
 
 		Packet(unsigned int id, uint8_t contentsize, uint8_t * content , bool dynamic = false);
 	public:

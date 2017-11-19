@@ -25,8 +25,15 @@ IBC::Packet IBC::IBC::makePacket(uint8_t id, void * content, uint8_t dyncontents
 	return IBC::Packet (id, reqsize, content, dyn);
 }
 
+void IBC::IBC::send(Packet& p)
+{
+	t.send(p);
+}
+
 IBC::Inbox IBC::IBC::getInbox()
-{}
+{
+	return IBC::Inbox(t);
+}
 
 IBC::Inbox IBC::IBC::getInbox(uint8_t id)
 {

@@ -8,49 +8,47 @@ IBC::Packet::Packet(uint8_t id, uint8_t contentsize, uint8_t * content, bool dyn
 		throw std::runtime_error("ERROR : Failure in creating IBC::Packet, size too large !")
 	}
 
-	size = contentsize + dynamic ? 2 : 1 ;
-	if(size > 255)
-	{
-		Failure in creating
-	}
-	data = new uint8_t [size];
+	m_contentsize = contentsize;
+	m_size = m_contentsize + dynamic ? 2 : 1 ;
+	
+	m_data = new uint8_t [m_size];
 
 	data[0] = id;
 	if(dynamic) data[1] = contentsize;
-	memcpy(data + (dynamic?2:1) , content, contentsize);
+	memcpy(m_data + (dynamic?2:1) , content, contentsize);
 }
 
 IBC::Packet::~Packet()
 {
-	delete[] data;
+	delete[] m_data;
 }
 
 uint8_t IBC::Packet::size() const
 {
-	return size;
+	return m_size;
 }
 
 uint8_t* IBC::Packet::data() const
 {
-	return data;
+	return m_data;
 }
 
 uint8_t IBC::Packet::id()const
 {
-	return data[0];
+	return m_data[0];
 }
 
 uint8_t* IBC::Packet::content()const
 {
-	return data + (size - contentsize);
+	return m_data + (m_size - m_contentsize);
 }
 
 uint8_t IBC::Packet::contentsize() const
 {
-	return contentsize();
+	return m_contentsize;
 }
 
 bool IBC::Packet::dynamic() const
 {
-	return (size-contentsize) == 2;
+	return (m_size-m_contentsize) == 2;
 }

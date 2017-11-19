@@ -2,12 +2,16 @@
 #     define IBC_INBOX_HPP
 
 #include <set>
+#include <list>
 #include <vector>
 #include <cstdint>
+#include <memory>
+#include "IBC_Transceiver.hpp"
+
 
 namespace IBC
 {
-	class Inbox : public std::list<std::shared_ptr<const Packet>> box;
+	class Inbox : public std::list<std::shared_ptr<const Packet>>
 	{
 		//this will be necessary mainly in case the Transceiver object at *t is destroyed
 		friend class IBC::Transceiver;
