@@ -19,8 +19,6 @@ class Transceiver
 {
 	Serial s;
 
-	//TODO IBC_Rule has to go here somewhere
-
 	bool running;
 	void body();
 	std::thread worker;
@@ -42,6 +40,9 @@ class Transceiver
 
 	//TODO OPT vectors dynamically on heap and only if needed	 
 	std::set<Inbox*> receivers [256];
+
+	//stores the current status the transceiver is in (errors and stuff)
+	uint8_t status;
 
 public:
 	IBC::Rule rule;
@@ -68,6 +69,9 @@ public:
 	void removereceiver(const Inbox& i, uint8_t id);
 
 private:
+
+	uint8_t status_byte(const Packet& p, uint8_t status = this->status ) const;
+	uint8_t hash6(const Packet&)const;
 
 	void store (std::shared_ptr<const Packet>&);
 

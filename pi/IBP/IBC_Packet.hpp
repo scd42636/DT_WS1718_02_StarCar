@@ -7,21 +7,26 @@ namespace IBC
 {
 	class Packet
 	{
-		friend class IBC;
-		uint8_t * m_data;
+		uint8_t m_id;
 		uint8_t m_size;
-		uint8_t m_contentsize;
-
-		Packet(unsigned int id, uint8_t contentsize, uint8_t * content , bool dynamic = false);
-	public:
+		uint8_t * m_content;
+		public:
+		Packet(uint8_t id, uint8_t contentsize);
+		Packet(uint8_t id, uint8_t contentsize, uint8_t * content);
 		~Packet();
-		
-		uint8_t size() const;
-		uint8_t * data () const;
 
-		uint8_t id () const;
-		uint8_t * content() const;
+		//copy
+		Packet(const Packet&);
+
+		//move
+		Packet(Packet &&):
+
+		uint8_t id() const;
 		uint8_t contentsize() const;
+		uint8_t * content() const;
+
+		private:
+
 	};
 }	//namespace IBC
 #endif /* IBC_PACKET_HPP */

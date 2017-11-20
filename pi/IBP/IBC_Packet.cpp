@@ -1,54 +1,56 @@
 #include "IBC_Packet.hpp"
-#include <stdexcept>
 
-IBC::Packet::Packet(uint8_t id, uint8_t contentsize, uint8_t * content, bool dynamic)
+IBC::Packet::Packet(uint8_t id, uint8_t contentsize)
+	:
+	m_id(id),
+	m_size(contentsize)
 {
-	if(dynamic && contentsize > 253 || !dynamic && contentsize > 254)
-	{
-		throw std::runtime_error("ERROR : Failure in creating IBC::Packet, size too large !")
-	}
-
-	m_contentsize = contentsize;
-	m_size = m_contentsize + dynamic ? 2 : 1 ;
+	m_content = new uint8_t [m_size];
+}
 	
-	m_data = new uint8_t [m_size];
 
-	data[0] = id;
-	if(dynamic) data[1] = contentsize;
-	memcpy(m_data + (dynamic?2:1) , content, contentsize);
+IBC::Packet::Packet(uint8_t id, uint8_t contentsize, uint8_t * content)
+	:
+	IBC::Packet::Packet(id, contentsize)
+{
+	memcpy(m_content , content, contentsize);
 }
 
 IBC::Packet::~Packet()
 {
-	delete[] m_data;
+	if(m_content) delete[] m_content;
 }
 
-uint8_t IBC::Packet::size() const
+IBC::Packet::Packet(const Packet& p)
+	:
+	IBC::Packet::Packet(p.m_id, p.m_size)
 {
-	return m_size;
+	memcpy(m_content, p.m_content, m_size);
 }
 
-uint8_t* IBC::Packet::data() const
+IBC::Packet::Packet(Packet&& p)
+	:
+	IBC::Packet::Packet(p.m_id, p.m_size)
 {
-	return m_data;
-}
+	m_content = p.m_content;
 
-uint8_t IBC::Packet::id()const
-{
-	return m_data[0];
-}
-
-uint8_t* IBC::Packet::content()const
-{
-	return m_data + (m_size - m_contentsize);
+	p.m_id = 0;
+	p.size = 0;
+	p.m_content = nullptr;
 }
 
 uint8_t IBC::Packet::contentsize() const
 {
-	return m_contentsize;
+	return m_size;
 }
 
-bool IBC::Packet::dynamic() const
+uint8_t IBC::Packet::id()const
 {
-	return (m_size-m_contentsize) == 2;
+	return m_id;
 }
+
+uint8_t* IBC::Packet::content()const
+{
+	return m_content;
+}
+
