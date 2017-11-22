@@ -1,10 +1,13 @@
 
 #include "IBC_Transceiver.hpp"
 
-IBC::Transceiver::Transceiver(std::string device, std::string configfile)
+#include <iostream>		//cerr
+#include <cstring>		//std::memcpy
+
+IBC::Transceiver::Transceiver(std::string device,const IBC::Rule & rule)
 	:
 	s(device),
-	rule(configfile)
+	rule(rule),
 	running(false)
 {}
 
@@ -48,6 +51,21 @@ void IBC::Transceiver::runworker(bool running)
 
 void IBC::Transceiver::body()
 {
+	uint8_t req_buffer [256] = {0};
+
+	uint8_t& req_id = send_buffer[0];
+	uint8_t& req_dynamic_size = send_buffer[1];
+
+	uint8_t * req_content;
+	uint8_t * req_status_byte;
+
+	uint8_t answ_buffer [256] = {0};
+
+	uint8_t& answ_status_byte = recv_buffer[0];
+	uint8_t& answ_dynamic_size = recv_buffer[1];
+
+	uint8_t * answ_content;
+
 	while (running)
 	{
 		if (tosend.empty())
@@ -55,73 +73,115 @@ void IBC::Transceiver::body()
 			std::this_thread::sleep(IBC_TRANSCEIVER_IDLE_TIME);								//idle if there is nothing to do
 			continue;																		//start anew and check again first
 		}
-
+	
 		auto next = tosend.top();															//retrieve the next packet to send
 
+
+		uint8_t req_contentsize = rule.requestsize(next.id());
+		bool req_dynamic = req_contentsize == IBC_RULE_DYNAMIC;
+
+		if(req_dynamic)
 		{
-			uint8_t id = next.id();
-			send_intern(&id, 1);
+			req_contentsize = next.size();
+			req_content = req_buffer + 2;
+		}
+		else
+		{
+			req_content = req_buffer +1;
 		}
 
-		uint8_t requestsize = rule.requestsize(next.id());
+		uint8_t requestsize = req_contentsize + (req_dynamic) ? 3:2;
 
-		if(requestsize == IBC_RULE_DYNAMIC)
+		int paddinglength = 0;
+		
+		if(req_contentsize > next.contentsize())
 		{
-			requestsize = next.contentsize();
-			send_intern(&requestsize, 1);
-		}
-
-		int paddinglenght = 0;
-		if(requestsize > next.contentsize())
-		{
-			paddinglenght = rule.requestsize() - next.contentsize();
+			paddinglength = rule.requestsize(next.id()) - next.contentsize();
 
 			//TODO log warning
+			std::cerr << "WARNING [IBC] : Size of Packet smaller than specified ! Added padding to compensate !\n";
 		}
 		if(rule.requestsize < next.contentsize())
 		{
 			//TODO log warning
+			std::cerr << "WARNING [IBC] : Size of Packet larger than specified ! Only the specified length will be sent !\n";
 		}
 
 
-		uint8_t
-		send_intern(&next.size();)
-
-		unsigned int bytestosend = next->size();													
-
-		uint8_t * data = next->data();
-
-
-		uint8_t status_byte_send = status_byte(next);												//calculate status byte for package you just sent
-
-		//send the status byte
-		while (! s.send(&status_byte_send , 1)) std::this_thread::sleep/IBC_TRANSCEIVER_IDLE_TIME);	//send this status byte after the package bytes have been sent
-
-
-		uint8_t answersize = rule.answersize(next.id());											//determine expected contentsize of answer
-
-		std::shared_ptr<Packet> answer = new Packet(answersize);									
-		
-		unsigned int torecv = answer.size();
-		data = answer->data();
-
-	//TODO dynamic answer !
-
-		while(torecv > 0)
+		//fill buffer
+		req_id = next.id();
+		if(req_dynamic)
 		{
-			unsigned int received = 0;
-			received = s.recv(data, torecv);
-			if(!received)
-			{
-				std::this_thread::sleep(IBC_TRANSCEIVER_IDLE_TIME)
-			}
-			torecv -= received ;
-			data += received;
+			req_dynamic_size = requestsize;
 		}
 
-		uint8_t status_byte_recv;
+		std::memcpy(req_content, next.content(), next.size());
 
-		while (!s.recv(&status_byte_recv, 1)) std::this_thread::sleep(IBC_TRANSCEIVER_IDLE_TIME);
+		if(paddinglength)
+		{
+			uint8_t * paddingstart = req_content + next.size();
+			uint8_t * paddingend = paddingstart + paddinglenght;
+
+			for(uint8_t* paddingstart; paddingstart < paddingend; paddingstart++ )
+			{
+				*paddingstart = IBP_PADDING;
+			}
+		}
+
+		send_status_byte = send_content + requestsize;
+
+		//calculate status byte for package you just sent
+		*send_status_byte = this->status << 6;	
+
+		*send_status_byte |= hash6(send_buffer, framesize);
+
+		//send buffer
+		send_intern(send_buffer, framesize);
+
+		//request has been sent
+
+
+		//we always expect at least one byte as respond so we can receive this first
+		
+		answ_writer = answ_buffer;
+		recv_intern(answ_writer, 1);
+		answ_writer += 1;
+
+		//we check if the status is wrong (good is 0)
+		if((answ_status_byte >> 6))
+		{
+			//TODO ERROR HANDLING
+			//we need the second byte for the size
+			////TODO
+			std::cerr << "ERROR [IBC TRANSCEIVER] : A bad status <" + (answ_status_byte >> 6) + "> was returned in an answer! " + answ_buffer[1] + " bytes supposedly transmitted wrongly!\n";
+		}
+
+		uint8_t answ_contentsize = rule.answersize(next.id());
+		bool answ_dynamic = answ_contentsize == IBC_RULE_DYNAMIC;
+
+		unsigned int torecv;
+
+		//we need to read out the contentsize if it is dynamic
+		if(answ_dynamic)
+		{
+			recv_intern(answ_writer, 1);		// we need to receive the answers contentsize
+			answ_writer+=1;
+
+			answ_contentsize = answ_dynamic_size;
+			answ_content = answ_buffer + 2;		//first 2 are status bit and size
+			torecv = answ_contentsize;
+		}
+		else
+		{
+			answ_content = answ_buffer + 1;		//first one is status bit
+			torecv = answ_contentsize;
+		}
+
+		recv_intern(answ_writer, torecv);
+
+		//TODO checkhash
+
+		std::shared_ptr<IBC::Packet> answer (new Packet (next.id(), answ_contentsize, answ_content));		
 
 		store(answer);
 		tosend.pop();
@@ -145,7 +205,22 @@ void IBC::Transceiver::removereceiver(Inbox& i, uint8_t id)
 	receivers[id].erase(&i);
 }
 
-void send_intern(uint8_t* data, int size, int paddinglenght) const
+void recv_intern(uint8_t * data, uint8_t torecv) const
+{
+	while(torecv > 0)
+	{
+		unsigned int received = 0;
+		received = s.recv(data, torecv);
+		if(!received)
+		{
+			std::this_thread::sleep(IBC_TRANSCEIVER_IDLE_TIME)
+		}
+		torecv -= received ;
+		data += received;
+	}
+}
+
+void send_intern(uint8_t* data, int size) const
 {
 		//send data
 		unsigned int sent = 0;
@@ -160,37 +235,32 @@ void send_intern(uint8_t* data, int size, int paddinglenght) const
 			size -= sent;
 			data += sent;
 		}
-
-		//send padding
-		uint8_t padding = 0xAA;
-		while(paddinglength > 0)
-		{
-			sent = 0;
-			sent = s.send(&padding, 1);
-			paddinglenght -= sent;
-		}
-
 }
 
-uint8_t IBC::Transceiver::status_byte(const Packet& p , uint8_t status) const
+uint8_t IBC::Transceiver::status_byte(const Packet& p, uint8_t paddinglenght, uint8_t status) const
 {
+
 	uint8_t hash = hash6(p);
 
 	return hash ^ (status) ^ (status<<2) ^ (status<<4);	//squash the status bit into the hash by xor
 }
 
-uint8_t IBC::Transceiver::hash6(const Packet& p) const
+uint8_t IBC::Transceiver::hash(const Packet& p, bool dynamic, uint8_t status)
 {
-	uint8_t sum = 0 ;
+	auto id = p.id();
+	auto sum = hash6(&id ,1 ,0);
 	
-	for (int i = 0 ; i < p.size(); i++)
-	{
-		sum ^= data[i];								//xor all the data in the bytes
-		uint8_t up = sum >> 6;						//squash the highest bytes into the 6 lower via another xor
-		uint8_t low = up ^ (up << 2) ^ (up << 4)
-		sum ^= low;	
-	}
+	sum = hash6(p.content(), )
+}
 
+uint8_t IBC::Transceiver::hash6(uint8_t * data, uint8_t length , uint8_t sum) const
+{	
+	for (int i = 0 ; i < length; i++)
+	{
+		uint8_t up = data[i] >> 6;								//highest 2 bits of a byte
+		uint8_t low = (up | (up << 2) | (up << 4)) ^ data[i];	//xor them with all the other 2 bit pairs of the byte
+		sum ^= low;												//xor this with the sum
+	}
 	return sum << 2 >> 2;							//return last 6 bits and assure that first two bits are 0
 }
 

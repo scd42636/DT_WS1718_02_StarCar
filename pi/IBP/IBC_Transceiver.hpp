@@ -11,6 +11,8 @@
 
 #include "Serial.hpp"
 #include "IBC_Inbox.hpp"
+#include "IBC_Packet.hpp"
+#include "IBC_Rule.hpp"
 
 namespace IBC
 {
@@ -45,9 +47,9 @@ class Transceiver
 	uint8_t status;
 
 public:
-	IBC::Rule rule;
+	const IBC::Rule& rule;
 
-	Transceiver(std::string device, std::string configfile);
+	Transceiver(std::string device,const IBC::Rule & rule);
 	~Transceiver();
 
 	/**
@@ -70,8 +72,7 @@ public:
 
 private:
 
-	uint8_t status_byte(const Packet& p, uint8_t status = this->status ) const;
-	uint8_t hash6(const Packet&)const;
+	uint8_t hash6(uint8_t *data, uint8_t length, uint8_t sum = 0)const;
 
 	void store (std::shared_ptr<const Packet>&);
 
