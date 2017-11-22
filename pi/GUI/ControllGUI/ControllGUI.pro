@@ -29,3 +29,6 @@ SOURCES += main.cpp\
 HEADERS  += homewindow.h
 
 FORMS    += homewindow.ui
+
+DISTFILES += \
+    Pics/StarCar.png
