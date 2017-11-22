@@ -15,6 +15,13 @@ public:
     explicit HomeWindow(QWidget *parent = 0);
     ~HomeWindow();
 
+private slots:
+    void on_pButtonStart_clicked();
+
+    void on_pButtonStop_clicked();
+
+    void on_pButtonExit_clicked();
+
 private:
     Ui::HomeWindow *ui;
 };
