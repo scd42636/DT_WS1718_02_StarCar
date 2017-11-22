@@ -24,10 +24,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        homewindow.cpp
+        homewindow.cpp \
+    alertwindow.cpp
 
-HEADERS  += homewindow.h
+HEADERS  += homewindow.h \
+    alertwindow.h
 
-FORMS    += homewindow.ui
+FORMS    += homewindow.ui \
+    alertwindow.ui
 
 DISTFILES +=

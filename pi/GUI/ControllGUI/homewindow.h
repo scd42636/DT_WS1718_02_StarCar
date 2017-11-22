@@ -22,6 +22,8 @@ private slots:
 
     void on_pButtonExit_clicked();
 
+    void on_pButtonAlert_clicked();
+
 private:
     Ui::HomeWindow *ui;
 };
