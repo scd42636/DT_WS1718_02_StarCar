@@ -3,8 +3,8 @@
 
 #define IBC_PACKET_SIZE_DYNAMIC 255
 
-namespace IBC
-{
+#include <cstdint>
+
 	class Packet
 	{
 		uint8_t m_id;
@@ -19,14 +19,10 @@ namespace IBC
 		Packet(const Packet&);
 
 		//move
-		Packet(Packet &&):
+		Packet(Packet &&);
 
 		uint8_t id() const;
 		uint8_t contentsize() const;
 		uint8_t * content() const;
-
-		private:
-
 	};
-}	//namespace IBC
 #endif /* IBC_PACKET_HPP */

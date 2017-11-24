@@ -148,8 +148,12 @@ void IBC::Transceiver::body()
 		uint8_t res_datahash = res_buffer[res_size-1];
 		if(datahash(res_content, res_contentsize) != res_datahash) //TODO ERROR HADNLING DATA FAILURE !
 
+		//construct and store the answer packet
+		std::shared_ptr<const Packet> answer (new Packet (res_buffer[0], res_content, res_contentsize));
+		store(answer);
 
-			//TODO PACK UP AND LEAVE !
+		//this request has been handled, so we erase it from the queue
+		tosend.pop();
 
 	}
 

@@ -10,8 +10,6 @@
 // a static message size value of IBC_SIZE_DYNAMIC in truth means the message has dynamic size
 #define IBC_SIZE_DYNAMIC 255
 
-namespace IBC
-{
 class IBC
 {
 	IBC::Transceiver t;
@@ -27,5 +25,4 @@ public:
 	Inbox getInbox(uint8_t id);
 	Inbox getInbox(std::vector<uint8_t> ids);
 };
-}
 #endif /* IBC_HPP */

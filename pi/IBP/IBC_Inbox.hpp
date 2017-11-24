@@ -6,17 +6,13 @@
 #include <vector>
 #include <cstdint>
 #include <memory>
+#include "IBC_Packet.hpp"
 #include "IBC_Transceiver.hpp"
 
-
-namespace IBC
-{
 	class Inbox : public std::list<std::shared_ptr<const Packet>>
 	{
 		//this will be necessary mainly in case the Transceiver object at *t is destroyed
-		friend class IBC::Transceiver;
-
-		IBC::Transceiver* t;
+		Transceiver* t;
 		std::set<uint8_t> listening;
 
 	public:
@@ -39,5 +35,4 @@ namespace IBC
 		void mute (uint8_t id);
 		void mute (std::vector<uint8_t> ids)
 	};
-}
 #endif /* IBC_INBOX_HPP */

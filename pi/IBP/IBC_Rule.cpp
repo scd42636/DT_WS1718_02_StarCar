@@ -7,17 +7,20 @@
 
 
 
-IBC::Rule::Rule(std::string configfile)
-:
-	properties{0}
+Rule::Rule(std::string configfile)
 {
+	for(int i = 0; i < 255; i++)
+	{
+		properties[i].reqsize = 0;
+		properties[i].anssize = 0;
+	}
 	reloadcfg(configfile);
 }
 
-IBC::Rule::~Rule()
+Rule::~Rule()
 {}
 
-void IBC::Rule::reloadcfg(std::string configfile)
+void Rule::reloadcfg(std::string configfile)
 {
 	std::ifstream ifs (configfile);
 
@@ -67,12 +70,12 @@ void IBC::Rule::reloadcfg(std::string configfile)
 	ifs.close();
 }
 
-uint8_t IBC::Rule::requestsize(uint8_t id) const
+uint8_t Rule::requestsize(uint8_t id) const
 {
 	return properties[id].reqsize;
 }
 
-uint8_t IBC::Rule::answersize(uint8_t id) const
+uint8_t Rule::answersize(uint8_t id) const
 {
 	return properties[id].anssize;
 }

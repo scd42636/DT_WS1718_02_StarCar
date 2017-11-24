@@ -13,10 +13,8 @@
 #include "IBC_Inbox.hpp"
 #include "IBC_Packet.hpp"
 #include "IBC_Rule.hpp"
-
-namespace IBC
-{
 	
+
 class Transceiver
 {
 	Serial s;
@@ -30,14 +28,20 @@ class Transceiver
 	 * Some complicated stuff so bear with me :
 	 * priority_queue = heap
 	 * 1 Template arg : Packet , the type the heap stores
-	 * 2 Template arg : std::vector<packet> , the container which stores the heaps objects
+	 * 2 Template arg : std::vector<Packet> , the container which stores the heaps objects
 	 * 3 Template arg : a comparison function which orders the heap (here in form of a lamba expression)
 	 */
-	std::priority_queue	<	Packet ,																		//type
-							std::vector<Packet>,															//container
-							std::function<bool(const Packet&,const packet&)>								//comparison
-						>	tosend																			//queue name
-							([](const Packet & lhs , const Packet & rhs){return lhs.id() > rhs.id();}		//comparison code as parameter lambda
+	std::function<bool(const Packet& , const Packet&)> more_important_packet_comparator = 
+		[](const Packet & lhs , const Packet & rhs)
+		{ return lhs.id() > rhs.id(); };
+
+	typedef std::priority_queue	<	const Packet ,																		//type
+							std::vector<const Packet >,															//container
+							decltype(more_important_packet_comparator)
+						>								//comparison
+						Packetqueue;
+	
+	Packetqueue tosend (more_important_packet_comparator);	
 
 
 	//TODO OPT vectors dynamically on heap and only if needed	 
@@ -46,8 +50,8 @@ class Transceiver
 	//stores the current status the transceiver is in (errors and stuff)
 	uint8_t status;
 
+	const Rule& rule;
 public:
-	const IBC::Rule& rule;
 
 	Transceiver(std::string device,const IBC::Rule & rule);
 	~Transceiver();
@@ -72,11 +76,9 @@ public:
 
 private:
 
-	uint8_t hash6(uint8_t *data, uint8_t length, uint8_t sum = 0)const;
 
 	void store (std::shared_ptr<const Packet>&);
 
 };
 
-}//namespace IBC
 #endif /* IBC_TRANSCEIVER_HPP */
