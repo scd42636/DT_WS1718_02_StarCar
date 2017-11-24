@@ -53,18 +53,11 @@ void IBC::Transceiver::body()
 {
 	uint8_t req_buffer [256] = {0};
 
-	uint8_t& req_id = send_buffer[0];
-	uint8_t& req_dynamic_size = send_buffer[1];
+	uint8_t req_size;
+	bool req_dynamic = false;
+	uint8_t req_contentsize;
 
-	uint8_t * req_content;
-	uint8_t * req_status_byte;
-
-	uint8_t answ_buffer [256] = {0};
-
-	uint8_t& answ_status_byte = recv_buffer[0];
-	uint8_t& answ_dynamic_size = recv_buffer[1];
-
-	uint8_t * answ_content;
+	uint8_t res_buffer [256] = {0};
 
 	while (running)
 	{
@@ -72,121 +65,102 @@ void IBC::Transceiver::body()
 		{
 			std::this_thread::sleep(IBC_TRANSCEIVER_IDLE_TIME);								//idle if there is nothing to do
 			continue;																		//start anew and check again first
+		}	
+		auto next = tosend.top();		//retrieve the next packet to send
+
+		req_buffer[0] = next->id();
+
+		req_buffer[1] |= this->status << 4;
+		
+		req_contentsize = rule.req_contentsize();
+		if(req_contentsize == IBC_RULE_DYNAMIC)
+		{
+			req_dynamic = true;
+			req_contentsize = next.size();
+			req_size = req_contentsize + 4;
 		}
-	
-		auto next = tosend.top();															//retrieve the next packet to send
+		else
+		{
+			req_dynamic = false;
+			req_size = req_contentsize + 3;
+		}
 
 
-		uint8_t req_contentsize = rule.requestsize(next.id());
-		bool req_dynamic = req_contentsize == IBC_RULE_DYNAMIC;
+		uint8_t paddinglenght = 0;
 
+		if(req_contentsize < next.size())
+		{
+			std::cerr << "WARNING [IBC TRANSCEIVER] : Packet larger than specified ! Sending only specified payload ! <"+ next.id() +"|"+next.size()+">\n";
+		}
+		if(req_contentsize > next.size())
+		{
+			std::cerr << "WARNING [IBC TRANSCEIVER] : Packet smaller than specified ! Sending additional padding ! Please rework for efficiency !<"+ next.id() +"|"+next.size()+">\n";
+			paddinglength = req_contentsize - next.size();
+		}
+
+		req_buffer[1] |= (sizehash(req_contentsize) << 2);
+		req_buffer[1] |= headhash(req_buffer);
+		
 		if(req_dynamic)
 		{
-			req_contentsize = next.size();
+			req_buffer[2] = req_contentsize;
+			req_content = req_buffer + 3;
+		}
+		else
+		{
 			req_content = req_buffer + 2;
 		}
-		else
-		{
-			req_content = req_buffer +1;
-		}
-
-		uint8_t requestsize = req_contentsize + (req_dynamic) ? 3:2;
-
-		int paddinglength = 0;
-		
-		if(req_contentsize > next.contentsize())
-		{
-			paddinglength = rule.requestsize(next.id()) - next.contentsize();
-
-			//TODO log warning
-			std::cerr << "WARNING [IBC] : Size of Packet smaller than specified ! Added padding to compensate !\n";
-		}
-		if(rule.requestsize < next.contentsize())
-		{
-			//TODO log warning
-			std::cerr << "WARNING [IBC] : Size of Packet larger than specified ! Only the specified length will be sent !\n";
-		}
-
-
-		//fill buffer
-		req_id = next.id();
-		if(req_dynamic)
-		{
-			req_dynamic_size = requestsize;
-		}
-
 		std::memcpy(req_content, next.content(), next.size());
-
-		if(paddinglength)
-		{
-			uint8_t * paddingstart = req_content + next.size();
-			uint8_t * paddingend = paddingstart + paddinglenght;
-
-			for(uint8_t* paddingstart; paddingstart < paddingend; paddingstart++ )
-			{
-				*paddingstart = IBP_PADDING;
-			}
-		}
-
-		send_status_byte = send_content + requestsize;
-
-		//calculate status byte for package you just sent
-		*send_status_byte = this->status << 6;	
-
-		*send_status_byte |= hash6(send_buffer, framesize);
-
-		//send buffer
-		send_intern(send_buffer, framesize);
-
-		//request has been sent
-
-
-		//we always expect at least one byte as respond so we can receive this first
 		
-		answ_writer = answ_buffer;
-		recv_intern(answ_writer, 1);
-		answ_writer += 1;
+		//padding if necessary
+		if(!paddinglength)	padd(req_content + next.size() + 1, paddinglength);
 
-		//we check if the status is wrong (good is 0)
-		if((answ_status_byte >> 6))
+		//footer
+		*(req_content + req_contentsize + 1) = datahash(req_content, req_contentsize);
+
+		send_intern(req_buffer, req_size);
+
+		//now recv header first
+		recv_intern(res_buffer, 1); //response header 1 byte long
+		
+		//check header hash
+		if(headhash(res_buffer) != (res_buffer[0] & 0x03)) //TODO ERROR HANDLING WITH STATUS;
+
+		if(rule.answersize(res_buffer[0]) == IBC_RULE_DYNAMIC)
 		{
-			//TODO ERROR HANDLING
-			//we need the second byte for the size
-			////TODO
-			std::cerr << "ERROR [IBC TRANSCEIVER] : A bad status <" + (answ_status_byte >> 6) + "> was returned in an answer! " + answ_buffer[1] + " bytes supposedly transmitted wrongly!\n";
-		}
-
-		uint8_t answ_contentsize = rule.answersize(next.id());
-		bool answ_dynamic = answ_contentsize == IBC_RULE_DYNAMIC;
-
-		unsigned int torecv;
-
-		//we need to read out the contentsize if it is dynamic
-		if(answ_dynamic)
-		{
-			recv_intern(answ_writer, 1);		// we need to receive the answers contentsize
-			answ_writer+=1;
-
-			answ_contentsize = answ_dynamic_size;
-			answ_content = answ_buffer + 2;		//first 2 are status bit and size
-			torecv = answ_contentsize;
+			res_dynamic = true;
+			recv_intern(res_buffer+1, 1);		//recv size
+			//check se size hash
+			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 4)) //TODO ERRORHANDLING WRONG SIZE !
+			res_content = res_buffer + 2;
+			res_contentsize = res_buffer[1];
+			res_size = res_contentsize + 3;
 		}
 		else
 		{
-			answ_content = answ_buffer + 1;		//first one is status bit
-			torecv = answ_contentsize;
+			res_dynamic = false;
+			res_content = res_buffer +1;
+			res_contentsize = rule.answersize(res_buffer[0]);
+			res_size = res_contentsize + 2;
 		}
+		recv_intern(res_buffer+2, res_contentsize + 1) //recv content and its hash
 
-		recv_intern(answ_writer, torecv);
+		uint8_t res_datahash = res_buffer[res_size-1];
+		if(datahash(res_content, res_contentsize) != res_datahash) //TODO ERROR HADNLING DATA FAILURE !
 
-		//TODO checkhash
 
-		std::shared_ptr<IBC::Packet> answer (new Packet (next.id(), answ_contentsize, answ_content));		
+			//TODO PACK UP AND LEAVE !
 
-		store(answer);
-		tosend.pop();
 	}
 
+}
+
+void IBC::Transceiver::padd(uint8_t * begin, uint8_t paddinglength)
+{
+	for( ; begin <= begin+paddinglength; begin++)
+	{
+		*paddingbegin = IBP_PADDING;
+	}
 }
 
 void IBC::Transceiver::send(Packet & p)
