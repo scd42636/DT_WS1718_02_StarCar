@@ -2,6 +2,9 @@
 #define HOMEWINDOW_H
 
 #include <QMainWindow>
+#include <QProgressBar>
+#include <QVBoxLayout>
+#include <QPushButton>
 
 namespace Ui {
 class HomeWindow;
@@ -16,16 +19,15 @@ public:
     ~HomeWindow();
 
 private slots:
-    void on_pButtonStart_clicked();
-
-    void on_pButtonStop_clicked();
-
-    void on_pButtonExit_clicked();
-
-    void on_pButtonAlert_clicked();
 
 private:
-    Ui::HomeWindow *ui;
+    Ui::HomeWindow  *ui;
+    QProgressBar    *progressBar;
+    QVBoxLayout     *vBox1;
+    QPushButton     *pButtonExit;
+    QPushButton     *pButtonStart;
+    bool generateStartLayout();
+
 };
 
 #endif // HOMEWINDOW_H
