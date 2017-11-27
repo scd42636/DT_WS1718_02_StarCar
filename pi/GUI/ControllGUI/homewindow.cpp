@@ -9,6 +9,7 @@ HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWi
     ui->setupUi(this);
     this->setFixedSize(320,240);
     generateStartLayout();
+    styleStartLayout();
 }
 
 HomeWindow::~HomeWindow()
@@ -17,33 +18,66 @@ HomeWindow::~HomeWindow()
 }
 
 
-bool HomeWindow::generateStartLayout(){
+void HomeWindow::generateStartLayout(){
 
     // Set space between centralWidget and form to 8
     ui->centralWidget->setContentsMargins(8,8,8,8);
 
-    ui->centralWidget->setStyleSheet("QWidget{"
-                                     "background-color: #2b2b2b;}");
-
     // Add new verticalBox to central Widget
     vBox1 = new QVBoxLayout(ui->centralWidget);
 
+    hBox1 = new QHBoxLayout();
+
+    // Generate needed UI-Elements
     progressBar = new QProgressBar(ui->centralWidget);
     pButtonExit = new QPushButton(ui->centralWidget);
     pButtonStart = new QPushButton(ui->centralWidget);
+    pButtonAlert = new QPushButton(ui->centralWidget);
+    lblHeadline = new QLabel(ui->centralWidget);
 
-    pButtonStart->setText("Starte StarCar");
-
-    pButtonStart->setStyleSheet("QPushButton{"
-                                "background-color: red;}");
-
-    pButtonExit->setText("Beenden");
-    pButtonExit->setStyleSheet("QPushButton{"
-                                "background-color: red;}");
-
+    // Setup progressBar
     progressBar->setRange(0,100);
     progressBar->setValue(100);
     progressBar->setTextVisible(false);
+
+    // Add all UI-Elements to the layout
+    vBox1->addWidget(lblHeadline);
+    vBox1->addSpacing(50);
+    vBox1->addWidget(pButtonStart);
+    vBox1->addWidget(progressBar);
+    vBox1->addItem(hBox1);
+
+    hBox1->addWidget(pButtonAlert);
+    hBox1->addWidget(pButtonExit);
+
+    vBox1->setMargin(8);
+
+    // connect exit button to close function -> once the exit-button is clicked the application will close
+    connect(pButtonExit, SIGNAL(clicked()), this, SLOT(closeStarCar()));
+
+    //connect the start-button clicked event with methode ...
+    connect(pButtonStart, SIGNAL(clicked()), this, SLOT(fillProgressBar()));
+
+}
+
+void HomeWindow::styleStartLayout(){
+
+    ui->centralWidget->setStyleSheet("QWidget{"
+                                     "background-color: #2b2b2b;}");
+
+    vBox1->setAlignment(Qt::AlignTop);
+
+    lblHeadline->setText("StarCar");
+
+    lblHeadline->setStyleSheet("QLabel{"
+                               "color: green;"
+                               "font-family: TimesNewRoman;"
+                               "font-style: normal;"
+                               "font-size: 15pt;"
+                               "font-weight: bold;}");
+
+    //lblHeadline->setFixedHeight(20);
+    lblHeadline->setAlignment(Qt::AlignCenter);
 
     progressBar->setStyleSheet("QProgressBar{"
                                "background-color: black;"
@@ -55,18 +89,18 @@ bool HomeWindow::generateStartLayout(){
                                "width: 10px;"
                                "margin: 5px;}");
 
-    vBox1->addWidget(pButtonStart);
-    vBox1->addWidget(progressBar);
-    vBox1->addWidget(pButtonExit);
-    vBox1->setMargin(10);
+    pButtonStart->setText("Starte StarCar");
+    pButtonStart->setStyleSheet("QPushButton{"
+                                "background-color: green;}");
 
-    // connect exit button to close function -> once exit is clicked the application will close
-    connect(pButtonExit, SIGNAL(clicked()), this, SLOT(close()));
-    connect(pButtonStart, SIGNAL(clicked()), this, SLOT(fillProgressBar()));
+    pButtonExit->setText("Beenden");
+    pButtonExit->setStyleSheet("QPushButton{"
+                                "background-color: green;}");
 
+    pButtonAlert->setText("ALARM!!");
 
-
-    return true;
+    // Hide default window hints
+    setWindowFlags(Qt::FramelessWindowHint);
 
 }
 
@@ -89,6 +123,10 @@ void HomeWindow::fillProgressBar(){
 
         }
     }
-
-
 }
+
+void HomeWindow::closeStarCar(){
+
+    this->close();
+}
+

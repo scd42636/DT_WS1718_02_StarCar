@@ -6,6 +6,8 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QObject>
+#include <QLabel>
+#include <QHBoxLayout>
 
 namespace Ui {
 class HomeWindow;
@@ -23,17 +25,33 @@ public:
 private slots:
 
     void fillProgressBar();
+    void closeStarCar();
 
 private:
 
+    //Window
     Ui::HomeWindow  *ui;
+
+    //Label
+    QLabel          *lblHeadline;
+
+    //ProgressBar
     QProgressBar    *progressBar;
-    QVBoxLayout     *vBox1;
+
+    //Buttons
     QPushButton     *pButtonExit;
     QPushButton     *pButtonStart;
+    QPushButton     *pButtonAlert;
 
-    bool generateStartLayout();
+    //Vertical-Box
+    QVBoxLayout     *vBox1;
 
+    //Horizontal-Box
+    QHBoxLayout     *hBox1;
+
+    //Methods
+    void generateStartLayout();
+    void styleStartLayout();
 };
 
 #endif // HOMEWINDOW_H
