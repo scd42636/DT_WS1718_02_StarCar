@@ -5,6 +5,7 @@
 #include <QProgressBar>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <QObject>
 
 namespace Ui {
 class HomeWindow;
@@ -18,14 +19,19 @@ public:
     explicit HomeWindow(QWidget *parent = 0);
     ~HomeWindow();
 
+
 private slots:
 
+    void fillProgressBar();
+
 private:
+
     Ui::HomeWindow  *ui;
     QProgressBar    *progressBar;
     QVBoxLayout     *vBox1;
     QPushButton     *pButtonExit;
     QPushButton     *pButtonStart;
+
     bool generateStartLayout();
 
 };

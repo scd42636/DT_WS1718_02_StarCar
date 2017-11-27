@@ -4,3 +4,8 @@ Worker::Worker()
 {
 
 }
+
+Worker::~Worker(){
+
+    delete this;
+}
