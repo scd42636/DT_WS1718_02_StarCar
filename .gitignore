@@ -294,3 +294,6 @@ __pycache__/
 
 #swap files
 *.swp
+
+#object files
+*.o

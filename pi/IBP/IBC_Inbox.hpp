@@ -11,6 +11,7 @@
 
 	class Inbox : public std::list<std::shared_ptr<const Packet>>
 	{
+		friend class Transceiver;
 		//this will be necessary mainly in case the Transceiver object at *t is destroyed
 		Transceiver* t;
 		std::set<uint8_t> listening;
@@ -33,6 +34,6 @@
 		void listen (std::vector<uint8_t> ids);
 
 		void mute (uint8_t id);
-		void mute (std::vector<uint8_t> ids)
+		void mute (std::vector<uint8_t> ids);
 	};
 #endif /* IBC_INBOX_HPP */

@@ -1,7 +1,7 @@
 #ifndef IBC_TRANSCEIVER_HPP
 #     define IBC_TRANSCEIVER_HPP
 
-#define IBC_TRANSCEIVER_IDLE_TIME 15 //in ms
+#define IBC_TRANSCEIVER_IDLE_TIME 15ms //using std::chrono_literals this syntax is possible
 
 #include <thread>
 #include <queue>
@@ -10,10 +10,10 @@
 #include <functional>
 
 #include "Serial.hpp"
-#include "IBC_Inbox.hpp"
 #include "IBC_Packet.hpp"
 #include "IBC_Rule.hpp"
-	
+
+class Inbox;
 
 class Transceiver
 {
@@ -31,18 +31,11 @@ class Transceiver
 	 * 2 Template arg : std::vector<Packet> , the container which stores the heaps objects
 	 * 3 Template arg : a comparison function which orders the heap (here in form of a lamba expression)
 	 */
-	std::function<bool(const Packet& , const Packet&)> more_important_packet_comparator = 
-		[](const Packet & lhs , const Packet & rhs)
-		{ return lhs.id() > rhs.id(); };
-
-	typedef std::priority_queue	<	const Packet ,																		//type
-							std::vector<const Packet >,															//container
-							decltype(more_important_packet_comparator)
-						>								//comparison
-						Packetqueue;
-	
-	Packetqueue tosend (more_important_packet_comparator);	
-
+	std::priority_queue	<	Packet ,																		//type
+							std::vector<Packet >,															//container
+							std::function<bool(Packet&,Packet&)>
+						>
+						tosend;
 
 	//TODO OPT vectors dynamically on heap and only if needed	 
 	std::set<Inbox*> receivers [256];
@@ -53,7 +46,7 @@ class Transceiver
 	const Rule& rule;
 public:
 
-	Transceiver(std::string device,const IBC::Rule & rule);
+	Transceiver(std::string device,const Rule & rule);
 	~Transceiver();
 
 	/**
@@ -69,16 +62,22 @@ public:
 	 *	Queue orders your Packet for priority (id)
 	 * @param A reference to the Packet you want to send. Will be copied, so you can safely destroy your version of it.
 	 */
-	void send(IBC_Packet &) const;
+	void send(Packet &);
 
-	void addreceiver(const Inbox& i, uint8_t id);
-	void removereceiver(const Inbox& i, uint8_t id);
+	void addreceiver(Inbox& i, uint8_t id);
+	void removereceiver(Inbox& i, uint8_t id);
 
 private:
+	void recv_intern(uint8_t*, uint8_t)const;
+	void send_intern(uint8_t*, uint8_t)const;
 
+	uint8_t sizehash(uint8_t size) const;
+	uint8_t datahash(uint8_t * data, uint8_t length, uint8_t in = 0) const;
+	uint8_t headhash_request(uint8_t* headerbegin) const;
+	uint8_t headhash_response(uint8_t* headerbegin) const;
+	void padd(uint8_t * begin, uint8_t paddinglength);
 
 	void store (std::shared_ptr<const Packet>&);
-
 };
 
 #endif /* IBC_TRANSCEIVER_HPP */

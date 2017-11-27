@@ -17,9 +17,11 @@
 
 		//copy
 		Packet(const Packet&);
+		Packet& operator=(const Packet&);
 
 		//move
 		Packet(Packet &&);
+		Packet& operator=(Packet&&);
 
 		uint8_t id() const;
 		uint8_t contentsize() const;

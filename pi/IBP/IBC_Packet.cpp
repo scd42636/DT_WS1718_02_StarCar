@@ -1,6 +1,8 @@
 #include "IBC_Packet.hpp"
 
-IBC::Packet::Packet(uint8_t id, uint8_t contentsize)
+#include <cstring>
+
+Packet::Packet(uint8_t id, uint8_t contentsize)
 	:
 	m_id(id),
 	m_size(contentsize)
@@ -9,47 +11,65 @@ IBC::Packet::Packet(uint8_t id, uint8_t contentsize)
 }
 	
 
-IBC::Packet::Packet(uint8_t id, uint8_t contentsize, uint8_t * content)
+Packet::Packet(uint8_t id, uint8_t contentsize, uint8_t * content)
 	:
-	IBC::Packet::Packet(id, contentsize)
+	Packet::Packet(id, contentsize)
 {
-	memcpy(m_content , content, contentsize);
+	std::memcpy(m_content , content, contentsize);
 }
 
-IBC::Packet::~Packet()
+Packet::~Packet()
 {
 	if(m_content) delete[] m_content;
 }
 
-IBC::Packet::Packet(const Packet& p)
+Packet::Packet(const Packet& p)
 	:
-	IBC::Packet::Packet(p.m_id, p.m_size)
+	Packet::Packet(p.m_id, p.m_size)
 {
-	memcpy(m_content, p.m_content, m_size);
+	std::memcpy(m_content, p.m_content, m_size);
 }
 
-IBC::Packet::Packet(Packet&& p)
+Packet& Packet::operator=(const Packet& p)
+{
+	this->m_id = p.m_id;
+	this->m_size = p.m_size;
+	std::memcpy(this->m_content, p.m_content, this->m_size);
+}
+
+Packet::Packet(Packet&& p)
 	:
-	IBC::Packet::Packet(p.m_id, p.m_size)
+	Packet::Packet(p.m_id, p.m_size)
 {
 	m_content = p.m_content;
 
 	p.m_id = 0;
-	p.size = 0;
+	p.m_size = 0;
 	p.m_content = nullptr;
 }
 
-uint8_t IBC::Packet::contentsize() const
+Packet& Packet::operator=(Packet&& p)
+{	
+	this->m_id = p.m_id;
+	this->m_size = p.m_size;
+	this->m_content = p.m_content;
+
+	p.m_id = 0;
+	p.m_size = 0;
+	p.m_content = nullptr;
+}
+
+uint8_t Packet::contentsize() const
 {
 	return m_size;
 }
 
-uint8_t IBC::Packet::id()const
+uint8_t Packet::id()const
 {
 	return m_id;
 }
 
-uint8_t* IBC::Packet::content()const
+uint8_t* Packet::content()const
 {
 	return m_content;
 }

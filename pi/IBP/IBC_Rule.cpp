@@ -5,8 +5,6 @@
 #include <iostream>
 #include <regex>
 
-
-
 Rule::Rule(std::string configfile)
 {
 	for(int i = 0; i < 255; i++)
