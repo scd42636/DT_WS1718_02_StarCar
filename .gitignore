@@ -292,3 +292,4 @@ __pycache__/
 *.toc
 *.aux
 
+/watch/binary
