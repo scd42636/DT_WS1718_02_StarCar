@@ -12,8 +12,3 @@ AlertWindow::~AlertWindow()
 {
     delete ui;
 }
-
-void AlertWindow::on_pButtonExit_clicked()
-{
-    this->close();
-}

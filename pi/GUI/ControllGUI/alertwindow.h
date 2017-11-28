@@ -16,7 +16,6 @@ public:
     ~AlertWindow();
 
 private slots:
-    void on_pButtonExit_clicked();
 
 private:
     Ui::AlertWindow *ui;

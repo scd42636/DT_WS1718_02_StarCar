@@ -1,11 +1,11 @@
 #include "homewindow.h"
 #include "ui_homewindow.h"
-#include <QTimer>
-#include <QThread>
+
 
 
 HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWindow)
 {
+
     ui->setupUi(this);
     this->setFixedSize(320,240);
     generateStartLayout();
@@ -20,11 +20,31 @@ HomeWindow::~HomeWindow()
 
 void HomeWindow::generateStartLayout(){
 
-    // Set space between centralWidget and form to 8
-    ui->centralWidget->setContentsMargins(8,8,8,8);
+    // Set space between centralWidget and form to 0
+    ui->centralWidget->setContentsMargins(0,0,0,0);
+
+    centralVBox = new QVBoxLayout(ui->centralWidget);
+    centralVBox->setContentsMargins(0,0,0,0);
+
+    mainStackedWidget = new QStackedWidget();
+    centralVBox->addWidget(mainStackedWidget);
+    startWidget = new QWidget();
+
+    addWidgetToMainStackWidget(startWidget);
+    generateGUIElementsforStartWidget();
+
+}
+
+void HomeWindow::addWidgetToMainStackWidget (QWidget *widget){
+
+    mainStackedWidget->addWidget(widget);
+    widget->setContentsMargins(0,0,0,0);
+}
+
+void HomeWindow::generateGUIElementsforStartWidget(){
 
     // Add new verticalBox to central Widget
-    vBox1 = new QVBoxLayout(ui->centralWidget);
+    vBox1 = new QVBoxLayout(startWidget);
 
     hBox1 = new QHBoxLayout();
 
@@ -45,12 +65,12 @@ void HomeWindow::generateStartLayout(){
     vBox1->addSpacing(50);
     vBox1->addWidget(pButtonStart);
     vBox1->addWidget(progressBar);
+    vBox1->addSpacing(50);
     vBox1->addItem(hBox1);
 
     hBox1->addWidget(pButtonAlert);
     hBox1->addWidget(pButtonExit);
 
-    vBox1->setMargin(8);
 
     // connect exit button to close function -> once the exit-button is clicked the application will close
     connect(pButtonExit, SIGNAL(clicked()), this, SLOT(closeStarCar()));
@@ -58,6 +78,7 @@ void HomeWindow::generateStartLayout(){
     //connect the start-button clicked event with methode ...
     connect(pButtonStart, SIGNAL(clicked()), this, SLOT(fillProgressBar()));
 
+    connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(showAlert()));
 }
 
 void HomeWindow::styleStartLayout(){
@@ -106,6 +127,7 @@ void HomeWindow::styleStartLayout(){
 
 void HomeWindow::fillProgressBar(){
 
+
     if(progressBar->value() == 100)
     {
         for(int i=100; i>=0; i-=20)
@@ -128,5 +150,9 @@ void HomeWindow::fillProgressBar(){
 void HomeWindow::closeStarCar(){
 
     this->close();
+}
+
+void HomeWindow::showAlert(){
+
 }
 

@@ -8,6 +8,10 @@
 #include <QObject>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QWidget>
+#include <QTimer>
+#include <QThread>
+#include <QStackedWidget>
 
 namespace Ui {
 class HomeWindow;
@@ -22,36 +26,48 @@ public:
     ~HomeWindow();
 
 
+protected:
+    void addWidgetToMainStackWidget(QWidget *widget);
+
 private slots:
 
     void fillProgressBar();
     void closeStarCar();
 
+    void showAlert();
 private:
 
-    //Window
+    // Window
     Ui::HomeWindow  *ui;
 
-    //Label
+    // Label
     QLabel          *lblHeadline;
 
-    //ProgressBar
+    // ProgressBar
     QProgressBar    *progressBar;
 
-    //Buttons
+    // Buttons
     QPushButton     *pButtonExit;
     QPushButton     *pButtonStart;
     QPushButton     *pButtonAlert;
 
-    //Vertical-Box
+    // Vertical-Box
+    QVBoxLayout     *centralVBox;
     QVBoxLayout     *vBox1;
 
-    //Horizontal-Box
+    // Horizontal-Box
     QHBoxLayout     *hBox1;
 
-    //Methods
+    // StackedWidget
+    QStackedWidget  *mainStackedWidget;
+
+    // Widget
+    QWidget         *startWidget;
+
+    // Methods
     void generateStartLayout();
     void styleStartLayout();
+    void generateGUIElementsforStartWidget();
 };
 
 #endif // HOMEWINDOW_H
