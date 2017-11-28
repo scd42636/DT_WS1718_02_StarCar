@@ -24,17 +24,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        homewindow.cpp \
-    alertwindow.cpp \
-    worker.cpp \
-    startwidget.cpp
+    homewindow.cpp \
+    startwidget.cpp \
+    alert.cpp \
+    alertwidget.cpp
 
 HEADERS  += homewindow.h \
-    alertwindow.h \
-    worker.h \
-    startwidget.h
+    startwidget.h \
+    alert.h \
+    alertwidget.h
 
-FORMS    += homewindow.ui \
-    alertwindow.ui
+FORMS    += homewindow.ui
 
 DISTFILES +=
