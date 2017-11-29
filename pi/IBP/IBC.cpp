@@ -5,47 +5,38 @@
 #include <iostream>
 #include <regex>
 
-IBC::IBC::IBC(std::string device , std::string configfile)
+IBC::IBC(std::string device , std::string configfile)
 :
-	t(device, configfile)
+	rule(configfile),
+	t(device, rule)
 {}
 
-IBC::IBC::~IBC()
-{}
-
-IBC::Packet IBC::IBC::makePacket(uint8_t id, void * content, uint8_t dyncontentsize) const
-{
-	uint8_t reqsize = t.rule.reqsize();
-	bool dyn = false;
-	if(reqsize == IBC_SIZE_DYNAMIC)
-	{
-		reqsize = dyncontentsize;
-		dyn = true;
-	}
-	return IBC::Packet (id, reqsize, content, dyn);
-}
-
-void IBC::IBC::send(Packet& p)
+void IBC::send(Packet& p)
 {
 	t.send(p);
 }
 
-IBC::Inbox IBC::IBC::getInbox()
+Inbox IBC::getInbox()
 {
-	return IBC::Inbox(t);
+	return Inbox(t);
 }
 
-IBC::Inbox IBC::IBC::getInbox(uint8_t id)
+Inbox IBC::getInbox(uint8_t id)
 {
-	return IBC::Inbox(t, id);
+	return Inbox(t, id);
 }
 
-IBC::Inbox IBC::IBC::getInbox(std::vector<uint8_t> ids)
+Inbox IBC::getInbox(std::vector<uint8_t> ids)
 {
-	return IBC::Inbox(t, ids);
+	return Inbox(t, ids);
 }
 
-void IBC::IBC::send(IBC::Packet & p)
+uint8_t IBC::requestsize(uint8_t id) const
 {
-	t.send(p);
+	rule.requestsize(id);
+}
+
+uint8_t IBC::responsesize(uint8_t id) const
+{
+	rule.answersize(id);
 }

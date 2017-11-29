@@ -12,17 +12,20 @@
 
 class IBC
 {
-	IBC::Transceiver t;
+	Rule rule;
+
+	Transceiver t;
 
 public:
 	IBC(std::string device, std::string configfile);
-
-	Packet makePacket(uint8_t id , void * content, uint8_t dyncontentsize = 0 ) const;
 
 	void send(Packet& p);
 
 	Inbox getInbox();
 	Inbox getInbox(uint8_t id);
 	Inbox getInbox(std::vector<uint8_t> ids);
+
+	uint8_t requestsize(uint8_t id)const;
+	uint8_t responsesize(uint8_t id)const;
 };
 #endif /* IBC_HPP */
