@@ -16,27 +16,16 @@ void StartWidget::generateStartLayout(){
 
     //
     vBox1 = new QVBoxLayout(this);
-    hBox1 = new QHBoxLayout();
 
     // Generate needed UI-Elements
     progressBar = new QProgressBar();
-    pButtonExit = new QPushButton(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/exit.png"),"");
     pButtonStart = new QPushButton(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/start.png"),"");
-    pButtonAlert = new QPushButton(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_green.png"),"");
-    lblHeadline = new QLabel();
 
     // Add all UI-Elements to the layout
-    vBox1->addWidget(lblHeadline,0,Qt::AlignHCenter);
-    vBox1->addSpacing(20);
     vBox1->addWidget(pButtonStart,0,Qt::AlignHCenter);
     vBox1->addSpacing(20);
     vBox1->addWidget(progressBar);
     vBox1->addSpacing(40);
-    vBox1->addLayout(hBox1);
-    hBox1->addWidget(pButtonAlert);
-    hBox1->addSpacing(200);
-    hBox1->addWidget(pButtonExit);
-
 }
 
 void StartWidget::setupUIElements(){
@@ -49,41 +38,21 @@ void StartWidget::setupUIElements(){
 
 void StartWidget::setupConnects(){
 
-    // connect exit button to close function -> once the exit-button is clicked the application will close
-    connect(pButtonExit, SIGNAL(clicked()), MainWindow, SLOT(closeApp()));
-
     //connect the start-button clicked event with methode ...
     connect(pButtonStart, SIGNAL(clicked()), this, SLOT(fillProgressBar()));
-
-    connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(showAlert()));
 }
 
 void StartWidget::styleWidget(){
 
 /********************************Texts********************************************/
 
-    lblHeadline->setText("StarCar");
-
     pButtonStart->setIconSize(QSize(32,32));
     pButtonStart->resize(32,32);
-
-    pButtonExit->setIconSize(QSize(32,32));
-    pButtonExit->resize(32,32);
-
-    pButtonAlert->setIconSize(QSize(32,32));
-    pButtonAlert->resize(32,32);
 
 /******************************StyleSheets****************************************/
 
             this->setStyleSheet("QWidget{"
                                 "background-color: #2b2b2b;}");
-
-    lblHeadline->setStyleSheet("QLabel{"
-                               "color: green;"
-                               "font-family: TimesNewRoman;"
-                               "font-style: normal;"
-                               "font-size: 15pt;"
-                               "font-weight: bold;}");
 
     progressBar->setStyleSheet("QProgressBar{"
                                "background-color: black;"
@@ -96,18 +65,6 @@ void StartWidget::styleWidget(){
                                "margin: 5px;}");
 
     pButtonStart->setStyleSheet("QPushButton{"
-                                "border-radius:  10px;"
-                                "border-width:   3px;"
-                                "border-color:   black"
-                                "boder-style:    solid}");
-
-    pButtonExit->setStyleSheet("QPushButton{"
-                               "border-radius:  10px;"
-                               "border-width:   3px;"
-                               "border-color:   black"
-                               "boder-style:    solid}");
-
-    pButtonAlert->setStyleSheet("QPushButton{"
                                 "border-radius:  10px;"
                                 "border-width:   3px;"
                                 "border-color:   black"
@@ -158,7 +115,8 @@ void StartWidget::fillProgressBar(){
 
 void StartWidget::closeStarCar(){
 
-    this->close();
+    //this->close();
+    delete this;
 }
 
 void StartWidget::showAlert(){

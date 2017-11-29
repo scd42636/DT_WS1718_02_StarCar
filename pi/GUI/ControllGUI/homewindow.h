@@ -3,10 +3,13 @@
 
 #include <QMainWindow>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QObject>
 #include <QHBoxLayout>
 #include <QWidget>
 #include <QStackedWidget>
+#include <QPushButton>
+#include <QLabel>
 
 namespace Ui {
 class HomeWindow;
@@ -22,7 +25,7 @@ public:
 
 
 public slots:
-    void closeApp();
+    void removeActiveWidget();
 
 protected:
     void addWidgetToMainStackWidget(QWidget *widget);
@@ -34,8 +37,9 @@ private:
     // Window
     Ui::HomeWindow  *ui;
 
-    // Vertical-Box
+    // Layout-Box
     QVBoxLayout     *centralVBox;
+    QHBoxLayout     *hBox1;
 
     // StackedWidget
     QStackedWidget  *mainStackedWidget;
@@ -43,9 +47,17 @@ private:
     // Widget
     QWidget         *startWidget;
 
+    // Button
+    QPushButton     *pButtonExit;
+    QPushButton     *pButtonAlert;
+
+    // Label
+    QLabel          *lblHeadline;
+
     // Methods
     void generateStartLayout();
     void styleWindow();
+    void setupConnects();
 };
 
 #endif // HOMEWINDOW_H
