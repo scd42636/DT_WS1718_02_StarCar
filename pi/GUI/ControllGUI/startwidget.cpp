@@ -2,14 +2,18 @@
 #include "homewindow.h"
 #include "alert.h"
 
-StartWidget::StartWidget(QWidget *parent, QMainWindow *mainwindow) : QWidget(parent)
-{
-    MainWindow = mainwindow;
+bool progressfull = false;
+bool progressBarTimerisNOTRunning = true;
 
+StartWidget::StartWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
+{
     generateStartLayout();
     setupUIElements();
     setupConnects();
     styleWidget();
+    progressBarTimer = new QTimer(this);
+    connect(progressBarTimer, SIGNAL(timeout()), this, SLOT(fillProgressBar()));
+    this->alertThread = alertThread;
 }
 
 void StartWidget::generateStartLayout(){
@@ -32,14 +36,14 @@ void StartWidget::setupUIElements(){
 
     // progressBar
     progressBar->setRange(0,14);
-    progressBar->setValue(0);
+    progressBar->setValue(10);
     progressBar->setTextVisible(false);
 }
 
 void StartWidget::setupConnects(){
 
     //connect the start-button clicked event with methode ...
-    connect(pButtonStart, SIGNAL(clicked()), this, SLOT(fillProgressBar()));
+    connect(pButtonStart, SIGNAL(clicked()), this, SLOT(startProgressBar()));
 }
 
 void StartWidget::styleWidget(){
@@ -79,43 +83,43 @@ void StartWidget::styleWidget(){
     setWindowFlags(Qt::FramelessWindowHint);
 }
 
-void StartWidget::fillProgressBar(){
+void StartWidget::startProgressBar(){
 
+    alertThread->clearError();
+    alertThread->clearWarning();
 
-    /*if(progressBar->value() == 100)
-    {
-        for(int i=100; i>=0; i-=20)
-        {
-            progressBar->setValue(i);
-            this->thread()->sleep(1);
+    if(progressBarTimerisNOTRunning){
 
-        }
-        pButtonAlert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_white.png"));
+        progressBarTimer->start(500);
+        progressBarTimerisNOTRunning = false;
 
     }else{
 
-        for(int i=0; i<=100; i+=20)
-        {
-            progressBar->setValue(i);
-            this->thread()->sleep(1);
+        progressBarTimer->stop();
+        progressBarTimerisNOTRunning = true;
+    }
+}
 
-        }
-        pButtonAlert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_red.png"));
-    }*/
+void StartWidget::fillProgressBar(){
 
-    QThread *thread = new QThread;
-    Alert  *worker = new Alert(pButtonAlert);
-    worker->moveToThread(thread);
-    connect(thread, SIGNAL(started()), worker, SLOT(process()));
-    connect(worker, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(worker, SIGNAL(finished()), worker, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-    thread->start();
+    if(progressfull){
+        progressBar->setValue(progressBar->value() - 1);
+    }else{
+        progressBar->setValue(progressBar->value() + 1);
+    }
+
+    if(progressBar->value() == 14){
+        progressfull = true;
+        alertThread->fireError();
+    }
+    if(progressBar->value() == 0){
+        progressfull = false;
+        alertThread->fireWarning();
+    }
 }
 
 void StartWidget::closeStarCar(){
 
-    //this->close();
     delete this;
 }
 

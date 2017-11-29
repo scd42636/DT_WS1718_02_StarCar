@@ -5,6 +5,11 @@
 #include <QThread>
 #include <QPushButton>
 #include <QTimer>
+#include <QString>
+
+#define WHITE   0
+#define ORANGE  1
+#define RED     2
 
 class Alert : public QObject {
 
@@ -21,6 +26,11 @@ public slots:
     void finishWorker();
     void changeAlertIcon();
 
+    void fireWarning();
+    void fireError();
+    void clearWarning();
+    void clearError();
+
 signals:
 
     void finished();
@@ -29,7 +39,12 @@ signals:
 private:
 
     QPushButton *alert;
-    int         red = 0;
+    int         color = WHITE;
+    bool        errorIsSet = false;
+    bool        warningIsSet = false;
+    bool        lastTimeWhite = true;
+    bool        warningAndErrorIsSet = false;
+    bool        lastTimeOrange = false;
 };
 
 #endif // WORKER_H

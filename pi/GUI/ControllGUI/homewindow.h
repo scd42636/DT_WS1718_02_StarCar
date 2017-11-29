@@ -10,6 +10,9 @@
 #include <QStackedWidget>
 #include <QPushButton>
 #include <QLabel>
+#include <QThread>
+#include "alert.h"
+#include "exitwidget.h"
 
 namespace Ui {
 class HomeWindow;
@@ -27,11 +30,13 @@ public:
 public slots:
     void removeActiveWidget();
 
+    void removeExitWidget();
 protected:
     void addWidgetToMainStackWidget(QWidget *widget);
 
 private slots:
 
+    void showExitWidget();
 private:
 
     // Window
@@ -46,6 +51,7 @@ private:
 
     // Widget
     QWidget         *startWidget;
+    ExitWidget      *exitwidget;
 
     // Button
     QPushButton     *pButtonExit;
@@ -54,10 +60,17 @@ private:
     // Label
     QLabel          *lblHeadline;
 
+    // Timer
+    QTimer          *alertTimer;
+public:
+    // Thread
+    Alert           *alertThread;
+private:
     // Methods
     void generateStartLayout();
     void styleWindow();
     void setupConnects();
+    void createAlertThread();
 };
 
 #endif // HOMEWINDOW_H

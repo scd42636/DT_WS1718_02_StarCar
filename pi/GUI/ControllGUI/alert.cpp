@@ -1,37 +1,93 @@
 #include "alert.h"
 
-Alert::Alert(QPushButton *alert) { // Constructor
-    // you could copy data from constructor arguments to internal variables here.
+Alert::Alert(QPushButton *alert) {
+
     this->alert = alert;
 }
 
-Alert::~Alert() { // Destructor
-    // free resources
+Alert::~Alert() {
+
 }
 
-void Alert::process() { // Process. Start processing data.
+void Alert::process() {
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(changeAlertIcon()));
-    timer->start(300);
 }
 
 void Alert::changeAlertIcon(){
 
-    if(red == 0){
-        alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_white.png"));
-        red = 1;
-    }else if(red == 1){
-        alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_red.png"));
-        red = 0;
+    if(warningAndErrorIsSet){
+
+        if(lastTimeOrange)
+        {
+            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_red.png"));
+            lastTimeOrange = false;
+
+        }else{
+
+            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_orange.png"));
+            lastTimeOrange = true;
+        }
     }else{
-        alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_orange.png"));
-        red = 0;
+
+
+        if(warningIsSet && lastTimeWhite)
+        {
+            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_orange.png"));
+            lastTimeWhite = false;
+
+        }else if(errorIsSet && lastTimeWhite){
+
+            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_red.png"));
+
+            lastTimeWhite = false;
+
+        }else{
+
+            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_white.png"));
+            lastTimeWhite = true;
+        }
     }
 }
 
-void Alert::finishWorker(){
+void Alert::fireWarning(){
 
+    if(warningIsSet == false){
+
+        warningIsSet = true;
+
+        if(errorIsSet == true){
+
+            warningAndErrorIsSet = true;
+        }
+    }
+}
+
+void Alert::fireError(){
+
+    if(errorIsSet == false){
+
+        errorIsSet = true;
+
+        if(warningIsSet){
+
+            warningAndErrorIsSet = true;
+        }
+    }
+}
+
+void Alert::clearWarning(){
+
+    warningIsSet = false;
+    warningAndErrorIsSet = false;
+}
+
+void Alert::clearError(){
+
+    errorIsSet = false;
+    warningAndErrorIsSet = false;
+}
+
+void Alert::finishWorker(){
 
     emit finished();
 }

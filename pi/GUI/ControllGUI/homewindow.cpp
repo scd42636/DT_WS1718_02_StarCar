@@ -1,8 +1,7 @@
 #include "homewindow.h"
 #include "ui_homewindow.h"
 #include "startwidget.h"
-
-
+#include "exitwidget.h"
 
 HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWindow)
 {
@@ -11,7 +10,7 @@ HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWi
     generateStartLayout();
     styleWindow();
     setupConnects();
-
+    createAlertThread();
 }
 
 void HomeWindow::generateStartLayout(){
@@ -37,18 +36,41 @@ void HomeWindow::generateStartLayout(){
 
     centralVBox->addSpacing(5);
 
-    startWidget = new StartWidget(nullptr,this);
-    QWidget *testwidget = new StartWidget();
+    //startWidget = new StartWidget(nullptr,this->alertThread);
 
-    addWidgetToMainStackWidget(startWidget);
+    //QWidget *testwidget = new StartWidget();
+
+    //addWidgetToMainStackWidget(startWidget);
     //addWidgetToMainStackWidget(testwidget);
+
+    exitwidget = new ExitWidget(this);
+    connect(exitwidget,SIGNAL(removeWindowformStack()), this, SLOT(removeExitWidget()));
 }
 
 void HomeWindow::setupConnects(){
 
     // connect exit button to close function -> once the exit-button is clicked the application will close
-    connect(pButtonExit, SIGNAL(clicked(bool)), this, SLOT(removeActiveWidget()));
-    connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(showAlert()));
+    connect(pButtonExit, SIGNAL(clicked(bool)), this, SLOT(showExitWidget()));
+    //connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(showAlert()));
+}
+
+void HomeWindow::createAlertThread(){
+
+    QThread *thread = new QThread;
+    alertThread = new Alert(pButtonAlert);
+    alertThread->moveToThread(thread);
+    connect(thread, SIGNAL(started()), alertThread, SLOT(process()));
+    connect(alertThread, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(alertThread, SIGNAL(finished()), alertThread, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+    thread->start();
+
+    alertTimer = new QTimer(this);
+    connect(alertTimer, SIGNAL(timeout()), alertThread, SLOT(changeAlertIcon()));
+    alertTimer->start(300);
+
+    startWidget = new StartWidget(nullptr,this->alertThread);
+    addWidgetToMainStackWidget(startWidget);
 }
 
 void HomeWindow::styleWindow(){
@@ -89,13 +111,13 @@ void HomeWindow::styleWindow(){
                                "border-radius:  10px;"
                                "border-width:   3px;"
                                "border-color:   black"
-                               "boder-style:    solid}");
+                               "border-style:    solid}");
 
     pButtonAlert->setStyleSheet("QPushButton{"
                                 "border-radius:  10px;"
                                 "border-width:   5px;"
                                 "border-color:   black"
-                                "boder-style:    solid}");
+                                "border-style:    solid}");
 }
 
 void HomeWindow::addWidgetToMainStackWidget (QWidget *widget){
@@ -107,7 +129,17 @@ void HomeWindow::addWidgetToMainStackWidget (QWidget *widget){
 void HomeWindow::removeActiveWidget(){
 
     mainStackedWidget->removeWidget(startWidget);
-    //delete startWidget;
+}
+
+void HomeWindow::showExitWidget(){
+
+    addWidgetToMainStackWidget(exitwidget);
+    mainStackedWidget->setCurrentWidget(exitwidget);
+}
+
+void HomeWindow::removeExitWidget(){
+
+    mainStackedWidget->removeWidget(exitwidget);
 }
 
 HomeWindow::~HomeWindow()

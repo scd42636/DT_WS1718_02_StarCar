@@ -3,14 +3,13 @@
 
 #include <QObject>
 #include <QWidget>
-#include <QLabel>
 #include <QProgressBar>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QObject>
 #include <QHBoxLayout>
-#include <QThread>
 #include <QMainWindow>
+#include <alert.h>
 
 class StartWidget : public QWidget
 {
@@ -18,35 +17,29 @@ class StartWidget : public QWidget
 
 public:
 
-    explicit StartWidget(QWidget *parent = nullptr, QMainWindow *mainwindow = nullptr);
+    explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
 
     ~StartWidget();
 
 private:
 
-    // Label
-    QLabel          *lblHeadline;
-
     // ProgressBar
     QProgressBar    *progressBar;
 
-    // Buttons
-    QPushButton     *pButtonExit;
+    // Button
     QPushButton     *pButtonStart;
-    QPushButton     *pButtonAlert;
 
     // Vertical-Box
     QVBoxLayout     *vBox1;
 
-    // Horizontal-Box
-    QHBoxLayout     *hBox1;
+    //Timer
+    QTimer          *progressBarTimer;
 
-    // MainWindow
-    QMainWindow     *MainWindow;
+    // Thread
+    Alert           *alertThread;
 
     // Methodes
     void generateStartLayout();
-
     void setupUIElements();
     void setupConnects();
     void styleWidget();
@@ -58,9 +51,10 @@ public slots:
 
 
 private slots:
-    void fillProgressBar();
+    void startProgressBar();
     void closeStarCar();
     void showAlert();
+    void fillProgressBar();
 };
 
 #endif // STARTWIDGET_H

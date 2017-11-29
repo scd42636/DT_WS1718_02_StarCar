@@ -27,12 +27,14 @@ SOURCES += main.cpp\
     homewindow.cpp \
     startwidget.cpp \
     alert.cpp \
-    alertwidget.cpp
+    alertwidget.cpp \
+    exitwidget.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
     alert.h \
-    alertwidget.h
+    alertwidget.h \
+    exitwidget.h
 
 FORMS    += homewindow.ui
 
