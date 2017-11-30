@@ -13,6 +13,8 @@ public:
     explicit ExitWidget(QWidget *parent = nullptr);
 
     ~ExitWidget(){
+
+    static int const EXIT_CODE_REBOOT = -123456789;
     }
 
 private:

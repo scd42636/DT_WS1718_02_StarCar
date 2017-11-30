@@ -14,34 +14,54 @@ void ExitWidget::generateLayout(){
     pButtonRestart = new QPushButton();
     pButtonShutdown = new QPushButton();
 
-    vBox1->addSpacing(83);
+    //vBox1->addSpacing(50);
     vBox1->addWidget(pButtonBack);
     vBox1->addSpacing(5);
     vBox1->addWidget(pButtonRestart);
     vBox1->addSpacing(5);
     vBox1->addWidget(pButtonShutdown);
-    vBox1->addSpacing(83);
+    //vBox1->addSpacing(50);
 }
 
 void ExitWidget::generateStyle(){
 
-    /*pButtonBack->setStyleSheet("QPushButton { "
-                               "border-radius:  10px;"
-                               "border-width:   3px;"
-                               "border-color:   black;"
-                               "border-style:   solid; }");*/
+    vBox1->setAlignment(Qt::AlignHCenter);
 
-    pButtonRestart->setStyleSheet("QPushButton { "
-                               "border-radius:  10px;"
-                               "border-width:   3px;"
-                               "border-color:   black"
-                               "border-style:   solid }");
+    pButtonBack->setText("Zurück");
+    pButtonBack->setObjectName("QPushButton1");
 
-    pButtonShutdown->setStyleSheet("QPushButton { "
-                               "border-radius:  10px;"
-                               "border-width:   3px;"
-                               "border-color:   black"
-                               "border-style:   solid }");
+    pButtonRestart->setText("Neustart");
+    pButtonShutdown->setText("Beenden");
+
+    pButtonBack->setMinimumWidth(160);
+    pButtonBack->setMinimumHeight(30);
+    pButtonRestart->setMaximumWidth(160);
+    pButtonRestart->setMinimumHeight(30);
+    pButtonShutdown->setMaximumWidth(160);
+    pButtonShutdown->setMinimumHeight(30);
+
+
+
+    pButtonBack->setStyleSheet("QPushButton{"
+                               "color: green;"
+                               "font-family: TimesNewRoman;"
+                               "font-style: normal;"
+                               "font-size: 10pt;"
+                               "font-weight: bold;}");
+
+    pButtonRestart->setStyleSheet("QPushButton{"
+                               "color: green;"
+                               "font-family: TimesNewRoman;"
+                               "font-style: normal;"
+                               "font-size: 10pt;"
+                               "font-weight: bold;}");
+
+    pButtonShutdown->setStyleSheet("QPushButton{"
+                               "color: green;"
+                               "font-family: TimesNewRoman;"
+                               "font-style: normal;"
+                               "font-size: 10pt;"
+                               "font-weight: bold;}");
 }
 
 void ExitWidget::setupConnect(){
@@ -58,10 +78,9 @@ void ExitWidget::goBack(){
 
 void ExitWidget::restartPi(){
 
-
 }
 
 void ExitWidget::shutdownPi(){
 
-
+    this->parentWidget()->parentWidget()->parentWidget()->close();
 }

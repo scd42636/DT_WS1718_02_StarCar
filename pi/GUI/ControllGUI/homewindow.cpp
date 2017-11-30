@@ -42,9 +42,6 @@ void HomeWindow::generateStartLayout(){
 
     //addWidgetToMainStackWidget(startWidget);
     //addWidgetToMainStackWidget(testwidget);
-
-    exitwidget = new ExitWidget(this);
-    connect(exitwidget,SIGNAL(removeWindowformStack()), this, SLOT(removeExitWidget()));
 }
 
 void HomeWindow::setupConnects(){
@@ -133,6 +130,8 @@ void HomeWindow::removeActiveWidget(){
 
 void HomeWindow::showExitWidget(){
 
+    exitwidget = new ExitWidget(this);
+    connect(exitwidget,SIGNAL(removeWindowformStack()), this, SLOT(removeExitWidget()));
     addWidgetToMainStackWidget(exitwidget);
     mainStackedWidget->setCurrentWidget(exitwidget);
 }
