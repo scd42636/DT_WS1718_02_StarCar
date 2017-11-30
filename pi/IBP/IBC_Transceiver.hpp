@@ -73,8 +73,8 @@ public:
 	void removereceiver(Inbox& i, uint8_t id);
 
 private:
-	void recv_intern(uint8_t*, uint8_t)const;
-	void send_intern(uint8_t*, uint8_t)const;
+	void recv_intern(uint8_t*, uint8_t);
+	void send_intern(uint8_t*, uint8_t);
 
 	uint8_t sizehash(uint8_t size) const;
 	uint8_t datahash(uint8_t * data, uint8_t length, uint8_t in = 0) const;

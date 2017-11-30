@@ -38,21 +38,23 @@ Transceiver::~Transceiver()
 
 void Transceiver::runworker(bool running)
 {
-	//set flag accordingly
-	this->running = running;
-	
-	if(running)
+	if(this->running == running) return; //exactly nothing will happen
+	if(!this->running && running)
 	{
-		//start thread
+		//we start the thread
+		this->running = true;
 		worker = std::thread(&Transceiver::body, this);
+		return;
 	}
-	else
+	if(this->running && !running)
 	{
-		//stop thread (flag will cause thread to exit loop)
-		//we will then simply let it run out
+		//we forcefully stop the thread
+		//by causing its execution to come to an end
+		this->running = false;
+		//and detaching it from us so it can safely run out
 		worker.detach();
+		return;
 	}
-
 }
 
 
@@ -213,12 +215,12 @@ void Transceiver::removereceiver(Inbox& i, uint8_t id)
 	receivers[id].erase(&i);
 }
 
-void Transceiver::recv_intern(uint8_t * data, uint8_t torecv) const
+void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
 {
 	while(torecv > 0)
 	{
 		unsigned int received = 0;
-		received = s.recv(data, torecv);
+		received = s.recv(reinterpret_cast<char*>(data),torecv);
 		if(!received)
 		{
 			std::this_thread::sleep_for(IBC_TRANSCEIVER_IDLE_TIME);
@@ -228,14 +230,14 @@ void Transceiver::recv_intern(uint8_t * data, uint8_t torecv) const
 	}
 }
 
-void Transceiver::send_intern(uint8_t* data, uint8_t tosend) const
+void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 {
 		//send data
 		unsigned int sent = 0;
 		while(tosend  > 0)
 		{
 			sent = 0;
-			sent = s.send(data , tosend);														//send until everything is through
+			sent = s.send(reinterpret_cast<char*>(data) ,tosend);														//send until everything is through
 			if(!sent)
 			{
 				std::this_thread::sleep_for(IBC_TRANSCEIVER_IDLE_TIME);
