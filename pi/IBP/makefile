@@ -4,8 +4,8 @@ CXX=g++
 CXXFLAGS=-std=c++14
 
 
-
-
+IBCEmu: IBC.o IBC_Inbox.o IBC_Packet.o IBC_Rule.o IBC_Transceiver.o Serial_emulated.o IBC.test.o
+	$(LINK.cpp) -D IBC_EMULATED $^ -o $@ 
 IBCRuleTest: IBC_Rule.o IBC_Rule.test.o
 	$(LINK.cpp)  $^ -o $@
 

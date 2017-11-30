@@ -9,7 +9,12 @@
 #include <set>
 #include <functional>
 
-#include "Serial.hpp"
+#ifndef IBC_EMULATED
+	#include "Serial.hpp"
+#else
+	#include "Serial_emulated.hpp"
+#endif
+
 #include "IBC_Packet.hpp"
 #include "IBC_Rule.hpp"
 
