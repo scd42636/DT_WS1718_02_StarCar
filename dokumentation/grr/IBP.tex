@@ -10,47 +10,64 @@ Innerhalb dieses Projektes soll es die Kommunikation über eine serielle USB Sch
 \large 
 Legende:\\
 \normalsize
-\begin{tabular}{l r}
-	MID &	Identifikationsnummer der Anfrage\\
-	EID &	Nummer des Fehlers bzgl. MID\\
-	SIZE&	Größe einer dynamischen Payload, nicht existent bei statisch vereinbarter Übertragung!\\
-	STAT&	Status der Übertragung;Protokollinterne Fehlererkennung\\
-	HH	&	Hash des Headers\\
-	SH	&	Hash der dynamischen Größe (unwichtig bei statisch)\\
-	DH	&	Hash der Payload\\
-	Payload & Nutzdaten\\
+\begin{center}
+\small
+\begin{tabular}{l l}
+MID &	Identifikationsnummer der Anfrage\\
+EID &	Nummer des Fehlers bzgl. MID\\
+SIZE&	Größe einer dynamischen Payload, nicht existent bei statisch vereinbarter Übertragung!\\
+STAT&	Status der Übertragung;Protokollinterne Fehlererkennung\\
+HH	&	Hash des Headers\\
+SH	&	Hash der dynamischen Größe (unwichtig bei statisch)\\
+DH	&	Hash der Payload\\
+Payload & Nutzdaten\\
 \end{tabular}
+\end{center}
+\normalsize
 
 \large 
 Request\\
 \normalsize
 
 \begin{center}
-\begin{bytefield}[16]
-	\bitheader{0,8,12,14,16}\\
-	\bitbox{8}{MID} & \bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH} \\
-	\bitbox{8}{SIZE} & \bitbox[lrt]{8}{}\\
-	\wordbox[lr]{1}{payload}\\
+\begin{bytefield}{16}
+	\bitheader{0,7,8,11,12,13,14,15,16}\\
+	\begin{leftwordgroup}{Header}
+		\bitbox{8}{MID} & \bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH}
+	\end{leftwordgroup}\\
+	\bitbox{8}{SIZE} & \bitbox[lt]{8}{}\\
+	\wordbox[rlt]{1}{Payload}\\
 	\skippedwords\\
-	\wordbox[lrb]{1}\\
-	\bitbox{8}{0} & \bitbox{8}{DH}
+	\wordbox[rlb]{1}{}\\
+	\begin{leftwordgroup}{Footer}
+		\bitbox{8}{DH} & \bitbox[l]{8}{}
+	\end{leftwordgroup}\\
 \end{bytefield}
 \end{center}
 
-%\large Response\\
-%\normalsize
-%\begin{center}
-%\begin{bytefield}[64]
-	%\bitheader{0-63}\\
-	%\bitbox{4}{status} & \bitbox{2}{sizehash} & \bitbox{2}{headhash} & \bitbox{8}{optional:size} & \bitbox {40} {Payload} & \bitbox {8} {datahash}
-%\end{bytefield}
-%\end{center}
-%%
-%\LARGE Negative Response\\
-%\normalsize
-%\begin{center}
-%\begin{bytefield}[64]
-	%\bitheader{0-63}\\
-	%\bitbox{4}{status} & \bitbox{2}{sizehash} & \bitbox{2}{hh} & \bitbox{8}{MID} & \bitbox {8}{EID}
-%\end{bytefield}
-%\end{center}
+\large Response\\
+\normalsize
+\begin{center}
+	\begin{bytefield}{16}
+	\bitheader{0,3,4,5,6,7,8,16}\\
+	\begin{leftwordgroup}{Header}
+		\bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH} & \bitbox[l]{8}{}
+	\end{leftwordgroup}\\
+		\bitbox{8}{SIZE} & \bitbox[lb]{8}{}\\
+	\wordbox[rl]{1}{Payload}\\
+	\skippedwords\\
+	\wordbox[rlb]{1}{}\\
+	\begin{leftwordgroup}{Footer}
+		\bitbox{8}{DH} & \bitbox[l]{8}{}
+	\end{leftwordgroup}\\
+\end{bytefield}
+\end{center}
+
+\large Negative Response\\
+\normalsize
+\begin{center}
+	\begin{bytefield}{16}
+	\bitheader{0-63}\\
+	\bitbox{4}{status} & \bitbox{2}{sizehash} & \bitbox{2}{hh} & \bitbox{8}{MID} & \bitbox {8}{EID}
+\end{bytefield}
+\end{center}
