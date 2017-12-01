@@ -1,100 +1,56 @@
 
-Das \textbf{Inter Board Protocoll} dient als Kommunikationsschnittstelle zwischen den auf den Fahrzeug befindlichen Controllern, dem Arduino UNO und dem Raspberry Pi 3. Das Protokoll soll folgende Anforderungen erfüllen:
+\section{Serial Protocoll - IBP}
+Das \textbf{Inter Board Protocoll (IBP)} dient als Vereinbarung von Kommunikationsregeln über eine Kommunikationsschnittstelle.
+Innerhalb dieses Projektes soll es die Kommunikation über eine serielle USB Schnittstelle erleichtern.
 
-\begin{itemize}
+\subsection{Konzepte}
 
-\item Der Kontext, d.h. die Zugehörigkeit, der Nachricht soll erkennbar sein.
-\item Eine Option mit dynamischer Nachrichtengröße soll vorhanden sein.
-\item Für einige Nachrichten muss eine Echtzeitbegünstigende Option bestehen.
-\item Die fehlerfreie Übertragung der Nachricht soll gewährleistet sein.
+\subsection{Aufbau}
 
-\end{itemize}
-
-\LARGE Überlegungen : 
+\large 
+Legende:\\
 \normalsize
-Im folgenden sollen Überlegungen angestellt werden, wie diesen Anforderungen begegnet werden kann:
+\begin{tabular}{l r}
+	MID &	Identifikationsnummer der Anfrage\\
+	EID &	Nummer des Fehlers bzgl. MID\\
+	SIZE&	Größe einer dynamischen Payload, nicht existent bei statisch vereinbarter Übertragung!\\
+	STAT&	Status der Übertragung;Protokollinterne Fehlererkennung\\
+	HH	&	Hash des Headers\\
+	SH	&	Hash der dynamischen Größe (unwichtig bei statisch)\\
+	DH	&	Hash der Payload\\
+	Payload & Nutzdaten\\
+\end{tabular}
 
-\Large Kontext \\
+\large 
+Request\\
 \normalsize
-Der Kontext, d.h. die Zugehörigkeit einer Nachricht kann durch eine Identifikationsnummer erreicht werden.
 
-Zur Wahl der Identifikationsnummer: Eine dynamisch gewählte Identifikationsnummer ist in diesem Projekt nicht angemessen. Gründe :
-
-\begin{itemize}
-\item Anforderungen : Die Anforderungen an das Protokoll ändern sich zur Laufzeit nicht.
-\item Performance : eine dynamische ID für jede Nachricht zu vereinbaren braucht Rechenzeit.
-\end{itemize}
-
-Aus diesem Grund wird die Identifikationsnummer statisch vergeben. Eine Liste der Nummern mit zugehörigen Kontexten ist beiden Controllern vor Inbetriebnahme bekanntzugeben. (File, Hartkodierung).
-
-Einschätzung der Menge von verschiedenen Nachrichten :
-256 verschiedene Nachrichtenarten sollten ausreichend sein für die Zwecke diese Projektes. Eine nachträgliche Erweiterung ist möglich, wird aber vor allem wegen der Umgänglichkeit der Zahl ( 256 verschiedene Nachrichtenids => Nachtrichtenid-Größe = 8Bit oder 1Byte ) ersteinmal vermieden.
-
-\Large Nachrichtengröße
-\normalsize
-Die Nachrichtengröße wird hauptsächlich statisch an eine NachrichtenID übergeben, d.h. für eine Übertrag der Nachricht mit einer ID x ist eine statische Größe s bekannt.
-
-Eine dynamische Nachrichtengröße kann innerhalb dieses statischen Protokolls erreicht werden, indem die dynamische Art der Nachricht ID-gebunden wird. Dadurch ist die dynamische Natur einer Nachricht beim Erfassen der ID bekannt. Eine Nachrichtengröße muss bei diesem Verfahren direkt nach der ID mitgeführt werden.
-
-Maximale Dynamische Nachrichtengröße : Diese hängt hauptsächlich von der Übertragungsrate der Übertragungsmethode ab (in unserem Fall serial USB) zu diesem Zeitpunkt ist darüber noch nichts bekannt. Nach dem Test der Übertragungsrate kann dazu mehr ausgesagt werden. Diese Überlegung ist dennoch wichtig um den nächsten Punkt gewährleisten zu können.
-
-\Large Echtzeitoption
-\normalsize
-Einzelne Nachrichtenids können durch bevorzugte Behandlung echtzeitbegünstigend behandelt werden. Die Vereinbarung dieser Eigenschaft kann wiederum statisch durchgeführt werden.
-
-Mögliche Strategien:
-\begin{itemize}
-	\item Hinterlegung einer Priorität
-	\item Wahl der Priorität anhand der ID (kleiner ist wichtiger "a la CAN")
-\end{itemize}
-
-\Large Fehlerfreie Übertragung
-\normalsize
-Realisiert durch redundancy checks. Beispiele : Parity Bits, CRC Checksum
-
-Parity Bit:
-pro:
-\begin{itemize}
-	\item einfach zu implementieren
-	\item einfach zu berechnen
-	\item idealerweise in Hardware => no computational overhead
-\end{itemize}
-con:
-\begin{itemize}
-	\item nicht besonders sicher (doppelte Fehler werden nicht erkannt)
-\end{itemize}
-
-CRC :
-pro:
-\begin{itemize}
-	\item sicherer als andere Methoden
-\end{itemize}
-con:
-\begin{itemize}
-	unter Umständen ist zur Realisierung mehr Code nötig, woraus folgt
-	\item mehr Aufwand
-	\item höhere Laufzeit
-\end{itemize}
-
-hash:
-pro:
-\begin{itemize}
-	\item einfacher zu implementieren
-	\item variabel implementierbar
-\end{itemize}
-con:
-\begin{itemize}
-	\item Braucht möglicherweise viel Rechenzeit (kommt auf die Komplexität der hash-Funktion an)
-\end{itemize}
-
-\LARGE Header :
-\normalsize
-\begin{itemize}
-
-\begin{bytefield}[bitwidth=1.1em][64]
-	\bitheader{0-31}
-	\bitbox{8}{Message-ID} & \bitbox{16}{data / optional:size} & \bitbox {40} {data} & \bitbox{8}{hash}
+\begin{center}
+\begin{bytefield}[16]
+	\bitheader{0,8,12,14,16}\\
+	\bitbox{8}{MID} & \bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH} \\
+	\bitbox{8}{SIZE} & \bitbox[lrt]{8}{}\\
+	\wordbox[lr]{1}{payload}\\
+	\skippedwords\\
+	\wordbox[lrb]{1}\\
+	\bitbox{8}{0} & \bitbox{8}{DH}
 \end{bytefield}
+\end{center}
 
-\end{itemize}
-
+%\large Response\\
+%\normalsize
+%\begin{center}
+%\begin{bytefield}[64]
+	%\bitheader{0-63}\\
+	%\bitbox{4}{status} & \bitbox{2}{sizehash} & \bitbox{2}{headhash} & \bitbox{8}{optional:size} & \bitbox {40} {Payload} & \bitbox {8} {datahash}
+%\end{bytefield}
+%\end{center}
+%%
+%\LARGE Negative Response\\
+%\normalsize
+%\begin{center}
+%\begin{bytefield}[64]
+	%\bitheader{0-63}\\
+	%\bitbox{4}{status} & \bitbox{2}{sizehash} & \bitbox{2}{hh} & \bitbox{8}{MID} & \bitbox {8}{EID}
+%\end{bytefield}
+%\end{center}
