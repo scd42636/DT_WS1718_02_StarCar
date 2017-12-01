@@ -9,7 +9,9 @@ IBC::IBC(std::string device , std::string configfile)
 :
 	rule(configfile),
 	t(device, rule)
-{}
+{
+	t.runworker();
+}
 
 void IBC::send(Packet& p)
 {

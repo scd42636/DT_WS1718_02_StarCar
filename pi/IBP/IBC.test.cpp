@@ -3,8 +3,24 @@
 #include "IBC_Packet.hpp"
 
 #include <cstdint>
+#include <exception>
+#include <iostream>
+
+int run();
 
 int main (int argc , char** argv)
+{
+	try{
+	run();
+	}
+	catch(std::exception e)
+	{
+		std::cout << e.what()<<'\n';
+	}
+	return 0;
+}
+
+int run ()
 {
 	IBC ibc("/dev/ttyUSB0", "IBC_config.cfg");
 
@@ -24,6 +40,7 @@ int main (int argc , char** argv)
 	Packet p3(254, ibc.requestsize(254), (uint8_t*) ms3);
 	ibc.send(p3);
 
+	if(!i1.size() || ! i2.size()) std::cerr << "FOOOOOOOOOOOOL !";
 
 	return 0;
 }
