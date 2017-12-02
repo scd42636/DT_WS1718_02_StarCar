@@ -33,6 +33,8 @@
 		void listen (uint8_t id);
 		void listen (std::vector<uint8_t> ids);
 
+		const std::set<uint8_t>& listeningto()const;
+
 		void mute (uint8_t id);
 		void mute (std::vector<uint8_t> ids);
 	};

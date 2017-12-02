@@ -72,6 +72,11 @@ void Inbox::listen(std::vector<uint8_t> ids)
 	}
 }
 
+const std::set<uint8_t>& Inbox::listeningto() const
+{
+	return listening;
+}
+
 void Inbox::mute(uint8_t id)
 {
 	t->removereceiver(*this, id);

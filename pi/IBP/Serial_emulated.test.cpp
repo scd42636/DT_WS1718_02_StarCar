@@ -21,7 +21,7 @@ int main (int argc , char** argv)
 
 	char buffer [256];
 
-	s.recv(buffer, 256);
+	std::cout << s.recv(buffer, 256) << '\n';
 
 	std::cout << std::hex;
 

@@ -11,6 +11,9 @@ IBCEmu: IBC.o IBC_Inbox.o IBC_Packet.o IBC_Rule.o IBC_Transceiver.o Serial_emula
 IBCRuleTest: IBC_Rule.o IBC_Rule.test.o
 	$(LINK.cpp) $^ $(LDLIBS) -o $@ 
 
+PacketTest : IBC_Packet.o IBC_Packet.test.o
+	$(LINK.cpp) $^ $(LDLIBS) -o $@ 
+
 
 SerialEmulatedTest: Serial_emulated.o Serial_emulated.test.o
 	$(LINK.cpp) $^ $(LDLIBS) -o $@ 
@@ -26,5 +29,7 @@ clean:
 	-rm SerialTest
 	-rm SerialEmulatedTest
 	-rm IBCRuleTest
+	-rm IBCEmu
+	-rm PacketTest
 
 .PHONY:clean

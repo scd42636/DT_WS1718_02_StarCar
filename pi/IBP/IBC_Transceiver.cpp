@@ -128,7 +128,6 @@ void Transceiver::body()
 		req_buffer[1] |= (sizehash(req_contentsize) << 2);
 		req_buffer[1] |= headhash_request(req_buffer);
 	
-
 		if(req_dynamic)
 		{
 			req_buffer[2] = req_contentsize;
@@ -152,14 +151,14 @@ void Transceiver::body()
 		recv_intern(res_buffer, 1); //response header 1 byte long
 		
 		//check header hash
-		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03)) //TODO ERROR HANDLING WITH STATUS;
+		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03)) {}//TODO ERROR HANDLING WITH STATUS;
 
-		if(rule.answersize(res_buffer[0]) == IBC_RULE_SIZE_DYNAMIC)
+		if(rule.answersize(next.id()) == IBC_RULE_SIZE_DYNAMIC)
 		{
 			res_dynamic = true;
 			recv_intern(res_buffer+1, 1);		//recv size
 			//check se size hash
-			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 4)) //TODO ERRORHANDLING WRONG SIZE !
+			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 4)){} //TODO ERRORHANDLING WRONG SIZE !
 			res_content = res_buffer + 2;
 			res_contentsize = res_buffer[1];
 			res_size = res_contentsize + 3;
@@ -168,20 +167,19 @@ void Transceiver::body()
 		{
 			res_dynamic = false;
 			res_content = res_buffer +1;
-			res_contentsize = rule.answersize(res_buffer[0]);
+			res_contentsize = rule.answersize(next.id());
 			res_size = res_contentsize + 2;
 		}
-		recv_intern(res_buffer+2, res_contentsize + 1); //recv content and its hash
+
+		recv_intern(res_content, res_contentsize + 1); //recv content and its hash
 
 		uint8_t res_datahash = res_buffer[res_size-1];
-		if(datahash(res_content, res_contentsize) != res_datahash) //TODO ERROR HADNLING DATA FAILURE !
-		{
+		if(datahash(res_content, res_contentsize) != res_datahash) {}//TODO ERROR HADNLING DATA FAILURE !
 				
-		}
 
 		//construct and store the answer packet
-		std::shared_ptr<const Packet> answer (new Packet (res_buffer[0], res_contentsize, res_content));
-		
+		std::shared_ptr<const Packet> answer (new Packet (next.id(), res_contentsize, res_content));
+
 		store(answer);
 
 		//this request has been handled, so we erase it from the queue
@@ -193,7 +191,7 @@ void Transceiver::body()
 
 void Transceiver::padd(uint8_t * begin, uint8_t paddinglength)
 {
-	for( ; begin <= begin+paddinglength; begin++)
+	for( ; begin < begin+paddinglength; begin++)
 	{
 		*begin = IBP_PADDING;
 	}

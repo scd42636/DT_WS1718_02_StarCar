@@ -58,11 +58,7 @@ int Serial::send(char * data , int size)
 				//hash
 				recvbuff.push_back(0);
 	
-				std::cout << "Recvbuffer now : \n" << std::hex;
-				for (auto e : recvbuff) std::cout << (uint8_t) e;
-				std::cout << std::dec << '\n';
-	
-				//we sent this stuff and received a response at this point so away with it
+								//we sent this stuff and received a response at this point so away with it
 				sendbuff.erase(sendbuff.begin(), sendbuff.begin()+7);
 
 			break;
@@ -97,8 +93,6 @@ int Serial::send(char * data , int size)
 					stop = true;
 					break;
 				}
-	
-	
 				//status
 				recvbuff.push_back(0);
 				//size

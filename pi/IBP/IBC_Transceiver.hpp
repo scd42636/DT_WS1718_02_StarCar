@@ -54,6 +54,8 @@ public:
 	Transceiver(std::string device,const Rule & rule);
 	~Transceiver();
 
+	Transceiver(const Transceiver&) = delete;
+	Transceiver(Transceiver&&) = delete;
 	/**
 	 * @brief Starts the worker thread for sending and receiving
 	 *
