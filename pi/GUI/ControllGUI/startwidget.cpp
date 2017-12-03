@@ -1,6 +1,7 @@
 #include "startwidget.h"
 #include "homewindow.h"
 #include "alert.h"
+#include "pathsandconstans.h"
 
 bool progressfull = false;
 bool progressBarTimerisNOTRunning = true;
@@ -23,7 +24,7 @@ void StartWidget::generateStartLayout(){
 
     // Generate needed UI-Elements
     progressBar = new QProgressBar();
-    pButtonStart = new QPushButton(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/start.png"),"");
+    pButtonStart = new QPushButton(QIcon(startImage),"");
 
     // Add all UI-Elements to the layout
     vBox1->addWidget(pButtonStart,0,Qt::AlignHCenter);
@@ -85,7 +86,9 @@ void StartWidget::styleWidget(){
 
 void StartWidget::startProgressBar(){
 
-    alertThread->clearError();
+    emit showOperationMode();
+
+    /*alertThread->clearError();
     alertThread->clearWarning();
 
     if(progressBarTimerisNOTRunning){
@@ -97,7 +100,7 @@ void StartWidget::startProgressBar(){
 
         progressBarTimer->stop();
         progressBarTimerisNOTRunning = true;
-    }
+    }*/
 }
 
 void StartWidget::fillProgressBar(){
@@ -116,6 +119,7 @@ void StartWidget::fillProgressBar(){
         progressfull = false;
         alertThread->fireWarning();
     }
+
 }
 
 void StartWidget::closeStarCar(){

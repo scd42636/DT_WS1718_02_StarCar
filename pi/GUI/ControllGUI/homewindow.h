@@ -12,7 +12,10 @@
 #include <QLabel>
 #include <QThread>
 #include "alert.h"
+#include "startwidget.h"
 #include "exitwidget.h"
+#include "alertwidget.h"
+#include "operationmodewidget.h"
 
 namespace Ui {
 class HomeWindow;
@@ -26,17 +29,23 @@ public:
     explicit HomeWindow(QWidget *parent = 0);
     ~HomeWindow();
 
-
 public slots:
-    void removeActiveWidget();
 
+    void removeActiveWidget();
     void removeExitWidget();
+    void removeAlertWidget();
+    void removeOperationModeWidget();
+
 protected:
+
     void addWidgetToMainStackWidget(QWidget *widget);
 
 private slots:
 
     void showExitWidget();
+    void showAlertWidget();
+    void showOperationModeWidget();
+
 private:
 
     // Window
@@ -50,8 +59,10 @@ private:
     QStackedWidget  *mainStackedWidget;
 
     // Widget
-    QWidget         *startWidget;
-    ExitWidget      *exitwidget;
+    QWidget             *startWidget;
+    ExitWidget          *exitWidget;
+    AlertWidget         *alertWidget;
+    OperationModeWidget *operationModeWidget;
 
     // Button
     QPushButton     *pButtonExit;
@@ -62,13 +73,17 @@ private:
 
     // Timer
     QTimer          *alertTimer;
+
 public:
+
     // Thread
     Alert           *alertThread;
+
 private:
+
     // Methods
-    void generateStartLayout();
-    void styleWindow();
+    void generateLayout();
+    void generateStyle();
     void setupConnects();
     void createAlertThread();
 };

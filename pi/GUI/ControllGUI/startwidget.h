@@ -46,9 +46,10 @@ private:
 
 signals:
 
+    void showOperationMode();
+    void removeWindowformStack();
+
 public slots:
-
-
 
 private slots:
     void startProgressBar();

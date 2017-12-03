@@ -28,13 +28,20 @@ SOURCES += main.cpp\
     startwidget.cpp \
     alert.cpp \
     alertwidget.cpp \
-    exitwidget.cpp
+    exitwidget.cpp \
+    operationmodewidget.cpp \
+    manualmode.cpp \
+    automaticmode.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
     alert.h \
     alertwidget.h \
-    exitwidget.h
+    exitwidget.h \
+    pathsandconstans.h \
+    operationmodewidget.h \
+    manualmode.h \
+    automaticmode.h
 
 FORMS    += homewindow.ui
 

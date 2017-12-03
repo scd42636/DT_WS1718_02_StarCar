@@ -1,4 +1,5 @@
 #include "alert.h"
+#include "pathsandconstans.h"
 
 Alert::Alert(QPushButton *alert) {
 
@@ -19,12 +20,12 @@ void Alert::changeAlertIcon(){
 
         if(lastTimeOrange)
         {
-            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_red.png"));
+            alert->setIcon(QIcon(errorImage));
             lastTimeOrange = false;
 
         }else{
 
-            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_orange.png"));
+            alert->setIcon(QIcon(warningImage));
             lastTimeOrange = true;
         }
     }else{
@@ -32,18 +33,18 @@ void Alert::changeAlertIcon(){
 
         if(warningIsSet && lastTimeWhite)
         {
-            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_orange.png"));
+            alert->setIcon(QIcon(warningImage));
             lastTimeWhite = false;
 
         }else if(errorIsSet && lastTimeWhite){
 
-            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_red.png"));
+            alert->setIcon(QIcon(errorImage));
 
             lastTimeWhite = false;
 
         }else{
 
-            alert->setIcon(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_white.png"));
+            alert->setIcon(QIcon(whiteWarningImage));
             lastTimeWhite = true;
         }
     }

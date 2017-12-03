@@ -1,25 +1,23 @@
 #include "homewindow.h"
 #include "ui_homewindow.h"
-#include "startwidget.h"
-#include "exitwidget.h"
+#include "pathsandconstans.h"
 
 HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWindow)
 {
-
     ui->setupUi(this);
-    generateStartLayout();
-    styleWindow();
+    generateLayout();
+    generateStyle();
     setupConnects();
     createAlertThread();
 }
 
-void HomeWindow::generateStartLayout(){
+void HomeWindow::generateLayout(){
 
     centralVBox         = new QVBoxLayout(ui->centralWidget);
     hBox1               = new QHBoxLayout();
     lblHeadline         = new QLabel();
-    pButtonAlert        = new QPushButton(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/alert_green.png"),"");
-    pButtonExit         = new QPushButton(QIcon("C:/Users/Flo/Desktop/DT_WS1718_02_StarCar/pi/GUI/ControllGUI/Pics/exit.png"),"");
+    pButtonAlert        = new QPushButton(QIcon(whiteWarningImage),"");
+    pButtonExit         = new QPushButton(QIcon(exitImage),"");
 
     mainStackedWidget   = new QStackedWidget();
 
@@ -35,20 +33,13 @@ void HomeWindow::generateStartLayout(){
     hBox1->addSpacing(5);
 
     centralVBox->addSpacing(5);
-
-    //startWidget = new StartWidget(nullptr,this->alertThread);
-
-    //QWidget *testwidget = new StartWidget();
-
-    //addWidgetToMainStackWidget(startWidget);
-    //addWidgetToMainStackWidget(testwidget);
 }
 
 void HomeWindow::setupConnects(){
 
     // connect exit button to close function -> once the exit-button is clicked the application will close
     connect(pButtonExit, SIGNAL(clicked(bool)), this, SLOT(showExitWidget()));
-    //connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(showAlert()));
+    connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(showAlertWidget()));
 }
 
 void HomeWindow::createAlertThread(){
@@ -67,10 +58,11 @@ void HomeWindow::createAlertThread(){
     alertTimer->start(300);
 
     startWidget = new StartWidget(nullptr,this->alertThread);
+    connect(startWidget,SIGNAL(showOperationMode()),SLOT(showOperationModeWidget()));
     addWidgetToMainStackWidget(startWidget);
 }
 
-void HomeWindow::styleWindow(){
+void HomeWindow::generateStyle(){
 
 /********************************Margins******************************************/
 
@@ -128,17 +120,43 @@ void HomeWindow::removeActiveWidget(){
     mainStackedWidget->removeWidget(startWidget);
 }
 
+void HomeWindow::showOperationModeWidget(){
+
+    operationModeWidget = new OperationModeWidget(this);
+    connect(operationModeWidget,SIGNAL(removeWindowformStack()),this,SLOT(removeOperationModeWidget()));
+    addWidgetToMainStackWidget(operationModeWidget);
+    mainStackedWidget->setCurrentWidget(operationModeWidget);
+}
+
+void HomeWindow::removeOperationModeWidget(){
+
+    mainStackedWidget->removeWidget(operationModeWidget);
+}
+
 void HomeWindow::showExitWidget(){
 
-    exitwidget = new ExitWidget(this);
-    connect(exitwidget,SIGNAL(removeWindowformStack()), this, SLOT(removeExitWidget()));
-    addWidgetToMainStackWidget(exitwidget);
-    mainStackedWidget->setCurrentWidget(exitwidget);
+    exitWidget = new ExitWidget(this);
+    connect(exitWidget,SIGNAL(removeWindowformStack()), this, SLOT(removeExitWidget()));
+    addWidgetToMainStackWidget(exitWidget);
+    mainStackedWidget->setCurrentWidget(exitWidget);
 }
 
 void HomeWindow::removeExitWidget(){
 
-    mainStackedWidget->removeWidget(exitwidget);
+    mainStackedWidget->removeWidget(exitWidget);
+}
+
+void HomeWindow::showAlertWidget(){
+
+    alertWidget = new AlertWidget(this);
+    connect(alertWidget,SIGNAL(removeWindowformStack()),this,SLOT(removeAlertWidget()));
+    addWidgetToMainStackWidget(alertWidget);
+    mainStackedWidget->setCurrentWidget(alertWidget);
+}
+
+void HomeWindow::removeAlertWidget(){
+
+    mainStackedWidget->removeWidget(alertWidget);
 }
 
 HomeWindow::~HomeWindow()

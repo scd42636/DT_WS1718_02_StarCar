@@ -14,13 +14,11 @@ void ExitWidget::generateLayout(){
     pButtonRestart = new QPushButton();
     pButtonShutdown = new QPushButton();
 
-    //vBox1->addSpacing(50);
     vBox1->addWidget(pButtonBack);
     vBox1->addSpacing(5);
     vBox1->addWidget(pButtonRestart);
     vBox1->addSpacing(5);
     vBox1->addWidget(pButtonShutdown);
-    //vBox1->addSpacing(50);
 }
 
 void ExitWidget::generateStyle(){
@@ -40,28 +38,12 @@ void ExitWidget::generateStyle(){
     pButtonShutdown->setMaximumWidth(160);
     pButtonShutdown->setMinimumHeight(30);
 
-
-
-    pButtonBack->setStyleSheet("QPushButton{"
-                               "color: green;"
-                               "font-family: TimesNewRoman;"
-                               "font-style: normal;"
-                               "font-size: 10pt;"
-                               "font-weight: bold;}");
-
-    pButtonRestart->setStyleSheet("QPushButton{"
-                               "color: green;"
-                               "font-family: TimesNewRoman;"
-                               "font-style: normal;"
-                               "font-size: 10pt;"
-                               "font-weight: bold;}");
-
-    pButtonShutdown->setStyleSheet("QPushButton{"
-                               "color: green;"
-                               "font-family: TimesNewRoman;"
-                               "font-style: normal;"
-                               "font-size: 10pt;"
-                               "font-weight: bold;}");
+    this->setStyleSheet("QPushButton{"
+                        "color: green;"
+                        "font-family: TimesNewRoman;"
+                        "font-style: normal;"
+                        "font-size: 10pt;"
+                        "font-weight: bold;}");
 }
 
 void ExitWidget::setupConnect(){
