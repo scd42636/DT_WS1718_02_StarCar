@@ -1,10 +1,34 @@
 
 \section{Serial Protocoll - IBP}
-Das \textbf{Inter Board Protocoll (IBP)} dient als Vereinbarung von Kommunikationsregeln über eine Kommunikationsschnittstelle.
+Das \textbf{Inter Board Protocoll (IBP)} dient als Vereinbarung von Kommunikationsregeln über eine serielle Kommunikationsschnittstelle.
 Innerhalb dieses Projektes soll es die Kommunikation über eine serielle USB Schnittstelle erleichtern.
 
 \subsection{Konzepte}
 
+\begin{itemize}
+	\item Frage-Antwort Schema\\
+Auf Grund der Art einer seriellen Übertragung bildet das Protokoll eine Frage-Antwort konzeptionalität mit einem dominanten Kommunikationspartner ab, d.h. es existieren ein Master und ein Slave. Der Slave wird über Befehle vom Master zum Handeln aufgefordert und kann dann ein Antwort im Rahmen von vorher getroffener Vereinbarungen senden.
+
+	\item ID $ \rightarrow $ Anzahl verschiedener Befehle\\
+Eine Menge von 256 verschiedenen Befehlen ist möglich. Ein Befehl kann durch eine Identifikationsnummer(ID) erkannt werden. Die Zahl 256 wird auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit)
+
+	\item Priorisierung\\
+Eine Priorität zur Übertragung mehrerer Befehle favorisiert Befehle mit kleinerer ID.
+
+	\item Maximalgröße\\
+Eine Maximalgröße eines Befehls wird auf 255 Bytes auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit)
+
+	\item Statische und Dynamische Größenvereinbarungen\\
+Daten- und Befehlsgrößen sind dabei standardmäßig schon vor Verbindungsaufbau statisch bekannt. Eine dynamische Datengröße ist prinzipiell möglich, aber die dynamische Art eines Befehls muss ebenfalls zu diesem Zeitpunkt bekannt sein. So ist festzuhalten : Für jeden Befehl ist eine Fragegröße(requestsize) und eine Antwortgröße(answer-/responsesize) festzulegen. Anstatt dieser Information kann auch jeweils die dynamische Natur einer Frage oder Antwort festgelegt werden.
+
+	\item Korrekte Übertragung\\
+Die korrekte Übertragung wird durch entsprechende Checksummen gesichert.
+
+	\item Fehlererkennung\\
+Fehler in der Übertragung werden mittels eines Statusfeldes propagiert.\par
+Fehler auf Slave-Seite führen zu Fehlerhaften Antwortdaten. Desshalb hat der Slave die möglichkeit eine Negative Antwort (negative response)zu senden, die keine Antwortdaten mehr mitführt. Die Negative Antwort bietet jedoch wiederum Möglichkeiten verschiedene Fehler anzugeben.\par
+Von Masterseite können Fehler pragmatischer durch wiederholtes senden behandelt werden. Durch den Status kann die Kommunikationsschnittstelle hier hauptsächlich nebenbei bestimmte konfigurierungen der Schnittstelle auf den Slaves zur Laufzeit anregen. Szenarien wie ein kontrollierter Verbindungsabbruch sind denkbar.\par
+\end{itemize}
 \subsection{Aufbau}
 
 \large 
@@ -12,7 +36,7 @@ Legende:\\
 \normalsize
 \begin{center}
 \small
-\begin{tabular}{l l}
+\begin{tabular}{l | l}
 MID &	Identifikationsnummer der Anfrage\\
 EID &	Nummer des Fehlers bzgl. MID\\
 SIZE&	Größe einer dynamischen Payload, nicht existent bei statisch vereinbarter Übertragung!\\
@@ -66,8 +90,8 @@ Request\\
 \large Negative Response\\
 \normalsize
 \begin{center}
-	\begin{bytefield}{16}
-	\bitheader{0-63}\\
-	\bitbox{4}{status} & \bitbox{2}{sizehash} & \bitbox{2}{hh} & \bitbox{8}{MID} & \bitbox {8}{EID}
+	\begin{bytefield}{24}
+	\bitheader{0-23}\\
+	\bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH} & \bitbox{8}{MID} & \bitbox {8}{EID}
 \end{bytefield}
 \end{center}
