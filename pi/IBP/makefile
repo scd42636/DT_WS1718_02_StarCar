@@ -4,6 +4,7 @@ CXX=g++
 CXXFLAGS=-std=c++14
 LDLIBS+=-lpthread
 
+default: IBCEmu
 
 IBCEmu: CXXFLAGS += -D IBC_EMULATED
 IBCEmu: IBC.o IBC_Inbox.o IBC_Packet.o IBC_Rule.o IBC_Transceiver.o Serial_emulated.o IBC.test.o
@@ -24,6 +25,9 @@ SerialTest:Serial.o Serial.test.o
 %.o:%.cpp
 	$(COMPILE.cpp) $< -o $@
 
+dox: dox.cfg
+	doxygen dox.cfg
+
 clean:
 	-rm *.o
 	-rm SerialTest
@@ -31,5 +35,6 @@ clean:
 	-rm IBCRuleTest
 	-rm IBCEmu
 	-rm PacketTest
+	-rm -r ../../dokumentation/grr/doc/*
 
-.PHONY:clean
+.PHONY:clean IBCEmu IBCRuleTest PacketTest SerialEmulatedTest SerialTest dox
