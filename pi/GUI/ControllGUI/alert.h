@@ -1,5 +1,5 @@
-#ifndef WORKER_H
-#define WORKER_H
+#ifndef ALERT_H
+#define ALERT_H
 
 #include <QObject>
 #include <QThread>
@@ -17,7 +17,19 @@ class Alert : public QObject {
 
 public:
 
-    Alert(QPushButton *alert);
+    Alert(QPushButton *pButtonAlert);
+
+    void fireWarning();
+    void fireWarning(QString warMsg);
+    void fireWarning(QString warMsg, int warNum);
+
+    void fireError();
+    void fireError(QString errMsg);
+    void fireError(QString errMsg, int errNum);
+
+    void clearWarning();
+    void clearError();
+
     ~Alert();
 
 public slots:
@@ -26,11 +38,6 @@ public slots:
     void finishWorker();
     void changeAlertIcon();
 
-    void fireWarning();
-    void fireError();
-    void clearWarning();
-    void clearError();
-
 signals:
 
     void finished();
@@ -38,13 +45,26 @@ signals:
 
 private:
 
-    QPushButton *alert;
+    // QPushButton
+    QPushButton *pButtonAlert;
+
+    // Vars
     int         color = WHITE;
+
     bool        errorIsSet = false;
     bool        warningIsSet = false;
     bool        lastTimeWhite = true;
     bool        warningAndErrorIsSet = false;
     bool        lastTimeOrange = false;
+
+    QString     errMsg;
+    QString     warMsg;
+
+    int         errNum[25];
+    int         warNum[25];
+
+    int         errNumCount = 0;
+    int         warNumCount = 0;
 };
 
-#endif // WORKER_H
+#endif // ALERT_H

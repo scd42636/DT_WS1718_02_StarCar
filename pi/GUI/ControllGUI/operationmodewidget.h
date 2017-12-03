@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <alert.h>
 
 class OperationModeWidget : public QWidget
 {
@@ -14,7 +15,7 @@ class OperationModeWidget : public QWidget
 
 public:
 
-    explicit OperationModeWidget(QWidget *parent = nullptr);
+    explicit OperationModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
     ~OperationModeWidget();
 
 signals:
@@ -49,6 +50,9 @@ private:
     void generateLayout();
     void generateStyle();
     void setupConnects();
+
+    //Thread
+    Alert           *alertThread;
 };
 
 #endif // OPERATIONMODEWIDGET_H

@@ -9,6 +9,7 @@ HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWi
     generateStyle();
     setupConnects();
     createAlertThread();
+    showStartWidget();
 }
 
 void HomeWindow::generateLayout(){
@@ -46,19 +47,17 @@ void HomeWindow::createAlertThread(){
     QThread *thread = new QThread;
     alertThread = new Alert(pButtonAlert);
     alertThread->moveToThread(thread);
+
     connect(thread, SIGNAL(started()), alertThread, SLOT(process()));
     connect(alertThread, SIGNAL(finished()), thread, SLOT(quit()));
     connect(alertThread, SIGNAL(finished()), alertThread, SLOT(deleteLater()));
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
     thread->start();
 
     alertTimer = new QTimer(this);
     connect(alertTimer, SIGNAL(timeout()), alertThread, SLOT(changeAlertIcon()));
     alertTimer->start(300);
-
-    startWidget = new StartWidget(nullptr,this->alertThread);
-    connect(startWidget,SIGNAL(showOperationMode()),SLOT(showOperationModeWidget()));
-    addWidgetToMainStackWidget(startWidget);
 }
 
 void HomeWindow::generateStyle(){
@@ -122,21 +121,21 @@ void HomeWindow::removeActiveWidget(){
 
 void HomeWindow::showAutomaticModeWidget(){
 
-    automaticModeWidget = new AutomaticModeWidget(this);
+    automaticModeWidget = new AutomaticModeWidget(this, this->alertThread);
     connect(automaticModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(automaticModeWidget);
 }
 
 void HomeWindow::showManualModeWidget(){
 
-    manualModeWidget = new ManualModeWidget(this);
+    manualModeWidget = new ManualModeWidget(this, this->alertThread);
     connect(manualModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(manualModeWidget);
 }
 
 void HomeWindow::showOperationModeWidget(){
 
-    operationModeWidget = new OperationModeWidget(this);
+    operationModeWidget = new OperationModeWidget(this, this->alertThread);
     connect(operationModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     connect(operationModeWidget, SIGNAL(showmanualmodewidget()), this, SLOT(showManualModeWidget()));
     connect(operationModeWidget, SIGNAL(showautomaticmodewidget()), this, SLOT(showAutomaticModeWidget()));
@@ -145,7 +144,7 @@ void HomeWindow::showOperationModeWidget(){
 
 void HomeWindow::showExitWidget(){
 
-    exitWidget = new ExitWidget(this);
+    exitWidget = new ExitWidget(this, this->alertThread);
     connect(exitWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(exitWidget);
 }
@@ -154,14 +153,22 @@ void HomeWindow::showAlertWidget(){
 
     if(alertWidget == nullptr){
 
-        alertWidget = new AlertWidget(this);
+        alertWidget = new AlertWidget(this, this->alertThread);
         connect(alertWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
         addWidgetToMainStackWidget(alertWidget);
+
     }else{
 
         removeActiveWidget();
         alertWidget = nullptr;
     }
+}
+
+void HomeWindow::showStartWidget(){
+
+    startWidget = new StartWidget(nullptr, this->alertThread);
+    connect(startWidget,SIGNAL(showOperationMode()),SLOT(showOperationModeWidget()));
+    addWidgetToMainStackWidget(startWidget);
 }
 
 HomeWindow::~HomeWindow()

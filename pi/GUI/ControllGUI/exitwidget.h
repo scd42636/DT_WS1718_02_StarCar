@@ -4,13 +4,14 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
+#include <alert.h>
 
 class ExitWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ExitWidget(QWidget *parent = nullptr);
+    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
 
     ~ExitWidget(){
     }
@@ -29,6 +30,9 @@ private:
     void generateLayout();
     void setupConnect();
     void generateStyle();
+
+    //Thread
+    Alert *alertThread;
 
 signals:
 

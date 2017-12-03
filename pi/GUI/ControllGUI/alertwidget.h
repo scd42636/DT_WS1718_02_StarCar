@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include "alert.h"
 
 class AlertWidget : public QWidget
 {
@@ -10,7 +11,7 @@ class AlertWidget : public QWidget
 
 public:
 
-    explicit AlertWidget(QWidget *parent = nullptr);
+    explicit AlertWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
     ~AlertWidget();
 
 signals:
@@ -18,6 +19,11 @@ signals:
     void removeWindowformStack();
 
 public slots:
+
+private:
+
+    // Thread
+    Alert *alertThread;
 
 };
 

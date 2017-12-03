@@ -46,6 +46,7 @@ private slots:
     void showOperationModeWidget();
     void showAutomaticModeWidget();
     void showManualModeWidget();
+    void showStartWidget();
 
 private:
 
@@ -74,13 +75,13 @@ private:
     // Label
     QLabel          *lblHeadline;
 
-    // Timer
-    QTimer          *alertTimer;
-
 public:
 
     // Thread
     Alert           *alertThread;
+
+    // Timer
+    QTimer          *alertTimer;
 
 private:
 

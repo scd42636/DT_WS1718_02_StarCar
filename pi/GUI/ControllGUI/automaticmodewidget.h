@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QWidget>
+#include <alert.h>
 
 class AutomaticModeWidget : public QWidget
 {
@@ -10,13 +11,18 @@ class AutomaticModeWidget : public QWidget
 
 public:
 
-    explicit AutomaticModeWidget(QWidget *parent = nullptr);
+    explicit AutomaticModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
 
 signals:
 
     void removeWindowformStack();
 
 public slots:
+
+private:
+
+    //Thread
+    Alert *alertThread;
 
 };
 

@@ -2,8 +2,9 @@
 #include <QApplication>
 #include <QProcess>
 
-ExitWidget::ExitWidget(QWidget *parent) : QWidget(parent)
+ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 {
+    this->alertThread = alertThread;
     generateLayout();
     setupConnect();
     generateStyle();

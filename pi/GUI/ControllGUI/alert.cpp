@@ -3,7 +3,7 @@
 
 Alert::Alert(QPushButton *alert) {
 
-    this->alert = alert;
+    this->pButtonAlert = alert;
 }
 
 Alert::~Alert() {
@@ -20,12 +20,12 @@ void Alert::changeAlertIcon(){
 
         if(lastTimeOrange)
         {
-            alert->setIcon(QIcon(errorImage));
+            pButtonAlert->setIcon(QIcon(errorImage));
             lastTimeOrange = false;
 
         }else{
 
-            alert->setIcon(QIcon(warningImage));
+            pButtonAlert->setIcon(QIcon(warningImage));
             lastTimeOrange = true;
         }
     }else{
@@ -33,18 +33,18 @@ void Alert::changeAlertIcon(){
 
         if(warningIsSet && lastTimeWhite)
         {
-            alert->setIcon(QIcon(warningImage));
+            pButtonAlert->setIcon(QIcon(warningImage));
             lastTimeWhite = false;
 
         }else if(errorIsSet && lastTimeWhite){
 
-            alert->setIcon(QIcon(errorImage));
+            pButtonAlert->setIcon(QIcon(errorImage));
 
             lastTimeWhite = false;
 
         }else{
 
-            alert->setIcon(QIcon(whiteWarningImage));
+            pButtonAlert->setIcon(QIcon(whiteWarningImage));
             lastTimeWhite = true;
         }
     }
@@ -63,6 +63,39 @@ void Alert::fireWarning(){
     }
 }
 
+void Alert::fireWarning(QString warMsg){
+
+    if(warningIsSet == false){
+
+        warningIsSet = true;
+
+        if(errorIsSet == true){
+
+            warningAndErrorIsSet = true;
+        }
+    }
+
+    this->warMsg.append(warMsg);
+}
+
+void Alert::fireWarning(QString warMsg, int warNum){
+
+    if(warningIsSet == false){
+
+        warningIsSet = true;
+
+        if(errorIsSet == true){
+
+            warningAndErrorIsSet = true;
+        }
+    }
+
+    this->warMsg.append(warMsg);
+    this->warNum[warNumCount] = warNum;
+    warNumCount++;
+    qDebug("%d",warNumCount);
+}
+
 void Alert::fireError(){
 
     if(errorIsSet == false){
@@ -74,6 +107,38 @@ void Alert::fireError(){
             warningAndErrorIsSet = true;
         }
     }
+}
+
+void Alert::fireError(QString errMsg){
+
+    if(errorIsSet == false){
+
+        errorIsSet = true;
+
+        if(warningIsSet){
+
+            warningAndErrorIsSet = true;
+        }
+    }
+
+    this->errMsg.append(errMsg);
+}
+
+void Alert::fireError(QString errMsg, int errNum){
+
+    if(errorIsSet == false){
+
+        errorIsSet = true;
+
+        if(warningIsSet){
+
+            warningAndErrorIsSet = true;
+        }
+    }
+
+    this->errMsg.append(errMsg);
+    this->errNum[errNumCount] = errNum;
+    errNumCount++;
 }
 
 void Alert::clearWarning(){

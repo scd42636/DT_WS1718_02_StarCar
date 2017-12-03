@@ -1,7 +1,8 @@
 #include "operationmodewidget.h"
 
-OperationModeWidget::OperationModeWidget(QWidget *parent) : QWidget(parent)
+OperationModeWidget::OperationModeWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 {
+    this->alertThread = alertThread;
     generateLayout();
     generateStyle();
     setupConnects();
