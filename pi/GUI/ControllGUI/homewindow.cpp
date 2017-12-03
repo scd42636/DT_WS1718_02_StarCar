@@ -37,7 +37,6 @@ void HomeWindow::generateLayout(){
 
 void HomeWindow::setupConnects(){
 
-    // connect exit button to close function -> once the exit-button is clicked the application will close
     connect(pButtonExit, SIGNAL(clicked(bool)), this, SLOT(showExitWidget()));
     connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(showAlertWidget()));
 }
@@ -126,7 +125,6 @@ void HomeWindow::showAutomaticModeWidget(){
     automaticModeWidget = new AutomaticModeWidget(this);
     connect(automaticModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(automaticModeWidget);
-    mainStackedWidget->setCurrentIndex( mainStackedWidget->currentIndex() -1 );
 }
 
 void HomeWindow::showManualModeWidget(){
@@ -154,9 +152,16 @@ void HomeWindow::showExitWidget(){
 
 void HomeWindow::showAlertWidget(){
 
-    alertWidget = new AlertWidget(this);
-    connect(alertWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
-    addWidgetToMainStackWidget(alertWidget);
+    if(alertWidget == nullptr){
+
+        alertWidget = new AlertWidget(this);
+        connect(alertWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
+        addWidgetToMainStackWidget(alertWidget);
+    }else{
+
+        removeActiveWidget();
+        alertWidget = nullptr;
+    }
 }
 
 HomeWindow::~HomeWindow()

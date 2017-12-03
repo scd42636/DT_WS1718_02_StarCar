@@ -62,7 +62,7 @@ private:
     // Widget
     QWidget             *startWidget;
     ExitWidget          *exitWidget;
-    AlertWidget         *alertWidget;
+    AlertWidget         *alertWidget = nullptr;
     OperationModeWidget *operationModeWidget;
     AutomaticModeWidget *automaticModeWidget;
     ManualModeWidget    *manualModeWidget;

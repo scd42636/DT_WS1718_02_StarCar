@@ -38,7 +38,7 @@ public slots:
 
 private slots:
     void goBack();
-    void restartPi();
+    void restartApplication();
     void shutdownPi();
 
 

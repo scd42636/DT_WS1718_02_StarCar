@@ -3,8 +3,6 @@
 AlertWidget::AlertWidget(QWidget *parent) : QWidget(parent)
 {
 
-    this->setStyleSheet("QWidget{"
-                        "background-color: red;}");
 }
 
 

@@ -1,4 +1,6 @@
 #include "exitwidget.h"
+#include <QApplication>
+#include <QProcess>
 
 ExitWidget::ExitWidget(QWidget *parent) : QWidget(parent)
 {
@@ -49,7 +51,7 @@ void ExitWidget::generateStyle(){
 void ExitWidget::setupConnect(){
 
     connect(pButtonBack,     SIGNAL(clicked(bool)), this, SLOT(goBack()));
-    connect(pButtonRestart,  SIGNAL(clicked(bool)), this, SLOT(restartPi()));
+    connect(pButtonRestart,  SIGNAL(clicked(bool)), this, SLOT(restartApplication()));
     connect(pButtonShutdown, SIGNAL(clicked(bool)), this, SLOT(shutdownPi()));
 }
 
@@ -58,7 +60,10 @@ void ExitWidget::goBack(){
     emit removeWindowformStack();
 }
 
-void ExitWidget::restartPi(){
+void ExitWidget::restartApplication(){
+
+qApp->quit();
+QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 
 }
 
