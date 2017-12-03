@@ -113,50 +113,50 @@ void HomeWindow::addWidgetToMainStackWidget (QWidget *widget){
 
     mainStackedWidget->addWidget(widget);
     widget->setContentsMargins(0,0,0,0);
+    mainStackedWidget->setCurrentWidget(widget);
 }
 
 void HomeWindow::removeActiveWidget(){
 
-    mainStackedWidget->removeWidget(startWidget);
+    mainStackedWidget->removeWidget(mainStackedWidget->currentWidget());
+}
+
+void HomeWindow::showAutomaticModeWidget(){
+
+    automaticModeWidget = new AutomaticModeWidget(this);
+    connect(automaticModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
+    addWidgetToMainStackWidget(automaticModeWidget);
+    mainStackedWidget->setCurrentIndex( mainStackedWidget->currentIndex() -1 );
+}
+
+void HomeWindow::showManualModeWidget(){
+
+    manualModeWidget = new ManualModeWidget(this);
+    connect(manualModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
+    addWidgetToMainStackWidget(manualModeWidget);
 }
 
 void HomeWindow::showOperationModeWidget(){
 
     operationModeWidget = new OperationModeWidget(this);
-    connect(operationModeWidget,SIGNAL(removeWindowformStack()),this,SLOT(removeOperationModeWidget()));
+    connect(operationModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
+    connect(operationModeWidget, SIGNAL(showmanualmodewidget()), this, SLOT(showManualModeWidget()));
+    connect(operationModeWidget, SIGNAL(showautomaticmodewidget()), this, SLOT(showAutomaticModeWidget()));
     addWidgetToMainStackWidget(operationModeWidget);
-    mainStackedWidget->setCurrentWidget(operationModeWidget);
-}
-
-void HomeWindow::removeOperationModeWidget(){
-
-    mainStackedWidget->removeWidget(operationModeWidget);
 }
 
 void HomeWindow::showExitWidget(){
 
     exitWidget = new ExitWidget(this);
-    connect(exitWidget,SIGNAL(removeWindowformStack()), this, SLOT(removeExitWidget()));
+    connect(exitWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(exitWidget);
-    mainStackedWidget->setCurrentWidget(exitWidget);
-}
-
-void HomeWindow::removeExitWidget(){
-
-    mainStackedWidget->removeWidget(exitWidget);
 }
 
 void HomeWindow::showAlertWidget(){
 
     alertWidget = new AlertWidget(this);
-    connect(alertWidget,SIGNAL(removeWindowformStack()),this,SLOT(removeAlertWidget()));
+    connect(alertWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(alertWidget);
-    mainStackedWidget->setCurrentWidget(alertWidget);
-}
-
-void HomeWindow::removeAlertWidget(){
-
-    mainStackedWidget->removeWidget(alertWidget);
 }
 
 HomeWindow::~HomeWindow()

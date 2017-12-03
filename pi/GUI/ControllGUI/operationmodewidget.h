@@ -20,8 +20,15 @@ public:
 signals:
 
     void removeWindowformStack();
+    void showmanualmodewidget();
+    void showautomaticmodewidget();
 
 public slots:
+
+private slots:
+
+    void slotShowManualModeWidget();
+    void slotShowAutomaticModeWidget();
 
 private:
 

@@ -16,6 +16,8 @@
 #include "exitwidget.h"
 #include "alertwidget.h"
 #include "operationmodewidget.h"
+#include "automaticmodewidget.h"
+#include "manualmodewidget.h"
 
 namespace Ui {
 class HomeWindow;
@@ -32,9 +34,6 @@ public:
 public slots:
 
     void removeActiveWidget();
-    void removeExitWidget();
-    void removeAlertWidget();
-    void removeOperationModeWidget();
 
 protected:
 
@@ -45,6 +44,8 @@ private slots:
     void showExitWidget();
     void showAlertWidget();
     void showOperationModeWidget();
+    void showAutomaticModeWidget();
+    void showManualModeWidget();
 
 private:
 
@@ -63,6 +64,8 @@ private:
     ExitWidget          *exitWidget;
     AlertWidget         *alertWidget;
     OperationModeWidget *operationModeWidget;
+    AutomaticModeWidget *automaticModeWidget;
+    ManualModeWidget    *manualModeWidget;
 
     // Button
     QPushButton     *pButtonExit;

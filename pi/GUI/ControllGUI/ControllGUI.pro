@@ -30,8 +30,8 @@ SOURCES += main.cpp\
     alertwidget.cpp \
     exitwidget.cpp \
     operationmodewidget.cpp \
-    manualmode.cpp \
-    automaticmode.cpp
+    automaticmodewidget.cpp \
+    manualmodewidget.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
@@ -40,8 +40,8 @@ HEADERS  += homewindow.h \
     exitwidget.h \
     pathsandconstans.h \
     operationmodewidget.h \
-    manualmode.h \
-    automaticmode.h
+    automaticmodewidget.h \
+    manualmodewidget.h
 
 FORMS    += homewindow.ui
 

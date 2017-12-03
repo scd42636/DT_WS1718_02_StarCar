@@ -4,6 +4,7 @@ OperationModeWidget::OperationModeWidget(QWidget *parent) : QWidget(parent)
 {
     generateLayout();
     generateStyle();
+    setupConnects();
 }
 
 void OperationModeWidget::generateLayout(){
@@ -48,7 +49,18 @@ void OperationModeWidget::generateStyle(){
 
 void OperationModeWidget::setupConnects(){
 
+    connect(pButtonManualMode, SIGNAL(clicked(bool)), this, SLOT(slotShowManualModeWidget()));
+    connect(pButtonAutomaticMode, SIGNAL(clicked(bool)), this, SLOT(slotShowAutomaticModeWidget()));
+}
 
+void OperationModeWidget::slotShowManualModeWidget(){
+
+    emit showmanualmodewidget();
+}
+
+void OperationModeWidget::slotShowAutomaticModeWidget(){
+
+    emit showautomaticmodewidget();
 }
 
 OperationModeWidget::~OperationModeWidget(){
