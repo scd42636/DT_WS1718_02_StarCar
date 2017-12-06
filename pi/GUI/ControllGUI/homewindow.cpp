@@ -16,8 +16,8 @@ void HomeWindow::generateLayout(){
     centralVBox         = new QVBoxLayout(ui->centralWidget);
     hBox1               = new QHBoxLayout();
     lblHeadline         = new QLabel();
-    pButtonAlert        = new QPushButton(QIcon(":/icons/Pics/alert_white.png"),"");
-    pButtonExit         = new QPushButton(QIcon(":/icons/Pics/exit.png"),"");
+    pButtonAlert        = new QPushButton(QIcon("://Pics/alert_white.png"),"");
+    pButtonExit         = new QPushButton(QIcon("://Pics/exit.png"),"");
 
     mainStackedWidget   = new QStackedWidget();
 

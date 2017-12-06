@@ -7,9 +7,11 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QObject>
+#include <QThread>
 #include <QHBoxLayout>
 #include <QMainWindow>
 #include <alert.h>
+#include <initstarcar.h>
 
 class StartWidget : public QWidget
 {
@@ -37,6 +39,7 @@ private:
 
     // Thread
     Alert           *alertThread;
+    InitStarCar     *initStarCar;
 
     // Methodes
     void generateLayout();
@@ -53,8 +56,8 @@ public slots:
 
 private slots:
 
-    void startProgressBar();
     void fillProgressBar();
+    void initializeStarCar();
 };
 
 #endif // STARTWIDGET_H

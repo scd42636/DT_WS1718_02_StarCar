@@ -19,12 +19,12 @@ void Alert::changeAlertIcon(){
 
         if(lastTimeOrange)
         {
-            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_red.png"));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_red.png"));
             lastTimeOrange = false;
 
         }else{
 
-            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_orange.png"));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_orange.png"));
             lastTimeOrange = true;
         }
     }else{
@@ -32,18 +32,18 @@ void Alert::changeAlertIcon(){
 
         if(warningIsSet && lastTimeWhite)
         {
-            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_orange.png"));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_orange.png"));
             lastTimeWhite = false;
 
         }else if(errorIsSet && lastTimeWhite){
 
-            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_red.png"));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_red.png"));
 
             lastTimeWhite = false;
 
         }else{
 
-            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_white.png"));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_white.png"));
             lastTimeWhite = true;
         }
     }
@@ -151,7 +151,7 @@ void Alert::clearError(){
     warningAndErrorIsSet = false;
 }
 
-void Alert::finishWorker(){
+void Alert::finishAlert(){
 
     emit finished();
 }

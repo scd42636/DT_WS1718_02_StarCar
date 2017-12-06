@@ -35,7 +35,7 @@ public:
 public slots:
 
     void process();
-    void finishWorker();
+    void finishAlert();
     void changeAlertIcon();
 
 signals:

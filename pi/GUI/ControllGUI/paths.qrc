@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/icons">
+    <qresource prefix="/">
         <file>Pics/alert_green.png</file>
         <file>Pics/alert_orange.png</file>
         <file>Pics/alert_red.png</file>

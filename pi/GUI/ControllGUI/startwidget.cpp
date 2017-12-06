@@ -1,7 +1,7 @@
 #include "startwidget.h"
 #include "homewindow.h"
 #include "alert.h"
-#include "pathsandconstans.h"
+#include "initstarcar.h"
 
 bool progressfull = false;
 bool progressBarTimerisNOTRunning = true;
@@ -13,8 +13,6 @@ StartWidget::StartWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
     setupConnects();
     generateStyle();
 
-    progressBarTimer = new QTimer(this);
-    connect(progressBarTimer, SIGNAL(timeout()), this, SLOT(fillProgressBar()));
     this->alertThread = alertThread;
 }
 
@@ -23,7 +21,7 @@ void StartWidget::generateLayout(){
     // Generate needed UI-Elements
     vBox1 = new QVBoxLayout(this);
     progressBar = new QProgressBar();
-    pButtonStart = new QPushButton(QIcon(startImage),"");
+    pButtonStart = new QPushButton(QIcon("://Pics/start.png"),"");
 
     // Add all UI-Elements to the layout
     vBox1->addWidget(pButtonStart);
@@ -42,7 +40,7 @@ void StartWidget::setupProgressBar(){
 void StartWidget::setupConnects(){
 
     //connect the start-button clicked event with methode ...
-    connect(pButtonStart, SIGNAL(clicked()), this, SLOT(startProgressBar()));
+    connect(pButtonStart, SIGNAL(clicked()), this, SLOT(initializeStarCar()));
 }
 
 void StartWidget::generateStyle(){
@@ -75,28 +73,39 @@ void StartWidget::generateStyle(){
     vBox1->setAlignment(Qt::AlignHCenter);
 }
 
-void StartWidget::startProgressBar(){
+// Initialize function will be run, once the start button is pushed
 
-    emit showOperationMode();
+void StartWidget::initializeStarCar(){
+
+    QThread *thread = new QThread;
+    initStarCar = new InitStarCar(alertThread);
+    initStarCar->moveToThread(thread);
+
+    connect(thread, SIGNAL(started()), initStarCar, SLOT(startProcess()));
+    connect(initStarCar, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(initStarCar, SIGNAL(finished()), initStarCar, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    connect(initStarCar, SIGNAL(pushProcessBar()), SLOT(fillProgressBar()));
+
+    thread->start();
 }
 
 void StartWidget::fillProgressBar(){
 
     if(progressfull){
-        progressBar->setValue(progressBar->value() - 1);
+
+        emit showOperationMode();
+
     }else{
+
         progressBar->setValue(progressBar->value() + 1);
     }
 
-    if(progressBar->value() == 14){
+    if(progressBar->value() == 14)
+    {
         progressfull = true;
-        alertThread->fireError();
     }
-    if(progressBar->value() == 0){
-        progressfull = false;
-        alertThread->fireWarning();
-    }
-
 }
 
 StartWidget::~StartWidget(){

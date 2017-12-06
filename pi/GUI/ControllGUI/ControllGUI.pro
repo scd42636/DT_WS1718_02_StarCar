@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     exitwidget.cpp \
     operationmodewidget.cpp \
     automaticmodewidget.cpp \
-    manualmodewidget.cpp
+    manualmodewidget.cpp \
+    initstarcar.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
@@ -40,7 +41,8 @@ HEADERS  += homewindow.h \
     exitwidget.h \
     operationmodewidget.h \
     automaticmodewidget.h \
-    manualmodewidget.h
+    manualmodewidget.h \
+    initstarcar.h
 
 FORMS    += homewindow.ui
 
