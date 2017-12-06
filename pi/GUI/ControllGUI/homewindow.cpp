@@ -1,6 +1,5 @@
 #include "homewindow.h"
 #include "ui_homewindow.h"
-#include "pathsandconstans.h"
 
 HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWindow)
 {
@@ -17,8 +16,8 @@ void HomeWindow::generateLayout(){
     centralVBox         = new QVBoxLayout(ui->centralWidget);
     hBox1               = new QHBoxLayout();
     lblHeadline         = new QLabel();
-    pButtonAlert        = new QPushButton(QIcon(whiteWarningImage),"");
-    pButtonExit         = new QPushButton(QIcon(exitImage),"");
+    pButtonAlert        = new QPushButton(QIcon(":/icons/Pics/alert_white.png"),"");
+    pButtonExit         = new QPushButton(QIcon(":/icons/Pics/exit.png"),"");
 
     mainStackedWidget   = new QStackedWidget();
 

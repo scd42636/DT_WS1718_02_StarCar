@@ -1,5 +1,4 @@
 #include "alert.h"
-#include "pathsandconstans.h"
 
 Alert::Alert(QPushButton *alert) {
 
@@ -20,12 +19,12 @@ void Alert::changeAlertIcon(){
 
         if(lastTimeOrange)
         {
-            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_red"));
+            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_red.png"));
             lastTimeOrange = false;
 
         }else{
 
-            pButtonAlert->setIcon(QIcon(warningImage));
+            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_orange.png"));
             lastTimeOrange = true;
         }
     }else{
@@ -33,18 +32,18 @@ void Alert::changeAlertIcon(){
 
         if(warningIsSet && lastTimeWhite)
         {
-            pButtonAlert->setIcon(QIcon(warningImage));
+            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_orange.png"));
             lastTimeWhite = false;
 
         }else if(errorIsSet && lastTimeWhite){
 
-            pButtonAlert->setIcon(QIcon(errorImage));
+            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_red.png"));
 
             lastTimeWhite = false;
 
         }else{
 
-            pButtonAlert->setIcon(QIcon(whiteWarningImage));
+            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_white.png"));
             lastTimeWhite = true;
         }
     }

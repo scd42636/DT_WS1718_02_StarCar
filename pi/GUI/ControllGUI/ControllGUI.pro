@@ -38,7 +38,6 @@ HEADERS  += homewindow.h \
     alert.h \
     alertwidget.h \
     exitwidget.h \
-    pathsandconstans.h \
     operationmodewidget.h \
     automaticmodewidget.h \
     manualmodewidget.h
