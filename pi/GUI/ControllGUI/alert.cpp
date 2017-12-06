@@ -93,7 +93,6 @@ void Alert::fireWarning(QString warMsg, int warNum){
     this->warMsg.append(warMsg);
     this->warNum[warNumCount] = warNum;
     warNumCount++;
-    qDebug("%d",warNumCount);
 }
 
 void Alert::fireError(){

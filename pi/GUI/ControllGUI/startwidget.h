@@ -39,10 +39,10 @@ private:
     Alert           *alertThread;
 
     // Methodes
-    void generateStartLayout();
-    void setupUIElements();
+    void generateLayout();
+    void setupProgressBar();
     void setupConnects();
-    void styleWidget();
+    void generateStyle();
 
 signals:
 
@@ -52,9 +52,8 @@ signals:
 public slots:
 
 private slots:
+
     void startProgressBar();
-    void closeStarCar();
-    void showAlert();
     void fillProgressBar();
 };
 

@@ -8,36 +8,34 @@ bool progressBarTimerisNOTRunning = true;
 
 StartWidget::StartWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 {
-    generateStartLayout();
-    setupUIElements();
+    generateLayout();
+    setupProgressBar();
     setupConnects();
-    styleWidget();
+    generateStyle();
+
     progressBarTimer = new QTimer(this);
     connect(progressBarTimer, SIGNAL(timeout()), this, SLOT(fillProgressBar()));
     this->alertThread = alertThread;
 }
 
-void StartWidget::generateStartLayout(){
-
-    //
-    vBox1 = new QVBoxLayout(this);
+void StartWidget::generateLayout(){
 
     // Generate needed UI-Elements
+    vBox1 = new QVBoxLayout(this);
     progressBar = new QProgressBar();
     pButtonStart = new QPushButton(QIcon(startImage),"");
 
     // Add all UI-Elements to the layout
-    vBox1->addWidget(pButtonStart,0,Qt::AlignHCenter);
+    vBox1->addWidget(pButtonStart);
     vBox1->addSpacing(20);
     vBox1->addWidget(progressBar);
     vBox1->addSpacing(40);
 }
 
-void StartWidget::setupUIElements(){
+void StartWidget::setupProgressBar(){
 
-    // progressBar
     progressBar->setRange(0,14);
-    progressBar->setValue(10);
+    progressBar->setValue(0);
     progressBar->setTextVisible(false);
 }
 
@@ -47,60 +45,39 @@ void StartWidget::setupConnects(){
     connect(pButtonStart, SIGNAL(clicked()), this, SLOT(startProgressBar()));
 }
 
-void StartWidget::styleWidget(){
+void StartWidget::generateStyle(){
 
-/********************************Texts********************************************/
+/******************************Button-Size****************************************/
 
     pButtonStart->setIconSize(QSize(32,32));
-    pButtonStart->resize(32,32);
+    pButtonStart->resize(40,40);
 
-/******************************StyleSheets****************************************/
+/******************************StyleSheet*****************************************/
 
             this->setStyleSheet("QWidget{"
-                                "background-color: #2b2b2b;}");
-
-    progressBar->setStyleSheet("QProgressBar{"
-                               "background-color: black;"
-                               "border: 2px solid grey;"
-                               "border-radius: 5px;}"
-
-                               "QProgressBar::chunk{"
-                               "background-color: #08ff08;"
-                               "width: 10px;"
-                               "margin: 5px;}");
-
-    pButtonStart->setStyleSheet("QPushButton{"
-                                "border-radius:  10px;"
-                                "border-width:   3px;"
-                                "border-color:   black"
-                                "boder-style:    solid}");
+                                    "background-color: #2b2b2b;}"
+                                "QProgressBar{"
+                                    "background-color: black;"
+                                    "border: 2px solid grey;"
+                                    "border-radius: 5px;}"
+                                "QProgressBar::chunk{"
+                                    "background-color: #08ff08;"
+                                    "width: 10px;"
+                                    "margin: 5px;}"
+                                "QPushButton{"
+                                    "border-radius:  0px;"
+                                    "border-width:   0px;"
+                                    "border-color:   white;"
+                                    "border-style:   solid;}");
 
 /*****************************Windowstyle*****************************************/
 
-    vBox1->setAlignment(Qt::AlignTop);
-    //lblHeadline->setAlignment(Qt::AlignCenter);
-
-    // Hide default window hints
-    setWindowFlags(Qt::FramelessWindowHint);
+    vBox1->setAlignment(Qt::AlignHCenter);
 }
 
 void StartWidget::startProgressBar(){
 
     emit showOperationMode();
-
-    /*alertThread->clearError();
-    alertThread->clearWarning();
-
-    if(progressBarTimerisNOTRunning){
-
-        progressBarTimer->start(500);
-        progressBarTimerisNOTRunning = false;
-
-    }else{
-
-        progressBarTimer->stop();
-        progressBarTimerisNOTRunning = true;
-    }*/
 }
 
 void StartWidget::fillProgressBar(){
@@ -121,16 +98,6 @@ void StartWidget::fillProgressBar(){
     }
 
 }
-
-void StartWidget::closeStarCar(){
-
-    delete this;
-}
-
-void StartWidget::showAlert(){
-
-}
-
 
 StartWidget::~StartWidget(){
 
