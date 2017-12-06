@@ -20,7 +20,7 @@ void Alert::changeAlertIcon(){
 
         if(lastTimeOrange)
         {
-            pButtonAlert->setIcon(QIcon(errorImage));
+            pButtonAlert->setIcon(QIcon(":/icons/Pics/alert_red"));
             lastTimeOrange = false;
 
         }else{

@@ -46,3 +46,6 @@ HEADERS  += homewindow.h \
 FORMS    += homewindow.ui
 
 DISTFILES +=
+
+RESOURCES += \
+    paths.qrc
