@@ -15,8 +15,10 @@ Transceiver::Transceiver(std::string device,const Rule & rule)
 	s(device),
 	rule(rule),
 	running(false),
-	tosend([](Packet& lhs,Packet& rhs){return lhs.id() > rhs.id();})
-{}
+	tosend([](std::shared_ptr<Packet>& lhs,std::shared_ptr<Packet>& rhs){return lhs->id() > rhs->id();})
+{
+	sendbuff_lock.unlock();
+}
 
 Transceiver::~Transceiver()
 {
@@ -76,12 +78,17 @@ void Transceiver::body()
 
 	while (running)
 	{
+		
+		transfer_sendbuffer();
+
 		if (tosend.empty())
 		{
 			std::this_thread::sleep_for(IBC_TRANSCEIVER_IDLE_TIME);								//idle if there is nothing to do
 			continue;																		//start anew and check again first
-		}	
-		auto next = tosend.top();		//retrieve the next packet to send
+		}
+
+
+		Packet* next = tosend.top().get();		//retrieve the next packet to send
 
 		req_size = 0;
 		req_dynamic = false;
@@ -93,15 +100,15 @@ void Transceiver::body()
 		res_contentsize = 0;
 		res_content = nullptr;
 
-		req_buffer[0] = next.id();
+		req_buffer[0] = next->id();
 
 		req_buffer[1] |= this->status << 4;
 	
-		req_contentsize = rule.requestsize(next.id());
+		req_contentsize = rule.requestsize(next->id());
 		if(req_contentsize == IBC_RULE_SIZE_DYNAMIC)
 		{
 			req_dynamic = true;
-			req_contentsize = next.contentsize();
+			req_contentsize = next->contentsize();
 			req_size = req_contentsize + 4;
 		}
 		else
@@ -113,14 +120,14 @@ void Transceiver::body()
 
 		uint8_t paddinglength = 0;
 
-		if(req_contentsize < next.contentsize())
+		if(req_contentsize < next->contentsize())
 		{
-			std::cerr << "WARNING [IBC TRANSCEIVER] : Packet larger than specified ! Sending only specified payload ! <" << next.id() << '|' << next.contentsize() + ">\n";
+			std::cerr << "WARNING [IBC TRANSCEIVER] : Packet larger than specified ! Sending only specified payload ! <" << next->id() << '|' << next->contentsize() + ">\n";
 		}
-		if(req_contentsize > next.contentsize())
+		if(req_contentsize > next->contentsize())
 		{
-			std::cerr << "WARNING [IBC TRANSCEIVER] : Packet smaller than specified ! Sending additional padding ! Please rework for efficiency !<" << next.id() << "|" << next.contentsize()+">\n";
-			paddinglength = req_contentsize - next.contentsize();
+			std::cerr << "WARNING [IBC TRANSCEIVER] : Packet smaller than specified ! Sending additional padding ! Please rework for efficiency !<" << next->id() << "|" << next->contentsize()+">\n";
+			paddinglength = req_contentsize - next->contentsize();
 		}
 
 		req_buffer[1] |= (this->status << 4);
@@ -137,10 +144,10 @@ void Transceiver::body()
 		{
 			req_content = req_buffer + 2;
 		}
-		std::memcpy(req_content, next.content(), next.contentsize());
+		std::memcpy(req_content, next->content(), next->contentsize());
 		
 		//padding if neccessary
-		if(!paddinglength)	padd(req_content + next.contentsize() + 1, paddinglength);
+		if(!paddinglength)	padd(req_content + next->contentsize() + 1, paddinglength);
 
 		//footer
 		*(req_content + req_contentsize + 1) = datahash(req_content, req_contentsize);
@@ -153,7 +160,7 @@ void Transceiver::body()
 		//check header hash
 		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03)) {}//TODO ERROR HANDLING WITH STATUS;
 
-		if(rule.answersize(next.id()) == IBC_RULE_SIZE_DYNAMIC)
+		if(rule.answersize(next->id()) == IBC_RULE_SIZE_DYNAMIC)
 		{
 			res_dynamic = true;
 			recv_intern(res_buffer+1, 1);		//recv size
@@ -167,7 +174,7 @@ void Transceiver::body()
 		{
 			res_dynamic = false;
 			res_content = res_buffer +1;
-			res_contentsize = rule.answersize(next.id());
+			res_contentsize = rule.answersize(next->id());
 			res_size = res_contentsize + 2;
 		}
 
@@ -178,7 +185,7 @@ void Transceiver::body()
 				
 
 		//construct and store the answer packet
-		std::shared_ptr<const Packet> answer (new Packet (next.id(), res_contentsize, res_content));
+		std::shared_ptr<const Packet> answer (new Packet (next->id(), res_contentsize, res_content));
 
 		store(answer);
 
@@ -199,8 +206,8 @@ void Transceiver::padd(uint8_t * begin, uint8_t paddinglength)
 
 void Transceiver::send(Packet & p)
 {
-	//TODO mutex
-	tosend.emplace(p);
+	std::lock_guard<std::mutex> guard(sendbuff_lock);
+	sendbuff.emplace_back(new Packet (p));
 }
 
 void Transceiver::addreceiver(Inbox& i , uint8_t id)
@@ -275,5 +282,39 @@ void Transceiver::store(std::shared_ptr<const Packet>& answer)
 	for(auto& box : receivers[answer->id()])
 	{
 		box->push_back(answer);
+	}
+}
+
+void Transceiver::transfer_sendbuffer()
+{
+	if(sendbuff.empty()) return; // if there is nothing new to transfer we are here for naught
+
+	//in case of an empty tosend buffer we have to wait for the lock	
+	if(!tosend.empty())
+	{
+		std::lock_guard<std::mutex> guard (sendbuff_lock);
+
+		//Black Magic
+		//Basically it allows to use the std::back_inserter for the priority queue, since no other iterator interface seems to be implemented to use with the std::move algorithm
+		
+		for(auto& e : sendbuff)
+		{
+			tosend.push(e);
+		}
+		sendbuff.clear();
+	}
+	else	// to retreive new Packets is not urgent so we only try to lock here
+	{
+		if(sendbuff_lock.try_lock())		//we might lock here
+		{
+			for(auto& e : sendbuff)
+			{
+				tosend.push(e);
+			}	
+			sendbuff.clear();
+
+			sendbuff_lock.unlock();			//unlock again int this case
+		}
+		//else lock could not be aquired
 	}
 }

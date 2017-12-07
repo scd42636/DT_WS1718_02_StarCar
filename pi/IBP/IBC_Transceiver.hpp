@@ -6,8 +6,11 @@
 #include <thread>
 #include <queue>
 #include <vector>
+#include <list>
 #include <set>
 #include <functional>
+#include <mutex>
+
 
 #ifndef IBC_EMULATED
 	#include "Serial.hpp"
@@ -36,11 +39,15 @@ class Transceiver
 	 * 2 Template arg : std::vector<Packet> , the container which stores the heaps objects
 	 * 3 Template arg : a comparison function which orders the heap (here in form of a lamba expression)
 	 */
-	std::priority_queue	<	Packet ,																		//type
-							std::vector<Packet >,															//container
-							std::function<bool(Packet&,Packet&)>
+	std::priority_queue	<	
+							std::shared_ptr<Packet> ,																		//type
+							std::vector<std::shared_ptr<Packet> >,															//container
+							std::function<bool(std::shared_ptr<Packet>&,std::shared_ptr<Packet>&)>
 						>
 						tosend;
+
+	std::mutex sendbuff_lock;
+	std::list<std::shared_ptr<Packet>> sendbuff;
 
 	//TODO OPT vectors dynamically on heap and only if needed	 
 	std::set<Inbox*> receivers [256];
@@ -85,6 +92,8 @@ private:
 	void padd(uint8_t * begin, uint8_t paddinglength);
 
 	void store (std::shared_ptr<const Packet>&);
+
+	void transfer_sendbuffer();
 };
 
 #endif /* IBC_TRANSCEIVER_HPP */
