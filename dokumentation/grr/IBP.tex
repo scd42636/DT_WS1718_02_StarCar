@@ -73,7 +73,7 @@ Request\\
 \normalsize
 \begin{center}
 	\begin{bytefield}{16}
-	\bitheader{0,3,4,5,6,7,8,16}\\
+	\bitheader{0,3,4,5,6,7,8,15}\\
 	\begin{leftwordgroup}{Header}
 		\bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH} & \bitbox[l]{8}{}
 	\end{leftwordgroup}\\
@@ -95,3 +95,43 @@ Request\\
 	\bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH} & \bitbox{8}{MID} & \bitbox {8}{EID}
 \end{bytefield}
 \end{center}
+
+\subsection{Status}
+
+Das Statusfeld wird verwendet um den Status der Kommunikationspartner zu kommunizieren.
+Die übliche Datenübertragung kann dabei nebenher unbeeinträchtigt weiterlaufen.
+Das Statusfeld ist 4bit lang => 16 verschiedene Stati möglich.
+Die Bedeutung des Status kann je nach Art des Kommunikationspartners (Master oder Slave) variieren.
+Das Statusfeld hat im Kontrollfluss die wichtige Aufgabe, dem Master eine Möglichkeit zu geben, zwischen positiver oder negativer Antwort zu unterscheiden.
+
+\subsubsection{Master}
+
+Bit 0 wird als STOP Befehl benutzt. Sein Versand bedeutet das Ende der Kommunikation.
+Bit 1 wird als REINIT Befehlt benutz. Sein Versand fordert eine Reinitialisierung der Kommunikation auf Slave-Seite.
+Bit 2 und 3 wird verwendet um eine erneute Sendung mit einer Nummer 0-3 zu kennzeichnen. Dies geschieht wenn eine Sendung im Vorhinein fehlgeschlagen hat. Eine Sendung kann bis zu 3 Mal wiederholt werden.
+
+\begin{tabular}{l | l}
+	bit & Zweck \\
+	\hline \hline
+	0 & STOP \\
+	1 & REINIT \\
+	2,3 & Resend counter
+\end{tabular}
+
+\subsubsection{Slave}
+
+Bit 0 wird verwendet um einen internen Fehler am Slave zu propagieren, der zur Folge hat das dieser nicht korrekt oder gar nicht auf Befehle reagiert. Der Master kann dadurch auf den Zustand reagieren um zum Beispiel den Fehler zu loggen, den Sendevorgang für eine bestimmte Zeit einzustellen, Systeme kontrolliert herunterfahren zu lassen, etc.
+
+Bit 1, 2 und 3 werden zum Kommunizieren von Fehlern der 3 Checksummen des Protokolls wie folgt verwendet.
+
+\begin{tabular}{l | l}
+	bit & Zweck \\
+	\hline \hline
+	0 & interner Slave Fehler \\
+	1 & Headerhash falsch \\
+	2 & Sizehash falsch \\
+	3 & Datahash falsch
+\end{tabular}
+
+
+
