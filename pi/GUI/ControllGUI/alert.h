@@ -27,16 +27,18 @@ public:
     void fireError(QString errMsg);
     void fireError(QString errMsg, int errNum);
 
-    void clearWarning();
-    void clearError();
-
     ~Alert();
+
+    QVector<QString> getwarMsg();
+    QVector<QString> geterrMsg();
 
 public slots:
 
     void process();
     void finishAlert();
     void changeAlertIcon();
+    void clearWarning();
+    void clearError();
 
 signals:
 
@@ -57,14 +59,9 @@ private:
     bool        warningAndErrorIsSet = false;
     bool        lastTimeOrange = false;
 
-    QString     errMsg;
-    QString     warMsg;
+    QVector<QString> errMsg;
+    QVector<QString> warMsg;
 
-    int         errNum[25];
-    int         warNum[25];
-
-    int         errNumCount = 0;
-    int         warNumCount = 0;
 };
 
 #endif // ALERT_H

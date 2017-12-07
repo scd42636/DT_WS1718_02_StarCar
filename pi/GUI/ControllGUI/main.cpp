@@ -15,16 +15,6 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     HomeWindow w;
     w.show();
-
-   /* QThread *thread = new QThread;
-    InitStarCar *initStarCar = new InitStarCar(nullptr);
-    InitStarCar->moveToThread(thread);
-
-    connect(thread, SIGNAL(started()), initStarCar, SLOT(startProcess()));
-    connect(initStarCar, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(initStarCar, SIGNAL(finished()), initStarCar, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-*/
     //w.showFullScreen();
     return a.exec();
 }

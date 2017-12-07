@@ -77,6 +77,8 @@ void StartWidget::generateStyle(){
 
 void StartWidget::initializeStarCar(){
 
+    pButtonStart->setEnabled(false);
+
     QThread *thread = new QThread;
     initStarCar = new InitStarCar(alertThread);
     initStarCar->moveToThread(thread);

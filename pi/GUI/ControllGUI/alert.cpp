@@ -74,7 +74,7 @@ void Alert::fireWarning(QString warMsg){
         }
     }
 
-    this->warMsg.append(warMsg);
+    this->warMsg.insert(this->warMsg.end(),warMsg);
 }
 
 void Alert::fireWarning(QString warMsg, int warNum){
@@ -89,9 +89,7 @@ void Alert::fireWarning(QString warMsg, int warNum){
         }
     }
 
-    this->warMsg.append(warMsg);
-    this->warNum[warNumCount] = warNum;
-    warNumCount++;
+    this->warMsg.insert(this->warMsg.end(),"Nr: " + QString::number(warNum) + "     " + warMsg);
 }
 
 void Alert::fireError(){
@@ -119,7 +117,7 @@ void Alert::fireError(QString errMsg){
         }
     }
 
-    this->errMsg.append(errMsg);
+    this->errMsg.insert(this->errMsg.end(),errMsg);
 }
 
 void Alert::fireError(QString errMsg, int errNum){
@@ -134,9 +132,7 @@ void Alert::fireError(QString errMsg, int errNum){
         }
     }
 
-    this->errMsg.append(errMsg);
-    this->errNum[errNumCount] = errNum;
-    errNumCount++;
+    this->errMsg.insert(this->errMsg.end(),"Nr: " + QString::number(errNum) + "     " + errMsg);
 }
 
 void Alert::clearWarning(){
@@ -149,6 +145,16 @@ void Alert::clearError(){
 
     errorIsSet = false;
     warningAndErrorIsSet = false;
+}
+
+QVector<QString> Alert::getwarMsg(){
+
+    return warMsg;
+}
+
+QVector<QString> Alert::geterrMsg(){
+
+    return errMsg;
 }
 
 void Alert::finishAlert(){
