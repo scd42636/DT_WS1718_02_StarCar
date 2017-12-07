@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
+#include <manualmode.h>
 
 class ManualModeWidget : public QWidget
 {
@@ -21,7 +22,9 @@ public slots:
 
 private:
 
-    Alert *alertThread;
+    // Thread
+    Alert       *alertThread;
+    ManualMode  *manualMode;
 
 };
 

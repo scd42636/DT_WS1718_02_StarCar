@@ -32,7 +32,9 @@ SOURCES += main.cpp\
     operationmodewidget.cpp \
     automaticmodewidget.cpp \
     manualmodewidget.cpp \
-    initstarcar.cpp
+    initstarcar.cpp \
+    automaticmode.cpp \
+    manualmode.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
@@ -42,7 +44,9 @@ HEADERS  += homewindow.h \
     operationmodewidget.h \
     automaticmodewidget.h \
     manualmodewidget.h \
-    initstarcar.h
+    initstarcar.h \
+    automaticmode.h \
+    manualmode.h
 
 FORMS    += homewindow.ui
 

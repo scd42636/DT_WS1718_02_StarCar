@@ -12,9 +12,6 @@ void InitStarCar::startProcess(){
         emit pushProcessBar();
     }
 
-    alertThread->fireError("test");
-    alertThread->fireWarning("test2");
-
     emit finished();
 }
 
