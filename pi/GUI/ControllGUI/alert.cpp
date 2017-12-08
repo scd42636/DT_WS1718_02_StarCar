@@ -1,5 +1,4 @@
 #include "alert.h"
-#include "pathsandconstans.h"
 
 Alert::Alert(QPushButton *alert) {
 
@@ -20,12 +19,12 @@ void Alert::changeAlertIcon(){
 
         if(lastTimeOrange)
         {
-            pButtonAlert->setIcon(QIcon(errorImage));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_red.png"));
             lastTimeOrange = false;
 
         }else{
 
-            pButtonAlert->setIcon(QIcon(warningImage));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_orange.png"));
             lastTimeOrange = true;
         }
     }else{
@@ -33,18 +32,18 @@ void Alert::changeAlertIcon(){
 
         if(warningIsSet && lastTimeWhite)
         {
-            pButtonAlert->setIcon(QIcon(warningImage));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_orange.png"));
             lastTimeWhite = false;
 
         }else if(errorIsSet && lastTimeWhite){
 
-            pButtonAlert->setIcon(QIcon(errorImage));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_red.png"));
 
             lastTimeWhite = false;
 
         }else{
 
-            pButtonAlert->setIcon(QIcon(whiteWarningImage));
+            pButtonAlert->setIcon(QIcon("://Pics/alert_white.png"));
             lastTimeWhite = true;
         }
     }
@@ -75,7 +74,7 @@ void Alert::fireWarning(QString warMsg){
         }
     }
 
-    this->warMsg.append(warMsg);
+    this->warMsg.insert(this->warMsg.end(),warMsg);
 }
 
 void Alert::fireWarning(QString warMsg, int warNum){
@@ -90,10 +89,7 @@ void Alert::fireWarning(QString warMsg, int warNum){
         }
     }
 
-    this->warMsg.append(warMsg);
-    this->warNum[warNumCount] = warNum;
-    warNumCount++;
-    qDebug("%d",warNumCount);
+    this->warMsg.insert(this->warMsg.end(),"Nr: " + QString::number(warNum) + "     " + warMsg);
 }
 
 void Alert::fireError(){
@@ -121,7 +117,7 @@ void Alert::fireError(QString errMsg){
         }
     }
 
-    this->errMsg.append(errMsg);
+    this->errMsg.insert(this->errMsg.end(),errMsg);
 }
 
 void Alert::fireError(QString errMsg, int errNum){
@@ -136,9 +132,7 @@ void Alert::fireError(QString errMsg, int errNum){
         }
     }
 
-    this->errMsg.append(errMsg);
-    this->errNum[errNumCount] = errNum;
-    errNumCount++;
+    this->errMsg.insert(this->errMsg.end(),"Nr: " + QString::number(errNum) + "     " + errMsg);
 }
 
 void Alert::clearWarning(){
@@ -153,7 +147,17 @@ void Alert::clearError(){
     warningAndErrorIsSet = false;
 }
 
-void Alert::finishWorker(){
+QVector<QString> Alert::getwarMsg(){
+
+    return warMsg;
+}
+
+QVector<QString> Alert::geterrMsg(){
+
+    return errMsg;
+}
+
+void Alert::finishAlert(){
 
     emit finished();
 }

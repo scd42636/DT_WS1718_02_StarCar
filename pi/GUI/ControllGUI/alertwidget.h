@@ -3,6 +3,10 @@
 
 #include <QObject>
 #include <QWidget>
+#include <QListView>
+#include <QStringList>
+#include <QStringListModel>
+#include <QVBoxLayout>
 #include "alert.h"
 
 class AlertWidget : public QWidget
@@ -22,9 +26,25 @@ public slots:
 
 private:
 
-    // Thread
-    Alert *alertThread;
+    // QPushButton
 
+    QPushButton         *checkWarErr;
+
+    // Thread
+    Alert               *alertThread;
+
+    // QStringList
+    QStringListModel    *stringListModel;
+    QStringList         *stringList;
+    QListView           *listView;
+
+    // QVBoxLayout
+    QVBoxLayout         *vBox1;
+
+    // Methode
+    void generateLayout();
+    void generateStyle();
+    void setupConnects();
 };
 
 #endif // ALERTWIDGET_H

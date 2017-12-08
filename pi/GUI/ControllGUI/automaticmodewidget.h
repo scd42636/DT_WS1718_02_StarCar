@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
+#include <automaticmode.h>
 
 class AutomaticModeWidget : public QWidget
 {
@@ -21,8 +22,9 @@ public slots:
 
 private:
 
-    //Thread
-    Alert *alertThread;
+    // Thread
+    Alert           *alertThread;
+    AutomaticMode   *automaticMode;
 
 };
 

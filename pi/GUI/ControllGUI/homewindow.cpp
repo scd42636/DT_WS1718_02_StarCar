@@ -1,6 +1,5 @@
 #include "homewindow.h"
 #include "ui_homewindow.h"
-#include "pathsandconstans.h"
 
 HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWindow)
 {
@@ -17,13 +16,14 @@ void HomeWindow::generateLayout(){
     centralVBox         = new QVBoxLayout(ui->centralWidget);
     hBox1               = new QHBoxLayout();
     lblHeadline         = new QLabel();
-    pButtonAlert        = new QPushButton(QIcon(whiteWarningImage),"");
-    pButtonExit         = new QPushButton(QIcon(exitImage),"");
+    pButtonAlert        = new QPushButton(QIcon("://Pics/alert_white.png"),"");
+    pButtonExit         = new QPushButton(QIcon("://Pics/exit.png"),"");
 
     mainStackedWidget   = new QStackedWidget();
 
+    centralVBox->addSpacing(8);
     centralVBox->addWidget(lblHeadline,0,Qt::AlignHCenter);
-    centralVBox->addSpacing(20);
+    centralVBox->addSpacing(12);
     centralVBox->addWidget(mainStackedWidget);
     centralVBox->addLayout(hBox1);
 
@@ -88,7 +88,7 @@ void HomeWindow::generateStyle(){
     lblHeadline->setText("StarCar");
 
     lblHeadline->setStyleSheet("QLabel{"
-                               "color: green;"
+                               "color: yellow;"
                                "font-family: TimesNewRoman;"
                                "font-style: normal;"
                                "font-size: 15pt;"

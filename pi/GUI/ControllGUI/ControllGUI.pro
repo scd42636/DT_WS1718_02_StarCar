@@ -31,18 +31,26 @@ SOURCES += main.cpp\
     exitwidget.cpp \
     operationmodewidget.cpp \
     automaticmodewidget.cpp \
-    manualmodewidget.cpp
+    manualmodewidget.cpp \
+    initstarcar.cpp \
+    automaticmode.cpp \
+    manualmode.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
     alert.h \
     alertwidget.h \
     exitwidget.h \
-    pathsandconstans.h \
     operationmodewidget.h \
     automaticmodewidget.h \
-    manualmodewidget.h
+    manualmodewidget.h \
+    initstarcar.h \
+    automaticmode.h \
+    manualmode.h
 
 FORMS    += homewindow.ui
 
 DISTFILES +=
+
+RESOURCES += \
+    paths.qrc

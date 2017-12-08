@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Pics/alert_green.png</file>
+        <file>Pics/alert_orange.png</file>
+        <file>Pics/alert_red.png</file>
+        <file>Pics/alert_white.png</file>
+        <file>Pics/exit.png</file>
+        <file>Pics/start.png</file>
+    </qresource>
+</RCC>
