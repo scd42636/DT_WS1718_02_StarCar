@@ -12,6 +12,13 @@ void InitStarCar::startProcess(){
         emit pushProcessBar();
     }
 
+    Serial *SerialPort =  new Serial("Arduino");
+    SerialPort->send("test MSG",8);
+
+    char *data;
+
+    SerialPort->recv(&data,8);
+
     emit finished();
 }
 

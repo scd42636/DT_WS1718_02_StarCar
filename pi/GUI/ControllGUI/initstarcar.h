@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QThread>
 #include <alert.h>
+#include <../../IBP/Serial.hpp>
 
 class InitStarCar : public QObject {
 

@@ -35,16 +35,7 @@ SOURCES += main.cpp\
     initstarcar.cpp \
     automaticmode.cpp \
     manualmode.cpp \
-    ../../IBP/IBC.cpp \
-    ../../IBP/IBC.test.cpp \
-    ../../IBP/IBC_Inbox.cpp \
-    ../../IBP/IBC_Packet.cpp \
-    ../../IBP/IBC_Packet.test.cpp \
-    ../../IBP/IBC_Rule.cpp \
-    ../../IBP/IBC_Transceiver.cpp \
-    ../../IBP/Serial.cpp \
-    ../../IBP/Serial_emulated.cpp \
-    ../../IBP/Serial_emulated.test.cpp
+    ../../IBP/Serial.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
@@ -57,13 +48,7 @@ HEADERS  += homewindow.h \
     initstarcar.h \
     automaticmode.h \
     manualmode.h \
-    ../../IBP/IBC.hpp \
-    ../../IBP/IBC_Inbox.hpp \
-    ../../IBP/IBC_Packet.hpp \
-    ../../IBP/IBC_Rule.hpp \
-    ../../IBP/IBC_Transceiver.hpp \
-    ../../IBP/Serial.hpp \
-    ../../IBP/Serial_emulated.hpp
+    ../../IBP/Serial.hpp
 
 FORMS    += homewindow.ui
 
