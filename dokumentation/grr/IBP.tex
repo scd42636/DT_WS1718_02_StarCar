@@ -1,0 +1,137 @@
+
+\section{Serial Protocoll - IBP}
+Das \textbf{Inter Board Protocoll (IBP)} dient als Vereinbarung von Kommunikationsregeln über eine serielle Kommunikationsschnittstelle.
+Innerhalb dieses Projektes soll es die Kommunikation über eine serielle USB Schnittstelle erleichtern.
+
+\subsection{Konzepte}
+
+\begin{itemize}
+	\item Frage-Antwort Schema\\
+Auf Grund der Art einer seriellen Übertragung bildet das Protokoll eine Frage-Antwort konzeptionalität mit einem dominanten Kommunikationspartner ab, d.h. es existieren ein Master und ein Slave. Der Slave wird über Befehle vom Master zum Handeln aufgefordert und kann dann ein Antwort im Rahmen von vorher getroffener Vereinbarungen senden.
+
+	\item ID $ \rightarrow $ Anzahl verschiedener Befehle\\
+Eine Menge von 256 verschiedenen Befehlen ist möglich. Ein Befehl kann durch eine Identifikationsnummer(ID) erkannt werden. Die Zahl 256 wird auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit)
+
+	\item Priorisierung\\
+Eine Priorität zur Übertragung mehrerer Befehle favorisiert Befehle mit kleinerer ID.
+
+	\item Maximalgröße\\
+Eine Maximalgröße eines Befehls wird auf 255 Bytes auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit)
+
+	\item Statische und Dynamische Größenvereinbarungen\\
+Daten- und Befehlsgrößen sind dabei standardmäßig schon vor Verbindungsaufbau statisch bekannt. Eine dynamische Datengröße ist prinzipiell möglich, aber die dynamische Art eines Befehls muss ebenfalls zu diesem Zeitpunkt bekannt sein. So ist festzuhalten : Für jeden Befehl ist eine Fragegröße(requestsize) und eine Antwortgröße(answer-/responsesize) festzulegen. Anstatt dieser Information kann auch jeweils die dynamische Natur einer Frage oder Antwort festgelegt werden.
+
+	\item Korrekte Übertragung\\
+Die korrekte Übertragung wird durch entsprechende Checksummen gesichert.
+
+	\item Fehlererkennung\\
+Fehler in der Übertragung werden mittels eines Statusfeldes propagiert.\par
+Fehler auf Slave-Seite führen zu Fehlerhaften Antwortdaten. Desshalb hat der Slave die möglichkeit eine Negative Antwort (negative response)zu senden, die keine Antwortdaten mehr mitführt. Die Negative Antwort bietet jedoch wiederum Möglichkeiten verschiedene Fehler anzugeben.\par
+Von Masterseite können Fehler pragmatischer durch wiederholtes senden behandelt werden. Durch den Status kann die Kommunikationsschnittstelle hier hauptsächlich nebenbei bestimmte konfigurierungen der Schnittstelle auf den Slaves zur Laufzeit anregen. Szenarien wie ein kontrollierter Verbindungsabbruch sind denkbar.\par
+\end{itemize}
+\subsection{Aufbau}
+
+\large 
+Legende:\\
+\normalsize
+\begin{center}
+\small
+\begin{tabular}{l | l}
+MID &	Identifikationsnummer der Anfrage\\
+EID &	Nummer des Fehlers bzgl. MID\\
+SIZE&	Größe einer dynamischen Payload, nicht existent bei statisch vereinbarter Übertragung!\\
+STAT&	Status der Übertragung;Protokollinterne Fehlererkennung\\
+HH	&	Hash des Headers\\
+SH	&	Hash der dynamischen Größe (unwichtig bei statisch)\\
+DH	&	Hash der Payload\\
+Payload & Nutzdaten\\
+\end{tabular}
+\end{center}
+\normalsize
+
+\large 
+Request\\
+\normalsize
+
+\begin{center}
+\begin{bytefield}{16}
+	\bitheader{0,7,8,11,12,13,14,15,16}\\
+	\begin{leftwordgroup}{Header}
+		\bitbox{8}{MID} & \bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH}
+	\end{leftwordgroup}\\
+	\bitbox{8}{SIZE} & \bitbox[lt]{8}{}\\
+	\wordbox[rlt]{1}{Payload}\\
+	\skippedwords\\
+	\wordbox[rlb]{1}{}\\
+	\begin{leftwordgroup}{Footer}
+		\bitbox{8}{DH} & \bitbox[l]{8}{}
+	\end{leftwordgroup}\\
+\end{bytefield}
+\end{center}
+
+\large Response\\
+\normalsize
+\begin{center}
+	\begin{bytefield}{16}
+	\bitheader{0,3,4,5,6,7,8,15}\\
+	\begin{leftwordgroup}{Header}
+		\bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH} & \bitbox[l]{8}{}
+	\end{leftwordgroup}\\
+		\bitbox{8}{SIZE} & \bitbox[lb]{8}{}\\
+	\wordbox[rl]{1}{Payload}\\
+	\skippedwords\\
+	\wordbox[rlb]{1}{}\\
+	\begin{leftwordgroup}{Footer}
+		\bitbox{8}{DH} & \bitbox[l]{8}{}
+	\end{leftwordgroup}\\
+\end{bytefield}
+\end{center}
+
+\large Negative Response\\
+\normalsize
+\begin{center}
+	\begin{bytefield}{24}
+	\bitheader{0-23}\\
+	\bitbox{4}{STAT} & \bitbox{2}{SH} & \bitbox{2}{HH} & \bitbox{8}{MID} & \bitbox {8}{EID}
+\end{bytefield}
+\end{center}
+
+\subsection{Status}
+
+Das Statusfeld wird verwendet um den Status der Kommunikationspartner zu kommunizieren.
+Die übliche Datenübertragung kann dabei nebenher unbeeinträchtigt weiterlaufen.
+Das Statusfeld ist 4bit lang => 16 verschiedene Stati möglich.
+Die Bedeutung des Status kann je nach Art des Kommunikationspartners (Master oder Slave) variieren.
+Das Statusfeld hat im Kontrollfluss die wichtige Aufgabe, dem Master eine Möglichkeit zu geben, zwischen positiver oder negativer Antwort zu unterscheiden.
+
+\subsubsection{Master}
+
+Bit 0 wird als STOP Befehl benutzt. Sein Versand bedeutet das Ende der Kommunikation.
+Bit 1 wird als REINIT Befehlt benutz. Sein Versand fordert eine Reinitialisierung der Kommunikation auf Slave-Seite.
+Bit 2 und 3 wird verwendet um eine erneute Sendung mit einer Nummer 0-3 zu kennzeichnen. Dies geschieht wenn eine Sendung im Vorhinein fehlgeschlagen hat. Eine Sendung kann bis zu 3 Mal wiederholt werden.
+
+\begin{tabular}{l | l}
+	bit & Zweck \\
+	\hline \hline
+	0 & STOP \\
+	1 & REINIT \\
+	2,3 & Resend counter
+\end{tabular}
+
+\subsubsection{Slave}
+
+Bit 0 wird verwendet um einen internen Fehler am Slave zu propagieren, der zur Folge hat das dieser nicht korrekt oder gar nicht auf Befehle reagiert. Der Master kann dadurch auf den Zustand reagieren um zum Beispiel den Fehler zu loggen, den Sendevorgang für eine bestimmte Zeit einzustellen, Systeme kontrolliert herunterfahren zu lassen, etc.
+
+Bit 1, 2 und 3 werden zum Kommunizieren von Fehlern der 3 Checksummen des Protokolls wie folgt verwendet.
+
+\begin{tabular}{l | l}
+	bit & Zweck \\
+	\hline \hline
+	0 & interner Slave Fehler \\
+	1 & Headerhash falsch \\
+	2 & Sizehash falsch \\
+	3 & Datahash falsch
+\end{tabular}
+
+
+
