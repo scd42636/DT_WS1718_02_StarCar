@@ -149,37 +149,49 @@ char recv()
 char
 
 void loop() {
-
-	serialfield SF;
-	init_serialfield(&SF);
-	
+	IBC ibc;	
 	while (1) 
 	{
 
-		newrequest
+/* IBC_FRAME_GENERATION_TAG_BEGIN */
+/* Generated with Uno_ibcgeneration.py */
+/* Code inside IBC BEGIN/END MID RECV/SEND tags will be preserved */
 
-		//TODO check status
-		//TODO check hashes
+		ibc.handleReqHead();
 
 		switch(MID)
 		{
+
+/* IBC_MESSAGE_BEGIN 252 4 8 */
 			case 252:
+
+			// Recv exactly 4 bytes in the following
+			// Also calculate their data hash along the way by
+			//		xoring all bytes together once
+			//		or use the provided function
+			// Make the hash public to the IBC by ibc.setDH(Your DATAHASH HERE)
+/* IBC_PRESERVE_RECV_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
 				char buff[4];
 				for(int i = 0 , i < 4; i++)
 				{
 					buff[i] = Serial.read();
 				}
 
-				//check data hash here
-				CALC_DH = createDH(buff, 4);
-				checkDH(&THIS_STAT, CALC_DH);
+				// DO NOT FORGET TO SET THE HASH
+				ibc.setDH(ibc.createDH(buff, 4));
+/* IBC_PRESERVE_RECV_END 252   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 
-				//send answer from here
-				//construct status and hashes as header
-				//here for a static comm we need no sizehash
-				send(createStatusByte(SF));
+				ibc.handleReqFoot();
+				ibc.handleResHead();
+				
+			//Send exactly 8 bytes in the following
+			// Also calculate their data hash along the way by
+			//		xoring all bytes together once
+			//		or use the provided function ibc.createDH(..)
+			// Make the hash public to the IBC by ibc.setDH(Your DATAHASH HERE)
+/* IBC_PRESERVE_SEND_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv */
+				
 
-				//Datagramm
 				Serial.write(5);
 				Serial.write(6);
 				Serial.write(7);
@@ -190,10 +202,12 @@ void loop() {
 				Serial.write(7);
 				Serial.write(8);
 
-				//set hash
-				DH = 0;
+				
+				// DO NOT FORGET TO SET THE HASH
+				ibc.setDH( /*DH*/ );
+/* IBC_PRESERVE_SEND_END 252   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
 			break;
-
+/* IBC_MESSAGE_END 252 4 8 */
 			case 253:
 				char size = Serial.read();
 
@@ -229,8 +243,7 @@ void loop() {
 				
 			break;
 		}
-
-		//send hash
-		Serial.write(DH);
+		ibc.handleResFoot();
+/* IBC_FRAME_GENERATION_TAG_END */
 	}
 }

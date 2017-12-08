@@ -13,6 +13,8 @@ class IBC
 	byte m_INSIZE_DYN;	//incoming dynamic size if set
 	byte m_INDH;		//incoming data hash
 
+	byte m_CALCDH;		//own calculated data hash
+
 	byte m_STAT;	//stat of this slave using low 4 bits (0x0F)
 	byte m_DH;		//DATAHASH which makes the footer
 
@@ -57,9 +59,9 @@ public:
 	byte recv();
 	void recv(byte *b, int size);
 
-	void handleReq();
-	void handleDYN();
-	void handleReqFOOT();
+	void handleReqHead();
+	void handleReqDyn();
+	void handleReqFoot();
 
 	void handleRes();
 	void handleResDyn();

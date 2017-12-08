@@ -96,7 +96,7 @@ bool IBC::checkinSH(){
 }
 
 bool IBC::checkinDH(byte dh){
-	return inDH() == dh;
+	return inDH() == m_CALCDH;
 }
 
 void IBC::setinSIZE_DYN(byte size){
@@ -143,21 +143,25 @@ byte IBC::recv(){
 	return Serial.read();
 }
 
-void IBC::handleheader(){
+void IBC::handleReqHead(){
 	m_INMID = recv();
 	m_INSTAT = recv();
 
 	checkinHH();
 }
 
-void handledynamic(){
+void handleReqDyn(){
 	m_INSIZE_DYN = recv();
 	
 	checkinSH();
 }
 
-void IBC::handlefooter(){
+void IBC::handleReqFoot(){
 	checkinDH();
+}
+
+void IBC::handleRes(){
+
 }
 
 void IBC::extError(byte EID){
@@ -167,6 +171,4 @@ void IBC::extError(byte EID){
 
 void IBC::handleErrors(){
 	if(!m_STAT) return;
-
-	
 }
