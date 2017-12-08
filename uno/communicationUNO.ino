@@ -40,11 +40,13 @@ struct serialfield
 
 	char THIS_STAT = 0;
 	char CALC_DH;
+
+	char EID;
 };
 
 void init_serialfield(serialfield *s)
 {
-	*s = {0,0,0,0,0,0,0};
+	*s = {0,0,0,0,0,0,0,0};
 }
 
 /**
@@ -85,9 +87,22 @@ bool checkHH_request(serialfield *sf)
 	return false;
 }
 
-bool possibleError(serialfield *sf)
+void externalError(serialfield *sf, char EID)
 {
+	sf->EID = EID;
+	sf->THIS_STAT |= 0x08;
+}
 
+bool negResponse(serialfield *sf)
+{
+	if(sf->THIS_STAT) return false;
+
+	//construct the negative response here
+
+	send(createStatusByte(sf));
+	send(sf->MID);
+	send(sf->EID);
+	return true;
 }
 
 void newrequest(serialfield *sf)
@@ -98,6 +113,16 @@ void newrequest(serialfield *sf)
 		sf->IN_SH = (sf->IN_STAT & 0x0C) >> 2;
 		sf->IN_HH = sf->IN_STAT & 0x03;
 		sf->IN_STAT = sf->IN_STAT >> 4;
+}
+
+char createStatusByte(serialfield *sf, char dynsize)
+{
+	return (THIS_STAT << 4) & createSH(dynsize) & createHH(STAT);
+}
+
+char createStatusByte(serialfield *sf)
+{
+	return createStatusByte(sf, 0);
 }
 
 //TODO THIS_sendmultiple THIS_recvmultiple overall own send functions
@@ -152,7 +177,7 @@ void loop() {
 				//send answer from here
 				//construct status and hashes as header
 				//here for a static comm we need no sizehash
-				Serial.write((THIS_STAT << 4) & createHH(STAT));
+				send(createStatusByte(SF));
 
 				//Datagramm
 				Serial.write(5);
