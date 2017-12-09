@@ -150,7 +150,7 @@ void IBC::handleReqHead(){
 	checkinHH();
 }
 
-void handleReqDyn(){
+void IBC::handleReqDyn(){
 	m_INSIZE_DYN = recv();
 	
 	checkinSH();
@@ -177,4 +177,194 @@ void IBC::negativeResponse(){
 	send(Statbyte());
 	send(m_MID);
 	send(m_EID);
+}
+
+void IBC::next(){
+
+/* IBC_FRAME_GENERATION_TAG_BEGIN */                                                     
+/* Generated with Uno_ibcgeneration.py */
+/* Code inside IBC BEGIN/END MID RECV/SEND tags will be preserved */
+
+        handleReqHead();
+     
+        if(!STAT())
+        switch(MID)
+        {
+
+
+/* IBC_MESSAGE_BEGIN 0 0 0 */
+        case 0:
+           
+
+/*   Recv exactly 0 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 0 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+/* IBC_PRESERVE_RECV_END 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+            if(STAT())break;
+            handleReqFoot();
+            if(STAT())break;
+            handleResHead();
+            if(STAT())break;
+
+/*Send exactly 0 bytes in the following                  */
+/*If you have a dynamic size you have to send this size first!      */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 0 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			//DONT FORGET TO HASH
+			setDH(0);
+
+/* IBC_PRESERVE_SEND_END 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        break;
+/* IBC_MESSAGE_END 0 0 0 */
+/* IBC_MESSAGE_BEGIN 252 4 8 */
+        case 252:
+           
+
+/*   Recv exactly 4 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+
+			char buff[4];
+			recv(buff,4);
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buff,4);
+
+/* IBC_PRESERVE_RECV_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+            if(STAT())break;
+            handleReqFoot();
+            if(STAT())break;
+            handleResHead();
+            if(STAT())break;
+
+/*Send exactly 8 bytes in the following                  */
+/*If you have a dynamic size you have to send this size first!      */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+
+			char newbuff[9] = "HelloxD!";						
+			send(newbuff, 8);
+	
+			//DONT FORGET TO HASH
+			setDH(createDH(newbuff, 8));
+
+/* IBC_PRESERVE_SEND_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        break;
+/* IBC_MESSAGE_END 252 4 8 */
+/* IBC_MESSAGE_BEGIN 253 255 2 */
+        case 253:
+           
+		handleReqDyn();
+
+/*   Recv exactly inSIZE_DYN() bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 253 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			char *buff = new char [inSIZE_DYN()];
+			recv(buff,inSIZE_DYN());
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buff,inSIZE_DYN());
+			delete[] buff;//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it 
+			
+/* IBC_PRESERVE_RECV_END 253 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+            if(STAT())break;
+            handleReqFoot();
+            if(STAT())break;
+            handleResHead();
+            if(STAT())break;
+
+/*Send exactly 2 bytes in the following                  */
+/*If you have a dynamic size you have to send this size first!      */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 253 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			for(int i = 0 ; i<2;i++) {inSIZE_DYN()}
+			
+			//DONT FORGET TO HASH
+			setDH(0); //because x^x = 0
+			
+/* IBC_PRESERVE_SEND_END 253 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        break;
+/* IBC_MESSAGE_END 253 255 2 */
+/* IBC_MESSAGE_BEGIN 254 2 255 */
+        case 254:
+           
+
+/*   Recv exactly 2 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			char buff[2];
+			recv(buff,2);
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buff,2);
+			
+/* IBC_PRESERVE_RECV_END 254 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+            if(STAT())break;
+            handleReqFoot();
+            if(STAT())break;
+            handleResHead();
+            if(STAT())break;
+
+/*Send exactly your ?DYNAMIC_SIZE? amount of  bytes in the following                  */
+/*If you have a dynamic size you have to send this size first!      */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			send(?DYNAMIC_SIZE?);
+			for(int i = 0 ; i< ?DYNAMIC_SIZE? ;i++) {send(0);}
+			
+			//DONT FORGET TO HASH
+			setDH(0);
+			
+/* IBC_PRESERVE_SEND_END 254 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        break;
+/* IBC_MESSAGE_END 254 2 255 */
+        default : 
+            m_STAT = 0x04;
+        break;
+        }
+        if(STAT())
+        {
+            delay(1000);
+            while(Serial.available > 0)Serial.read(); // empty sent data
+            negativeResponse();
+            m_STAT = 0;
+        }
+        else
+        {
+            handleResFoot();
+        }
+/* IBC_FRAME_GENERATION_TAG_END */
 }

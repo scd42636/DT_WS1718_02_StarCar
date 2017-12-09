@@ -43,7 +43,6 @@ rules = [x.strip('\n').split(' ') for x in rules if p.match(x)]
 rules = [[int(x) for x in l] for l in rules]
 
 print("Rules found :")
-print(rules)
 
 #scan for code tags in output
 ofile = open(sys.argv[2] , 'r')
@@ -67,6 +66,8 @@ while i < len(olines):
 
 if begintagline > endtagline:
  printf('Error parsing Outfile !')
+
+lines = olines
 
 olines = olines[begintagline : endtagline+1]
 
@@ -139,27 +140,27 @@ for e in sendpreserve:
  print (sendpreserve[e])
 
 def dummy_recv(num):
- ret =  ['\n','char buff['+str(num)+'];\n','ibc.recv(buff,'+str(num)+');\n','\n','//DONT FORGET TO HASH\n','ibc.setDH(ibc.createDH(buff,'+str(num)+');\n','\n']
+ ret =  ['\n','char buff['+str(num)+'];\n','recv(buff,'+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buff,'+str(num)+');\n','\n']
  #indent
  ret = ['\t\t\t'+x for x in ret]
  return ret
 
 
 def dummy_send(num):
- ret =  ['\n','for(int i = 0 ; i<'+str(num)+';i++) {ibc.send(0)}\n','\n','//DONT FORGET TO HASH\n','ibc.setDH(0);\n','\n']
+ ret =  ['\n','for(int i = 0 ; i<'+str(num)+';i++) {send(0);}\n','\n','//DONT FORGET TO HASH\n','setDH(0);\n','\n']
  ret = ['\t\t\t'+x for x in ret]
  return ret
 
 def dummy_recv_dyn():
- num = 'ibc.inSIZE_DYN()'
- ret =  ['\n','char *buff = new char ['+str(num)+'];\n','ibc.recv(buff,'+str(num)+');\n','\n','//DONT FORGET TO HASH\n','ibc.setDH(ibc.createDH(buff,'+str(num)+');\n','delete[] buff;\n','\n']
+ num = 'inSIZE_DYN()'
+ ret =  ['\n','char *buff = new char ['+str(num)+'];\n','recv(buff,'+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buff,'+str(num)+');\n','delete[] buff;//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it \n','\n']
  #indent
  ret = ['\t\t\t'+x for x in ret]
  return ret
 
 
 def dummy_send_dyn():
- ret =  ['\n','ibc.send(?DYNAMIC_SIZE?);\n','for(int i = 0 ; i< ?DYNAMIC_SIZE? ;i++) {ibc.send(0)}\n','\n','//DONT FORGET TO HASH\n','ibc.setDH(0);\n','\n']
+ ret =  ['\n','send(?DYNAMIC_SIZE?);\n','for(int i = 0 ; i< ?DYNAMIC_SIZE? ;i++) {send(0);}\n','\n','//DONT FORGET TO HASH\n','setDH(0);\n','\n']
  ret = ['\t\t\t'+x for x in ret]
  return ret
 
@@ -189,14 +190,13 @@ for e in sendpreserve:
  print (e, ":")
  print (sendpreserve[e])
 
-head = """
-/* IBC_FRAME_GENERATION_TAG_BEGIN */                                                     
+head = """/* IBC_FRAME_GENERATION_TAG_BEGIN */                                                     
 /* Generated with Uno_ibcgeneration.py */
 /* Code inside IBC BEGIN/END MID RECV/SEND tags will be preserved */
 
-        ibc.handleReqHead();
+        handleReqHead();
      
-        if(!ibc.STAT())
+        if(!STAT())
         switch(MID)
         {
 
@@ -213,14 +213,14 @@ def messagerecvbegin(rule):
  size = str(rule[1])
  s = ""
  if size == '255':
-  size = "ibc.inSIZE_DYN()"
-  s = s+"\t\tibc.handleReqDyn();\n"
+  size = "inSIZE_DYN()"
+  s = s+"\t\thandleReqDyn();\n"
  s = s + """
 /*   Recv exactly """+size+""" bytes in the following                              */
 /*   Also calculate their data hash along the way by                    */
 /*      xoring all bytes together once                                  */
 /*      or use the provided function                                    */
-/*   Make the hash public to the IBC by ibc.setDH(Your DATAHASH HERE)   */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN """+str(rule[0])+" "+"v"*40+"""*/
 """
  return s
@@ -229,17 +229,15 @@ def messagerecvpreserve(rule):
  return "".join(recvpreserve[rule[0]])
 
 def messagerecvend(rule):
- return """
-/* IBC_PRESERVE_RECV_END """+str(rule[0])+" "+"^"*40+"""*/
-
-"""
+ return """/* IBC_PRESERVE_RECV_END """+str(rule[0])+" "+"^"*40+"""*/"""
 
 messagemid = """
-            if(ibc.STAT())break;
-            ibc.handleReqFoot();
-            if(ibc.STAT())break;
-            ibc.handleResHead();
-            if(ibc.STAT())break;
+
+            if(STAT())break;
+            handleReqFoot();
+            if(STAT())break;
+            handleResHead();
+            if(STAT())break;
 """
 
 def messagesendbegin(rule):
@@ -252,8 +250,8 @@ def messagesendbegin(rule):
 /*If you have a dynamic size you have to send this size first!      */
 /*Also calculate their data hash along the way by                   */
 /*  xoring all bytes together once                                  */
-/*  or use the provided function ibc.createDH(..)                   */
-/* Make the hash public to the IBC by ibc.setDH(Your DATAHASH HERE) */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN """+str(rule[0])+" "+"v"*40+"""*/
 """
  return s
@@ -262,30 +260,28 @@ def messagesendpreserve(rule):
  return "".join(sendpreserve[rule[0]])
 
 def messagesendend(rule):
- return """
-/* IBC_PRESERVE_SEND_END """+str(rule[0])+" "+"^"*40+"""*/
+ return """/* IBC_PRESERVE_SEND_END """+str(rule[0])+" "+"^"*40+"""*/
         break;
 """
 
 def messagefoot(rule):
- return """/* IBC_MESSAGE_END """+str(rule[0])+" "+str(rule[1])+ " " + str(rule[2])+""" */
-"""
+ return """/* IBC_MESSAGE_END """+str(rule[0])+" "+str(rule[1])+ " " + str(rule[2])+""" */"""
 
 foot = """
         default : 
-            ibc.m_STAT = 0x04;
+            m_STAT = 0x04;
         break;
         }
-        if(ibc.STAT())
+        if(STAT())
         {
             delay(1000);
             while(Serial.available > 0)Serial.read(); // empty sent data
-            ibc.negativeResponse();
-            ibc.m_STAT = 0;
+            negativeResponse();
+            m_STAT = 0;
         }
         else
         {
-            ibc.handleResFoot();
+            handleResFoot();
         }
 /* IBC_FRAME_GENERATION_TAG_END */
 """
@@ -303,3 +299,20 @@ for rule in rules:
 frame += foot
 
 print(frame)
+
+print(begintagline , "|" , endtagline)
+
+beginlines = lines[:begintagline]
+endlines = lines[endtagline+1:]
+
+f = open(sys.argv[2], "w")
+
+for l in beginlines:
+ f.write(l)
+
+f.write(frame)
+
+for l in endlines:
+ f.write(l)
+
+f.close();

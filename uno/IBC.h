@@ -64,9 +64,10 @@ public:
 	void handleReqFoot();
 
 	void handleRes();
-	void handleResDyn();
 	void handleResFoot();
 
 	void error(byte EID);
 	bool negativeResponse();
+
+	void next();
 };
