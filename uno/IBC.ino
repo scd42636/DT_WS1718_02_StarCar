@@ -160,15 +160,21 @@ void IBC::handleReqFoot(){
 	checkinDH();
 }
 
-void IBC::handleRes(){
-
+void IBC::handleResHead(){
+	send(Statbyte());
 }
 
-void IBC::extError(byte EID){
+void IBC::handleResFoot(){
+	send(DH());
+}
+
+void IBC::error(byte EID){
 	m_EID = EID;
 	m_STAT |= STAT_ERROR_EXT;
 }
 
-void IBC::handleErrors(){
-	if(!m_STAT) return;
+void IBC::negativeResponse(){
+	send(Statbyte());
+	send(m_MID);
+	send(m_EID);
 }

@@ -67,6 +67,6 @@ public:
 	void handleResDyn();
 	void handleResFoot();
 
-	void extError(byte EID);
-	bool handleErrors();
+	void error(byte EID);
+	bool negativeResponse();
 };
