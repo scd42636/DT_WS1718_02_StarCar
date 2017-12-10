@@ -1,4 +1,3 @@
-
 #include "IBC.h"
 
 IBC::IBC()
@@ -188,12 +187,13 @@ void IBC::next(){
         handleReqHead();
      
         if(!STAT())
-        switch(MID)
+        switch((unsigned char)inMID())
         {
 
 
 /* IBC_MESSAGE_BEGIN 0 0 0 */
         case 0:
+        {
            
 
 /*   Recv exactly 0 bytes in the following                              */
@@ -202,6 +202,12 @@ void IBC::next(){
 /*      or use the provided function                                    */
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 0 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			char buffr0[0];
+			recv(buffr0,0);
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buffr0,0));
 			
 /* IBC_PRESERVE_RECV_END 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
@@ -218,14 +224,19 @@ void IBC::next(){
 /*  or use the provided function createDH(..)                   */
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 0 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			for(int i = 0 ; i<0;i++) {send(0);}
+			
 			//DONT FORGET TO HASH
 			setDH(0);
-
+			
 /* IBC_PRESERVE_SEND_END 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
         break;
 /* IBC_MESSAGE_END 0 0 0 */
 /* IBC_MESSAGE_BEGIN 252 4 8 */
         case 252:
+        {
            
 
 /*   Recv exactly 4 bytes in the following                              */
@@ -234,13 +245,13 @@ void IBC::next(){
 /*      or use the provided function                                    */
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-
-			char buff[4];
-			recv(buff,4);
+			
+			char buffr252[4];
+			recv(buffr252,4);
 			
 			//DONT FORGET TO HASH
-			setDH(createDH(buff,4);
-
+			setDH(createDH(buffr252,4));
+			
 /* IBC_PRESERVE_RECV_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
             if(STAT())break;
@@ -256,18 +267,19 @@ void IBC::next(){
 /*  or use the provided function createDH(..)                   */
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-
-			char newbuff[9] = "HelloxD!";						
-			send(newbuff, 8);
-	
+			
+			for(int i = 0 ; i<8;i++) {send(0);}
+			
 			//DONT FORGET TO HASH
-			setDH(createDH(newbuff, 8));
-
+			setDH(0);
+			
 /* IBC_PRESERVE_SEND_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
         break;
 /* IBC_MESSAGE_END 252 4 8 */
 /* IBC_MESSAGE_BEGIN 253 255 2 */
         case 253:
+        {
            
 		handleReqDyn();
 
@@ -278,12 +290,12 @@ void IBC::next(){
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 253 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			char *buff = new char [inSIZE_DYN()];
-			recv(buff,inSIZE_DYN());
+			char *buffr253 = new char [inSIZE_DYN()];
+			recv(buffr253,inSIZE_DYN());
 			
 			//DONT FORGET TO HASH
-			setDH(createDH(buff,inSIZE_DYN());
-			delete[] buff;//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it 
+			setDH(createDH(buffr253,inSIZE_DYN()));
+			delete[] buffr253;//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it 
 			
 /* IBC_PRESERVE_RECV_END 253 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
@@ -301,16 +313,18 @@ void IBC::next(){
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 253 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			for(int i = 0 ; i<2;i++) {inSIZE_DYN()}
+			for(int i = 0 ; i<2;i++) {send(0);}
 			
 			//DONT FORGET TO HASH
-			setDH(0); //because x^x = 0
+			setDH(0);
 			
 /* IBC_PRESERVE_SEND_END 253 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
         break;
 /* IBC_MESSAGE_END 253 255 2 */
 /* IBC_MESSAGE_BEGIN 254 2 255 */
         case 254:
+        {
            
 
 /*   Recv exactly 2 bytes in the following                              */
@@ -320,11 +334,11 @@ void IBC::next(){
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			char buff[2];
-			recv(buff,2);
+			char buffr254[2];
+			recv(buffr254,2);
 			
 			//DONT FORGET TO HASH
-			setDH(createDH(buff,2);
+			setDH(createDH(buffr254,2));
 			
 /* IBC_PRESERVE_RECV_END 254 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
@@ -349,6 +363,7 @@ void IBC::next(){
 			setDH(0);
 			
 /* IBC_PRESERVE_SEND_END 254 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
         break;
 /* IBC_MESSAGE_END 254 2 255 */
         default : 
@@ -358,7 +373,7 @@ void IBC::next(){
         if(STAT())
         {
             delay(1000);
-            while(Serial.available > 0)Serial.read(); // empty sent data
+            while(Serial.available() > 0)Serial.read(); // empty sent data
             negativeResponse();
             m_STAT = 0;
         }

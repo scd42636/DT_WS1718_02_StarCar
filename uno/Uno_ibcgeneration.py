@@ -139,27 +139,27 @@ for e in sendpreserve:
  print (e, ":")
  print (sendpreserve[e])
 
-def dummy_recv(num):
- ret =  ['\n','char buff['+str(num)+'];\n','recv(buff,'+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buff,'+str(num)+');\n','\n']
+def dummy_recv(mid,num):
+ ret =  ['\n','char buffr'+str(mid)+'['+str(num)+'];\n','recv(buffr'+str(mid)+','+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buffr'+str(mid)+','+str(num)+'));\n','\n']
  #indent
  ret = ['\t\t\t'+x for x in ret]
  return ret
 
 
-def dummy_send(num):
+def dummy_send(mid,num):
  ret =  ['\n','for(int i = 0 ; i<'+str(num)+';i++) {send(0);}\n','\n','//DONT FORGET TO HASH\n','setDH(0);\n','\n']
  ret = ['\t\t\t'+x for x in ret]
  return ret
 
-def dummy_recv_dyn():
+def dummy_recv_dyn(mid):
  num = 'inSIZE_DYN()'
- ret =  ['\n','char *buff = new char ['+str(num)+'];\n','recv(buff,'+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buff,'+str(num)+');\n','delete[] buff;//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it \n','\n']
+ ret =  ['\n','char *buffr'+str(mid)+' = new char ['+str(num)+'];\n','recv(buffr'+str(mid)+','+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buffr'+str(mid)+','+str(num)+'));\n','delete[] buffr'+str(mid)+';//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it \n','\n']
  #indent
  ret = ['\t\t\t'+x for x in ret]
  return ret
 
 
-def dummy_send_dyn():
+def dummy_send_dyn(mid):
  ret =  ['\n','send(?DYNAMIC_SIZE?);\n','for(int i = 0 ; i< ?DYNAMIC_SIZE? ;i++) {send(0);}\n','\n','//DONT FORGET TO HASH\n','setDH(0);\n','\n']
  ret = ['\t\t\t'+x for x in ret]
  return ret
@@ -170,17 +170,17 @@ for e in recvpreserve:
  if recvpreserve[e] == [""]:
   rule = [x for x in rules if x[0] == e]
   if rule[0][1] == 255:
-   recvpreserve[e] = dummy_recv_dyn()
+   recvpreserve[e] = dummy_recv_dyn(rule[0][0])
   else:
-   recvpreserve[e] = dummy_recv(rule[0][1])
+   recvpreserve[e] = dummy_recv(rule[0][0],rule[0][1])
 
 for e in sendpreserve:
  if sendpreserve[e] == [""]:
   rule = [x for x in rules if x[0] == e]
   if rule[0][2] == 255:
-   sendpreserve[e] = dummy_send_dyn()
+   sendpreserve[e] = dummy_send_dyn(rule[0][0])
   else:
-   sendpreserve[e] = dummy_send(rule[0][2])
+   sendpreserve[e] = dummy_send(rule[0][0],rule[0][2])
 
 for e in recvpreserve:
  print (e, ":")
@@ -197,7 +197,7 @@ head = """/* IBC_FRAME_GENERATION_TAG_BEGIN */
         handleReqHead();
      
         if(!STAT())
-        switch(MID)
+        switch((unsigned char)inMID())
         {
 
 """
@@ -206,8 +206,10 @@ def messagehead(rule):
  return """
 /* IBC_MESSAGE_BEGIN """+str(rule[0])+" "+str(rule[1])+" "+str(rule[2])+""" */
         case """+str(rule[0])+""":
+        {
            
 """
+
 
 def messagerecvbegin(rule):
  size = str(rule[1])
@@ -261,6 +263,7 @@ def messagesendpreserve(rule):
 
 def messagesendend(rule):
  return """/* IBC_PRESERVE_SEND_END """+str(rule[0])+" "+"^"*40+"""*/
+        }
         break;
 """
 
@@ -275,7 +278,7 @@ foot = """
         if(STAT())
         {
             delay(1000);
-            while(Serial.available > 0)Serial.read(); // empty sent data
+            while(Serial.available() > 0)Serial.read(); // empty sent data
             negativeResponse();
             m_STAT = 0;
         }

@@ -18,7 +18,7 @@ class IBC
 	byte m_STAT;	//stat of this slave using low 4 bits (0x0F)
 	byte m_DH;		//DATAHASH which makes the footer
 
-	byte EID;
+	byte m_EID;
 public:
 	IBC();
 
@@ -48,8 +48,6 @@ public:
 	bool checkinSH();
 	bool checkinDH(byte dh);
 
-	void setSIZE_DYN(byte size);
-
 	void setDH(byte DH);
 	byte DH();
 
@@ -63,11 +61,11 @@ public:
 	void handleReqDyn();
 	void handleReqFoot();
 
-	void handleRes();
+	void handleResHead();
 	void handleResFoot();
 
 	void error(byte EID);
-	bool negativeResponse();
+	void negativeResponse();
 
 	void next();
 };
