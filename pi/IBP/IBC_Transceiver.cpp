@@ -281,7 +281,8 @@ void Transceiver::store(std::shared_ptr<const Packet>& answer)
 	//the last actual holder will delete the package
 	for(auto& box : receivers[answer->id()])
 	{
-		box->push_back(answer);
+		std::lock_guard<std::mutex> guard (box->l);
+		box->dump.push_back(answer);
 	}
 }
 

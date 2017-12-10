@@ -50,6 +50,12 @@ int run ()
 
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 
+
+
+	i1.fetch();
+	i2.fetch();
+	i3.fetch();
+
 	if(!i1.size() || ! i2.size()) std::cerr << "FOOOOOOOOOOOOL !";
 
 	std::cout << "i1:\n";
