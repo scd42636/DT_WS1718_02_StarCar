@@ -5,67 +5,118 @@
 // <author>Dominik Scharnagl</author>
 //--------------------------------------------------------------------------------------------------
 
-#include "Motor.h";
-#include "Servo.h";
+#include "./driver/UsbDriver.h"
 
-#define Motor_RxPin 3       // Pin 3 connects to SMC TX
-#define Motor_TxPin 4       // Pin 4 connects to SMC RX
-#define Motor_ResetPin 5    // Pin 5 connects to SMC nRST
-#define Motor_ErrorPin 6    // Pin 6 connects to SMC ERR
+#include "StarCar.h"
+#include "StarBoard.h"
+#include "StarMotor.h";
+#include "StarServo.h";
+#include "StarWatch.h";
 
-#define Servo_DirPin -1
-#define Servo_StepPin -1
-#define Servo_EnablePin -1
-#define Servo_MS1Pin -1
-#define Servo_MS2Pin -1
-#define Servo_MS3Pin -1
+static StarBoard board = StarBoard();
 
-static Motor motor = Motor(Motor_RxPin, Motor_TxPin, Motor_ResetPin, Motor_ErrorPin);
-static Servo servo = Servo(Servo_DirPin, Servo_StepPin, Servo_EnablePin, Servo_MS1Pin, Servo_MS2Pin, Servo_MS3Pin);
+#define Motor_RxPin         2
+#define Motor_TxPin         3
+#define Motor_ResetPin      4
 
+static StarMotor motor = StarMotor(Motor_RxPin, Motor_TxPin, Motor_ResetPin);
 
-void setupBoard()
-{
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, LOW);
-}
+#define Servo_StepPin       10
 
-void setupMotor()
-{
-    motor.Setup();
+static StarServo servo = StarServo(Servo_StepPin);
 
-    motor.ChangeLimit(MotorLimit::ML_MaxAccelerationForward, 1);
-    motor.ChangeLimit(MotorLimit::ML_MaxAccelerationBackward, 1);
-    motor.ChangeLimit(MotorLimit::ML_MaxDeceleration, 10);
-}
+Usb usb;
+UsbDriver usbDriver;
+UsbController usbController(&usb, &usbDriver);
 
-void setupServo()
-{
-    servo.Setup();
-}
+static StarWatch watch = StarWatch(&usbController);
+
 
 /// <summary>
 // Runs once when reset is pressed or the board is powered.
 /// </summary>
 void setup()
 {
-    setupBoard();
-    setupMotor();
-    setupServo();
+    Serial.begin(115200);
+    delay(100);
+
+    #if _DEBUG
+    Serial.println("----------");
+    Serial.println("-> setup()");
+    #endif
+    
+    if (usb.Init() == -1)
+        Serial.println("--> Initializing USB Shield...\t\tFAILED!");
+
+    delay(200);
+    Serial.print("--> Initializing Board...\t\t");
+
+    if (board.Init() == StarBoardResult::BR_Success)
+        Serial.println("success!");
+    else
+        Serial.println("FAILED!");
+
+    delay(100);
+    Serial.print("--> Initializing Motor...\t\t");
+
+    if (motor.Init() == StarMotorResult::MR_Success)
+        Serial.println("success!");
+    else
+        Serial.println("FAILED!");
+
+    delay(100);
+    Serial.print("--> Initializing Servo...\t\t");
+
+    if (servo.Init() == StarServoResult::SR_Success)
+        Serial.println("success!");
+    else
+        Serial.println("FAILED!");
+
+    delay(100);
+    Serial.print("--> Initializing Watch...\t\t");
+
+    if (watch.Init() == StarWatchResult::WR_Success)
+        Serial.println("success!");
+    else
+        Serial.println("FAILED!");
+
+    delay(100);
+
+    #if _DEBUG
+    Serial.println("----------");
+    #endif
 }
 
+/// <summary>
+// Runs continues until the board is powered off or reset.
+/// </summary>
 void loop()
 {
-    motor.ChangeSpeed(300);
+    usb.Task();
 
-    int currentSpeed = motor.ReadCurrentSpeed();
-    int targetSpeed = motor.ReadTargetSpeed();
+    if (!usbController.isReady())
+        return;
 
-    Serial.print("Target Speed: ");
-    Serial.println(targetSpeed);
+    #if _DEBUG
+    Serial.println("----------");
+    Serial.println("-> loop()");
+    #endif
 
-    Serial.print("Current Speed: ");
-    Serial.println(currentSpeed);
+    //servo.Test02();
 
-    Serial.println("-----");
+    board.Task();
+    delay(100);
+
+    motor.Task();
+    delay(100);
+
+    servo.Task();
+    delay(100);
+
+    watch.Task();
+    delay(100);
+
+    #if _DEBUG
+    Serial.println("----------");
+    #endif
 }

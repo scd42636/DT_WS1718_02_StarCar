@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------------------
-// <copyright file="Motor.h" company="OTH Regensburg">
+// <copyright file="StarMotor.h" company="OTH Regensburg">
 //     This file is protected by Team 02 StarCar Copyright (c) 2017.
 // </copyright>
 // <author>Dominik Scharnagl</author>
@@ -9,15 +9,16 @@
 // - https://www.pololu.com/docs/0J44/6.2.1
 
 #pragma once
-#include <SoftwareSerial.h>
+#include "StarCar.h"
 
-enum MotorDirection
+
+enum StarMotorDirection
 {
     MD_Forward = 0x85,
     MD_Backward = 0x86
 };
 
-enum MotorLimit
+enum StarMotorLimit
 {
     ML_MaxSpeed = 0,
     ML_MaxAcceleration = 1,
@@ -35,7 +36,7 @@ enum MotorLimit
     ML_BrakeDurationBackward = ML_BrakeDuration + 8,
 };
 
-enum MotorLimitResult
+enum StarMotorLimitResult
 {
     MLR_Success = 0,
     MLR_UnableToSetForwardLimit = 1,
@@ -43,7 +44,7 @@ enum MotorLimitResult
     MLR_UnableToSetLimit = 3,
 };
 
-enum MotorResult
+enum StarMotorResult
 {
     MR_Success = 0,
 
@@ -61,7 +62,7 @@ enum MotorResult
 /// <summary>
 /// See https://www.pololu.com/docs/0J44/6.4
 /// </summary>
-enum MotorVariable
+enum StarMotorVariable
 {
     // Status Flag Registers
     MV_ErrorStatus = 0,
@@ -108,7 +109,7 @@ enum MotorVariable
     MV_BrakeDurationReverse = 39,
 };
 
-class Motor
+class StarMotor
 {
     // ---------- Public const fields ----------
 public:
@@ -126,26 +127,29 @@ private:
 
     // ---------- Public constructors ----------
 public:
-    Motor(
+    StarMotor(
         short receivePin,
         short transmitPin,
         short resetPin,
-        short errorPin);
+        short errorPin = PIN_DISCONNECTED);
 
     // ---------- Public methods ----------
 public:
-    MotorResult ChangeSpeed(int speed);
-    MotorResult ChangeSpeed(int speed, MotorDirection direction);
+    StarMotorResult ChangeSpeed(int speed);
+    StarMotorResult ChangeSpeed(int speed, StarMotorDirection direction);
 
-    MotorResult ChangeLimit(MotorLimit limit, unsigned int value);
+    StarMotorResult ChangeLimit(StarMotorLimit limit, unsigned int value);
+    StarMotorResult Init();
 
     int ReadCurrentSpeed();
     int ReadTargetSpeed();
 
-    MotorResult ReadVariable(MotorVariable variable, unsigned int* value);
+    StarMotorResult ReadVariable(StarMotorVariable variable, unsigned int* value);
 
-    MotorResult Setup();
     void Stop();
+
+    void Task();
+    void Test01();
 
     // ---------- Private methods ----------
 private:

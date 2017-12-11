@@ -5,9 +5,13 @@
 // <author>Dominik Scharnagl</author>
 //--------------------------------------------------------------------------------------------------
 
+#include <Arduino.h>
+#include <SoftwareSerial.h>
+
+#define ENABLE_UHS__DEBUGGING _DEBUG
+#define PIN_DISCONNECTED -1
 
 #pragma once
-#include <Arduino.h>
 
 // Implemented using the code provided on:
 // - https://github.com/laurb9/StepperDriver/blob/master/src/BasicStepperDriver.h

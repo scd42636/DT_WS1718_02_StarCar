@@ -18,13 +18,25 @@
     <ClInclude Include="__vm\.StarCarUno.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Motor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Servo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="StarCar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StarBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StarWatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StarMotor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StarServo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="driver\UsbDriver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="driver\EZ430AccessPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,10 +44,22 @@
     <None Include="StarCarUno.ino" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Motor.cpp">
+    <ClCompile Include="StarBoard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Servo.cpp">
+    <ClCompile Include="StarWatch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StarMotor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StarServo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="driver\UsbDriver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="driver\EZ430AccessPoint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
