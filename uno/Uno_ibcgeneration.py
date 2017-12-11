@@ -140,7 +140,7 @@ for e in sendpreserve:
  print (sendpreserve[e])
 
 def dummy_recv(mid,num):
- ret =  ['\n','char buffr'+str(mid)+'['+str(num)+'];\n','recv(buffr'+str(mid)+','+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buffr'+str(mid)+','+str(num)+'));\n','\n']
+ ret =  ['\n','byte buffr'+str(mid)+'['+str(num)+'];\n','recv(buffr'+str(mid)+','+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buffr'+str(mid)+','+str(num)+'));\n','\n']
  #indent
  ret = ['\t\t\t'+x for x in ret]
  return ret
@@ -153,7 +153,7 @@ def dummy_send(mid,num):
 
 def dummy_recv_dyn(mid):
  num = 'inSIZE_DYN()'
- ret =  ['\n','char *buffr'+str(mid)+' = new char ['+str(num)+'];\n','recv(buffr'+str(mid)+','+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buffr'+str(mid)+','+str(num)+'));\n','delete[] buffr'+str(mid)+';//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it \n','\n']
+ ret =  ['\n','byte *buffr'+str(mid)+' = new byte ['+str(num)+'];\n','recv(buffr'+str(mid)+','+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buffr'+str(mid)+','+str(num)+'));\n','delete[] buffr'+str(mid)+';//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it \n','\n']
  #indent
  ret = ['\t\t\t'+x for x in ret]
  return ret
@@ -197,7 +197,7 @@ head = """/* IBC_FRAME_GENERATION_TAG_BEGIN */
         handleReqHead();
      
         if(!STAT())
-        switch((unsigned char)inMID())
+        switch((unsigned byte)inMID())
         {
 
 """

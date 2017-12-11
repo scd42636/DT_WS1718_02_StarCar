@@ -1,3 +1,5 @@
+#ifndef IBC_TEST_H
+#     define IBC_TEST_H
 
 #define IBC_BAUD 9600
 
@@ -8,15 +10,14 @@
 
 class IBC
 {
+public:
 	byte m_INMID;		//incoming id 
 	byte m_INSTAT;		//status byte goes here
 	byte m_INSIZE_DYN;	//incoming dynamic size if set
 	byte m_INDH;		//incoming data hash
 
-	byte m_CALCDH;		//own calculated data hash
-
 	byte m_STAT;	//stat of this slave using low 4 bits (0x0F)
-	byte m_DH;		//DATAHASH which makes the footer
+	byte m_DH;		//DATAHASH own calculated one
 
 	byte m_EID;
 public:
@@ -69,3 +70,4 @@ public:
 
 	void next();
 };
+#endif /* IBC_TEST_H */
