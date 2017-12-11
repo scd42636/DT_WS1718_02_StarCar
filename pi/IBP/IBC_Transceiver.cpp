@@ -153,7 +153,7 @@ void Transceiver::body()
 
 		send_intern(req_buffer, req_size);
 
-		std::cerr << "DEBUG : " << '\n';
+		std::cerr << "\nDEBUG : \n";
 		for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
 
 		//now recv header first
@@ -164,7 +164,7 @@ void Transceiver::body()
 		{
 			failcount++;
 			
-			std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
+			std::cerr << "\n[IBC TRANSCEIVER] Response Sizehash failed ! ";
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
 			std::cerr << " | ";
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
@@ -190,7 +190,7 @@ void Transceiver::body()
 				failcount++;
 				
 				
-				std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
+				std::cerr << "\n[IBC TRANSCEIVER] Response Sizehash failed ! ";
 				for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
 				std::cerr << "\n";
 				for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
@@ -224,7 +224,7 @@ void Transceiver::body()
 		{
 			failcount++;
 			
-			std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
+			std::cerr << "\n[IBC TRANSCEIVER] Response Sizehash failed ! ";
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
 			std::cerr << " | ";
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
@@ -250,7 +250,7 @@ void Transceiver::body()
 		failcount = 0;
 
 
-		std::cerr << "DEBUGR : " << '\n';
+		std::cerr << "DEBUGR : \n";
 		for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
 	}
 }

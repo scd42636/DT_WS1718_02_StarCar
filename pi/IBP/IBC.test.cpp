@@ -6,6 +6,7 @@
 #include <exception>
 #include <iostream>
 
+#include <stdexcept>
 #include <chrono>
 
 using std::cout;
@@ -17,7 +18,7 @@ int main (int argc , char** argv)
 	try{
 	run();
 	}
-	catch(std::exception e)
+	catch(std::runtime_error e)
 	{
 		std::cout << e.what()<<'\n';
 	}
