@@ -98,25 +98,24 @@ byte IBC::inSTAT(){
 	return m_INSTAT >> 4;
 }
 
-byte IBC::inSIZE_DYN()
-{
+byte IBC::inSIZE_DYN(){
 	return m_INSIZE_DYN;
 }
 
 byte IBC::inSH(){
-	return m_INSTAT >> 2 & 0x03;
+    return (m_INSTAT >> 2) & 0x03;
 }
 
 byte IBC::inHH(){
-	m_INSTAT & 0x03;
+    return m_INSTAT & 0x03;
 }
 
 byte IBC::inDH(){
-	return m_INDH;
+    return m_INDH;
 }
 
 byte IBC::STAT(){
-	return m_STAT;
+    return m_STAT;
 }
 
 byte IBC::HH_request(){
@@ -152,7 +151,7 @@ byte IBC::createDH(byte* data, int size){
 }
 
 byte IBC::Statbyte(byte dynsize){
-	return (STAT() << 4) & (SH(dynsize) << 2) & HH_response();
+	return (STAT() << 4) | (SH(dynsize) << 2) | HH_response();
 }
 
 byte IBC::Statbyte(){
@@ -199,7 +198,7 @@ void IBC::recv(byte *data, int size){
 		}
 		else
 		{
-			//TODO IDLE TIME
+			delay(15);
 		}
 	}
 }
@@ -215,17 +214,26 @@ void IBC::handleReqHead(){
 	m_INMID = recv();
 	m_INSTAT = recv();
 
-	checkinHH();
+	if(!checkinHH())
+	{
+		m_STAT = STAT_ERROR_HH;
+	}
 }
 
 void IBC::handleReqDyn(){
 	m_INSIZE_DYN = recv();
 	
-	checkinSH();
+	if(checkinSH())
+	{
+		m_STAT = STAT_ERROR_SH;
+	}
 }
 
 void IBC::handleReqFoot(){
-	checkinDH(m_DH);
+	if(checkinDH(m_DH))
+	{
+		m_STAT = STAT_ERROR_DH;
+	}
 }
 
 void IBC::handleResHead(){
@@ -439,6 +447,7 @@ void IBC::next(){
             delay(1000);
             while(Serial.available() > 0)Serial.read(); // empty sent data
             negativeResponse();
+            m_EID = 0;
             m_STAT = 0;
         }
         else
