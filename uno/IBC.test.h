@@ -8,6 +8,8 @@
 #define STAT_ERROR_SH 0x02
 #define STAT_ERROR_DH 0x01
 
+typedef char byte;
+
 class IBC
 {
 public:

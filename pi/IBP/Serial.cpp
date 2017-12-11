@@ -99,7 +99,8 @@ int Serial::recv(void * data , int maxsize) const
 void Serial::emptyRecvBuffer() const
 {
 	sleep(1);
-	while ((fgetc((FILE*)fd)) != EOF) {
+	char buff [20];
+	while (read(fd, buff, 20) != 0) {
 		/* ... */
 	}
 }

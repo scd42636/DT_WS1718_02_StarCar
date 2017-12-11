@@ -1,82 +1,7 @@
-#ifndef IBC_H
-#     define IBC_H
-
-#define IBC_BAUD 57600
-
-#define STAT_ERROR_EXT 0x08
-#define STAT_ERROR_HH 0x04
-#define STAT_ERROR_SH 0x02
-#define STAT_ERROR_DH 0x01
-
-class IBC
-{
-	byte m_INMID;		//incoming id 
-	byte m_INSTAT;		//status byte goes here
-	byte m_INSIZE_DYN;	//incoming dynamic size if set
-	byte m_INDH;		//incoming data hash
-
-	byte m_CALCDH;		//own calculated data hash
-
-	byte m_STAT;	//stat of this slave using low 4 bits (0x0F)
-	byte m_DH;		//DATAHASH which makes the footer
-
-	byte m_EID;
-public:
-	IBC();
-
-	byte inMID();
-	byte inStatbyte();
-	byte inSTAT();
-	byte inSIZE_DYN();
-	byte inSH();
-	byte inHH();
-	byte inDH();
-
-	byte STAT();
-
-	//hashes
-	byte HH_request();
-	byte HH_response();
-	byte SH(byte size);
-	byte createDH(byte *data, int size, byte in);
-	byte createDH(byte *data, int size);
-
-	//create full status byte for response purpose
-	byte Statbyte(byte dynsize);
-	byte Statbyte();
-
-	//check incoming hashes
-	bool checkinHH();
-	bool checkinSH();
-	bool checkinDH(byte dh);
-
-	void setDH(byte DH);
-	byte DH();
-
-	void send(byte b);
-	void send(byte* b, int size);
-
-	byte recv();
-	void recv(byte *b, int size);
-
-	void handleReqHead();
-	void handleReqDyn();
-	void handleReqFoot();
-
-	void handleResHead();
-	void handleResFoot();
-
-	void error(byte EID);
-	void negativeResponse();
-
-	void next();
-};
-#endif /* IBC_H */
+#include "IBC.test.h"
 
 IBC::IBC()
 {
-	Serial.begin(IBC_BAUD);
-
 	m_INMID = 0;
 	m_INSTAT = 0;
 	m_INSIZE_DYN = 0;
@@ -98,24 +23,25 @@ byte IBC::inSTAT(){
 	return m_INSTAT >> 4;
 }
 
-byte IBC::inSIZE_DYN(){
+byte IBC::inSIZE_DYN()
+{
 	return m_INSIZE_DYN;
 }
 
 byte IBC::inSH(){
-    return (m_INSTAT >> 2) & 0x03;
+	return (m_INSTAT >> 2) & 0x03;
 }
 
 byte IBC::inHH(){
-    return m_INSTAT & 0x03;
+	return m_INSTAT & 0x03;
 }
 
 byte IBC::inDH(){
-    return m_INDH;
+	return m_INDH;
 }
 
 byte IBC::STAT(){
-    return m_STAT;
+	return m_STAT;
 }
 
 byte IBC::HH_request(){
@@ -179,61 +105,33 @@ byte IBC::DH(){
 }
 
 void IBC::send(byte *b, int size){
-	for(int i=0; i<size; i++)
-		Serial.write(*b);
 }
 
 void IBC::send(byte b){
-	Serial.write(b);
 }
 
 void IBC::recv(byte *data, int size){
-	int i = 0;
-	while(i < size)
-	{
-		if(Serial.available() > 0)
-		{
-			data[i] = Serial.read();
-			i++;
-		}
-		else
-		{
-			delay(15);
-		}
-	}
 }
 
 byte IBC::recv(){
-	while(!(Serial.available()>0)){
-		//TODO IDLE TIME
-	}
-	return Serial.read();
 }
 
 void IBC::handleReqHead(){
 	m_INMID = recv();
 	m_INSTAT = recv();
 
-	if(!checkinHH())
-	{
-		m_STAT = STAT_ERROR_HH;
-	}
+	checkinHH();
+	if()
 }
 
 void IBC::handleReqDyn(){
 	m_INSIZE_DYN = recv();
 	
-	if(checkinSH())
-	{
-		m_STAT = STAT_ERROR_SH;
-	}
+	checkinSH();
 }
 
 void IBC::handleReqFoot(){
-	if(checkinDH(m_DH))
-	{
-		m_STAT = STAT_ERROR_DH;
-	}
+	checkinDH(m_DH);
 }
 
 void IBC::handleResHead(){
@@ -444,10 +342,7 @@ void IBC::next(){
         }
         if(STAT())
         {
-            delay(1000);
-            while(Serial.available() > 0)Serial.read(); // empty sent data
             negativeResponse();
-            m_EID = 0;
             m_STAT = 0;
         }
         else
@@ -456,16 +351,4 @@ void IBC::next(){
         }
 /* IBC_FRAME_GENERATION_TAG_END */
 } 
-
-IBC* ibc;
-
-void setup()
-{
-  ibc = new IBC;
-}
-
-void loop()
-{
-	ibc->next();
-}
 
