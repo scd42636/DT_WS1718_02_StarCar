@@ -174,7 +174,7 @@ void Transceiver::body()
 			res_dynamic = true;
 			recv_intern(res_buffer+1, 1);		//recv size
 			//check se size hash
-			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 4))
+			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 6))
 			{
 				failcount++;
 				std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! " << std::hex << (unsigned int)req_buffer[0] << ":" << (unsigned int)req_buffer[1]<< ":" << (unsigned int)req_buffer[2] << "(Failcount: " << failcount << ")\n" << std::dec;
