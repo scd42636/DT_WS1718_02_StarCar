@@ -1,7 +1,7 @@
 #ifndef IBC_H
 #     define IBC_H
 
-#define IBC_BAUD 9600
+#define IBC_BAUD 57600
 
 #define STAT_ERROR_EXT 0x08
 #define STAT_ERROR_HH 0x04
@@ -271,11 +271,8 @@ void IBC::next(){
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 0 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			byte buffr0[0];
-			recv(buffr0,0);
-			
 			//DONT FORGET TO HASH
-			setDH(createDH(buffr0,0));
+			setDH(0);
 			
 /* IBC_PRESERVE_RECV_END 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
@@ -292,8 +289,6 @@ void IBC::next(){
 /*  or use the provided function createDH(..)                   */
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 0 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-			
-			for(int i = 0 ; i<0;i++) {send(0);}
 			
 			//DONT FORGET TO HASH
 			setDH(0);
@@ -336,10 +331,11 @@ void IBC::next(){
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
+                        byte buffs252 [8] = {1,2,3,4,5,6,7,8};
 			for(int i = 0 ; i<8;i++) {send(0);}
 			
 			//DONT FORGET TO HASH
-			setDH(0);
+			setDH(createDH(buffs252, 8));
 			
 /* IBC_PRESERVE_SEND_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
@@ -381,7 +377,7 @@ void IBC::next(){
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 253 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			for(int i = 0 ; i<2;i++) {send(0);}
+			for(int i = 0 ; i<2;i++) {send(42);}
 			
 			//DONT FORGET TO HASH
 			setDH(0);
@@ -425,7 +421,7 @@ void IBC::next(){
 /* IBC_PRESERVE_SEND_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
 			send(2);
-			for(int i = 0 ; i< 2 ;i++) {send(0);}
+			for(int i = 0 ; i< 2 ;i++) {send(43);}
 			
 			//DONT FORGET TO HASH
 			setDH(0);
@@ -452,13 +448,15 @@ void IBC::next(){
 /* IBC_FRAME_GENERATION_TAG_END */
 } 
 
-IBC ibc;
+IBC* ibc;
 
 void setup()
-{}
+{
+  ibc = new IBC;
+}
 
 void loop()
 {
-	ibc.next();
+	ibc->next();
 }
 

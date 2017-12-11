@@ -80,6 +80,9 @@ void Transceiver::body()
 
 	while (running)
 	{
+		//reset status
+		this->status = 0;
+
 		transfer_sendbuffer();
 
 		if (tosend.empty())
@@ -101,7 +104,8 @@ void Transceiver::body()
 
 		req_buffer[0] = next->id();
 
-		req_buffer[1] |= this->status << 4;
+		req_buffer[1] = 0;
+		req_buffer[1] |= (this->status << 4);
 	
 		req_contentsize = rule.requestsize(next->id());
 		if(req_contentsize == IBC_RULE_SIZE_DYNAMIC)
@@ -127,10 +131,8 @@ void Transceiver::body()
 			paddinglength = req_contentsize - next->contentsize();
 		}
 
-		req_buffer[1] |= (this->status << 4);
-
-		req_buffer[1] |= (sizehash(req_contentsize) << 2);
-		req_buffer[1] |= headhash_request(req_buffer);
+		req_buffer[1] = (req_buffer[1] & 0xF0) | (sizehash(req_contentsize) << 2);
+		req_buffer[1] = (req_buffer[1] & 0xFC) | headhash_request(req_buffer);
 	
 		if(req_dynamic)
 		{
@@ -147,18 +149,27 @@ void Transceiver::body()
 		if(!paddinglength)	padd(req_content + next->contentsize() + 1, paddinglength);
 
 		//footer
-		*(req_content + req_contentsize + 1) = datahash(req_content, req_contentsize);
+		*(req_content + req_contentsize) = datahash(req_content, req_contentsize);
 
 		send_intern(req_buffer, req_size);
 
+		std::cerr << "DEBUG : " << '\n';
+		for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
+
 		//now recv header first
 		recv_intern(res_buffer, 1); //response header 1 byte long
-		
+
 		//check header hash
 		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03))
 		{
 			failcount++;
-			std::cerr << "[IBC TRANSCEIVER] Respone Headhash failed ! " << std::hex << (unsigned int)req_buffer[0] << ":" << (unsigned int)req_buffer[1] << "(Failcount: "<< failcount << " )\n" << std::dec;
+			
+			std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
+			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
+			std::cerr << " | ";
+			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
+			std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
+
 			if(failcount > IBP_FAIL_MAX)
 			{
 				failcount = 0;
@@ -177,7 +188,14 @@ void Transceiver::body()
 			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 6))
 			{
 				failcount++;
-				std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! " << std::hex << (unsigned int)req_buffer[0] << ":" << (unsigned int)req_buffer[1]<< ":" << (unsigned int)req_buffer[2] << "(Failcount: " << failcount << ")\n" << std::dec;
+				
+				
+				std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
+				for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
+				std::cerr << "\n";
+				for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
+				std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
+
 				if(failcount > IBP_FAIL_MAX)
 				{
 					failcount++;
@@ -205,11 +223,13 @@ void Transceiver::body()
 		if(datahash(res_content, res_contentsize) != res_datahash)
 		{
 			failcount++;
-			std::cerr << "[IBC TRANSCEIVER] Response Datahash failed ! " << std::hex << (unsigned int)req_buffer[0] << ":" << (unsigned int)req_buffer[1]<< ":" << (unsigned int)req_buffer[2] << ":";
 			
-			for(int i = 0 ; i < req_size+1; i++){std::cerr << std::hex << (unsigned int)req_buffer[i+3] << ":";}
-
+			std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
+			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
+			std::cerr << " | ";
+			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
 			std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
+
 			if(failcount > IBP_FAIL_MAX)
 			{
 				failcount++;
@@ -228,6 +248,10 @@ void Transceiver::body()
 		//this request has been handled, so we erase it from the queue
 		tosend.pop();
 		failcount = 0;
+
+
+		std::cerr << "DEBUGR : " << '\n';
+		for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
 	}
 }
 
@@ -289,12 +313,12 @@ void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 
 uint8_t Transceiver::headhash_request(uint8_t* headerbegin) const
 {
-	return	headerbegin[0] ^ (headerbegin[0] >> 2) ^ (headerbegin[0] >> 4) ^ (headerbegin[0] >> 6) ^ (headerbegin[1] >> 4) ^ (headerbegin[1] >> 6) & 0x03;
+	return	(headerbegin[0] ^ (headerbegin[0] >> 2) ^ (headerbegin[0] >> 4) ^ (headerbegin[0] >> 6) ^ (headerbegin[1] >> 4) ^ (headerbegin[1] >> 6)) & 0x03;
 }
 
 uint8_t Transceiver::headhash_response(uint8_t* headerbegin) const
 {
-	return	(headerbegin[0] >> 4) ^ (headerbegin[0] >> 6) & 0x03;
+	return	((headerbegin[0] >> 4) ^ (headerbegin[0] >> 6)) & 0x03;
 }
 
 uint8_t Transceiver::sizehash(uint8_t size) const
