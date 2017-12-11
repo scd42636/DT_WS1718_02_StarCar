@@ -1,7 +1,8 @@
 #ifndef IBC_TRANSCEIVER_HPP
 #     define IBC_TRANSCEIVER_HPP
 
-#define IBC_TRANSCEIVER_IDLE_TIME 15ms //using std::chrono_literals this syntax is possible
+#include "IBC_defines.hpp"
+#define IBC_TRANSCEIVER_IDLE_TIME IBP_IDLE_TIME //using std::chrono_literals this syntax is possible
 
 #include <thread>
 #include <queue>

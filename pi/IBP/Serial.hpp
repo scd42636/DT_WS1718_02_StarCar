@@ -44,6 +44,12 @@ public:
 	 * @return the number of bytes actually received
 	 */
 	int recv (void * data, int maxsize) const;
+
+	/**
+	 * @brief empties the recv buffer of the Serial port
+	 * This function puts this thread to sleep to wait until the comm-partner stops sending
+	 */
+	void emptyRecvBuffer() const
 private:
 	/**
 	 * @brief configures the Serial port for data transmission

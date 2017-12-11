@@ -76,9 +76,10 @@ void Transceiver::body()
 	uint8_t res_contentsize;
 	uint8_t* res_content;
 
+	int failcount = 0;
+
 	while (running)
 	{
-		
 		transfer_sendbuffer();
 
 		if (tosend.empty())
@@ -86,8 +87,6 @@ void Transceiver::body()
 			std::this_thread::sleep_for(IBC_TRANSCEIVER_IDLE_TIME);								//idle if there is nothing to do
 			continue;																		//start anew and check again first
 		}
-
-
 		Packet* next = tosend.top().get();		//retrieve the next packet to send
 
 		req_size = 0;
@@ -116,8 +115,6 @@ void Transceiver::body()
 			req_dynamic = false;
 			req_size = req_contentsize + 3;
 		}
-
-
 		uint8_t paddinglength = 0;
 
 		if(req_contentsize < next->contentsize())
@@ -158,14 +155,38 @@ void Transceiver::body()
 		recv_intern(res_buffer, 1); //response header 1 byte long
 		
 		//check header hash
-		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03)) {}//TODO ERROR HANDLING WITH STATUS;
+		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03))
+		{
+			failcount++;
+			std::cerr << "[IBC TRANSCEIVER] Respone Headhash failed ! " << std::hex << (unsigned int)req_buffer[0] << ":" << (unsigned int)req_buffer[1] << "(Failcount: "<< failcount << " )\n" << std::dec;
+			if(failcount > IBP_FAIL_MAX)
+			{
+				failcount = 0;
+				//discard this packet because it failed to often
+				tosend.pop();
+				s.emptyRecvBuffer();
+				continue;
+			}
+		}
 
 		if(rule.answersize(next->id()) == IBC_RULE_SIZE_DYNAMIC)
 		{
 			res_dynamic = true;
 			recv_intern(res_buffer+1, 1);		//recv size
 			//check se size hash
-			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 4)){} //TODO ERRORHANDLING WRONG SIZE !
+			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 4))
+			{
+				failcount++;
+				std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! " << std::hex << (unsigned int)req_buffer[0] << ":" << (unsigned int)req_buffer[1]<< ":" << (unsigned int)req_buffer[2] << "(Failcount: " << failcount << ")\n" << std::dec;
+				if(failcount > IBP_FAIL_MAX)
+				{
+					failcount++;
+					//discard this packet because it failed to often
+					tosend.pop();
+					s.emptyRecvBuffer();
+					continue;	
+				}
+			}
 			res_content = res_buffer + 2;
 			res_contentsize = res_buffer[1];
 			res_size = res_contentsize + 3;
@@ -181,8 +202,23 @@ void Transceiver::body()
 		recv_intern(res_content, res_contentsize + 1); //recv content and its hash
 
 		uint8_t res_datahash = res_buffer[res_size-1];
-		if(datahash(res_content, res_contentsize) != res_datahash) {}//TODO ERROR HADNLING DATA FAILURE !
-				
+		if(datahash(res_content, res_contentsize) != res_datahash)
+		{
+			failcount++;
+			std::cerr << "[IBC TRANSCEIVER] Response Datahash failed ! " << std::hex << (unsigned int)req_buffer[0] << ":" << (unsigned int)req_buffer[1]<< ":" << (unsigned int)req_buffer[2] << ":";
+			
+			for(int i = 0 ; i < req_size+1; i++){std::cerr << std::hex << (unsigned int)req_buffer[i+3] << ":";}
+
+			std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
+			if(failcount > IBP_FAIL_MAX)
+			{
+				failcount++;
+				//discard this packet because it failed to often
+				tosend.pop();
+				s.emptyRecvBuffer();
+				continue;
+			}
+		}
 
 		//construct and store the answer packet
 		std::shared_ptr<const Packet> answer (new Packet (next->id(), res_contentsize, res_content));
@@ -191,10 +227,9 @@ void Transceiver::body()
 
 		//this request has been handled, so we erase it from the queue
 		tosend.pop();
+		failcount = 0;
 	}
 }
-
-#define IBP_PADDING 0xAA
 
 void Transceiver::padd(uint8_t * begin, uint8_t paddinglength)
 {
@@ -254,12 +289,12 @@ void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 
 uint8_t Transceiver::headhash_request(uint8_t* headerbegin) const
 {
-	headerbegin[0] ^ (headerbegin[0] >> 2) ^ (headerbegin[0] >> 4) ^ (headerbegin[0] >> 6) ^ (headerbegin[1] >> 4) ^ (headerbegin[1] >> 6);
+	return	headerbegin[0] ^ (headerbegin[0] >> 2) ^ (headerbegin[0] >> 4) ^ (headerbegin[0] >> 6) ^ (headerbegin[1] >> 4) ^ (headerbegin[1] >> 6) & 0x03;
 }
 
 uint8_t Transceiver::headhash_response(uint8_t* headerbegin) const
 {
-	(headerbegin[0] >> 4) ^ (headerbegin[0] >> 6);
+	return	(headerbegin[0] >> 4) ^ (headerbegin[0] >> 6) & 0x03;
 }
 
 uint8_t Transceiver::sizehash(uint8_t size) const
@@ -273,6 +308,7 @@ uint8_t Transceiver::datahash(uint8_t * data, uint8_t length, uint8_t in) const
 	{
 		in ^= data[i];
 	}
+	return in;
 }
 
 void Transceiver::store(std::shared_ptr<const Packet>& answer)

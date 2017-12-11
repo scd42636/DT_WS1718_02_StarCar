@@ -48,6 +48,8 @@ public:
 	 * @return the number of bytes actually received
 	 */
 	int recv (char * data, int maxsize);
+
+	void emptyRecvBuffer();
 private:
 	/**
 	 * @brief configures the Serial port for data transmission
