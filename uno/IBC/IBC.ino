@@ -1,4 +1,77 @@
-#include "IBC.h"
+#ifndef IBC_H
+#     define IBC_H
+
+#define IBC_BAUD 9600
+
+#define STAT_ERROR_EXT 0x08
+#define STAT_ERROR_HH 0x04
+#define STAT_ERROR_SH 0x02
+#define STAT_ERROR_DH 0x01
+
+class IBC
+{
+	byte m_INMID;		//incoming id 
+	byte m_INSTAT;		//status byte goes here
+	byte m_INSIZE_DYN;	//incoming dynamic size if set
+	byte m_INDH;		//incoming data hash
+
+	byte m_CALCDH;		//own calculated data hash
+
+	byte m_STAT;	//stat of this slave using low 4 bits (0x0F)
+	byte m_DH;		//DATAHASH which makes the footer
+
+	byte m_EID;
+public:
+	IBC();
+
+	byte inMID();
+	byte inStatbyte();
+	byte inSTAT();
+	byte inSIZE_DYN();
+	byte inSH();
+	byte inHH();
+	byte inDH();
+
+	byte STAT();
+
+	//hashes
+	byte HH_request();
+	byte HH_response();
+	byte SH(byte size);
+	byte createDH(byte *data, int size, byte in);
+	byte createDH(byte *data, int size);
+
+	//create full status byte for response purpose
+	byte Statbyte(byte dynsize);
+	byte Statbyte();
+
+	//check incoming hashes
+	bool checkinHH();
+	bool checkinSH();
+	bool checkinDH(byte dh);
+
+	void setDH(byte DH);
+	byte DH();
+
+	void send(byte b);
+	void send(byte* b, int size);
+
+	byte recv();
+	void recv(byte *b, int size);
+
+	void handleReqHead();
+	void handleReqDyn();
+	void handleReqFoot();
+
+	void handleResHead();
+	void handleResFoot();
+
+	void error(byte EID);
+	void negativeResponse();
+
+	void next();
+};
+#endif /* IBC_H */
 
 IBC::IBC()
 {
@@ -79,7 +152,7 @@ byte IBC::createDH(byte* data, int size){
 }
 
 byte IBC::Statbyte(byte dynsize){
-	return (STAT << 4) & (SH(dynsize) << 2) & HH_response();
+	return (STAT() << 4) & (SH(dynsize) << 2) & HH_response();
 }
 
 byte IBC::Statbyte(){
@@ -95,11 +168,7 @@ bool IBC::checkinSH(){
 }
 
 bool IBC::checkinDH(byte dh){
-	return inDH() == m_CALCDH;
-}
-
-void IBC::setinSIZE_DYN(byte size){
-	inSIZE_DYN = size;
+	return inDH() == m_DH;
 }
 
 void IBC::setDH(byte dh){
@@ -156,7 +225,7 @@ void IBC::handleReqDyn(){
 }
 
 void IBC::handleReqFoot(){
-	checkinDH();
+	checkinDH(m_DH);
 }
 
 void IBC::handleResHead(){
@@ -174,12 +243,11 @@ void IBC::error(byte EID){
 
 void IBC::negativeResponse(){
 	send(Statbyte());
-	send(m_MID);
+	send(m_INMID);
 	send(m_EID);
 }
 
 void IBC::next(){
-
 /* IBC_FRAME_GENERATION_TAG_BEGIN */                                                     
 /* Generated with Uno_ibcgeneration.py */
 /* Code inside IBC BEGIN/END MID RECV/SEND tags will be preserved */
@@ -187,7 +255,7 @@ void IBC::next(){
         handleReqHead();
      
         if(!STAT())
-        switch((unsigned char)inMID())
+        switch((unsigned byte)inMID())
         {
 
 
@@ -203,7 +271,7 @@ void IBC::next(){
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 0 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			char buffr0[0];
+			byte buffr0[0];
 			recv(buffr0,0);
 			
 			//DONT FORGET TO HASH
@@ -234,6 +302,49 @@ void IBC::next(){
         }
         break;
 /* IBC_MESSAGE_END 0 0 0 */
+/* IBC_MESSAGE_BEGIN 250 2 3 */
+        case 250:
+        {
+           
+
+/*   Recv exactly 2 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 250 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			byte buffr250[2];
+			recv(buffr250,2);
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buffr250,2));
+			
+/* IBC_PRESERVE_RECV_END 250 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+            if(STAT())break;
+            handleReqFoot();
+            if(STAT())break;
+            handleResHead();
+            if(STAT())break;
+
+/*Send exactly 3 bytes in the following                  */
+/*If you have a dynamic size you have to send this size first!      */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 250 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			for(int i = 0 ; i<3;i++) {send(0);}
+			
+			//DONT FORGET TO HASH
+			setDH(0);
+			
+/* IBC_PRESERVE_SEND_END 250 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
+        break;
+/* IBC_MESSAGE_END 250 2 3 */
 /* IBC_MESSAGE_BEGIN 252 4 8 */
         case 252:
         {
@@ -246,7 +357,7 @@ void IBC::next(){
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			char buffr252[4];
+			byte buffr252[4];
 			recv(buffr252,4);
 			
 			//DONT FORGET TO HASH
@@ -290,7 +401,7 @@ void IBC::next(){
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 253 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			char *buffr253 = new char [inSIZE_DYN()];
+			byte *buffr253 = new byte [inSIZE_DYN()];
 			recv(buffr253,inSIZE_DYN());
 			
 			//DONT FORGET TO HASH
@@ -334,7 +445,7 @@ void IBC::next(){
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
 /* IBC_PRESERVE_RECV_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			char buffr254[2];
+			byte buffr254[2];
 			recv(buffr254,2);
 			
 			//DONT FORGET TO HASH
@@ -356,8 +467,8 @@ void IBC::next(){
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 			
-			send(?DYNAMIC_SIZE?);
-			for(int i = 0 ; i< ?DYNAMIC_SIZE? ;i++) {send(0);}
+			send(2);
+			for(int i = 0 ; i< 2 ;i++) {send(0);}
 			
 			//DONT FORGET TO HASH
 			setDH(0);
@@ -382,4 +493,15 @@ void IBC::next(){
             handleResFoot();
         }
 /* IBC_FRAME_GENERATION_TAG_END */
+} 
+
+IBC ibc;
+
+void setup()
+{}
+
+void loop()
+{
+	ibc.next();
 }
+

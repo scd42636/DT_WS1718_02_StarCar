@@ -1,2 +1,0 @@
-
-One bit for every failing hash on arduino side as status respons

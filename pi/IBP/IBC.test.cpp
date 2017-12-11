@@ -50,8 +50,6 @@ int run ()
 
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 
-
-
 	i1.fetch();
 	i2.fetch();
 	i3.fetch();
