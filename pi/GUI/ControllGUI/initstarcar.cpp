@@ -1,4 +1,5 @@
 #include "initstarcar.h"
+#include "../../IBP/IBC.hpp"
 
 InitStarCar::InitStarCar(Alert *alertThread)
 {
@@ -12,12 +13,7 @@ void InitStarCar::startProcess(){
         emit pushProcessBar();
     }
 
-    Serial *SerialPort =  new Serial("Arduino");
-    SerialPort->send("test MSG",8);
-
-    char *data;
-
-    SerialPort->recv(&data,8);
+    //IBC *test = new IBC("test","../../IBC_config.cfg");
 
     emit finished();
 }

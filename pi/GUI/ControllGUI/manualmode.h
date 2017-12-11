@@ -24,8 +24,7 @@ public slots:
 private:
 
     // Thread
-    Alert       *alertThread;
-
+    Alert           *alertThread;
 };
 
 #endif // MANUALMODE_H

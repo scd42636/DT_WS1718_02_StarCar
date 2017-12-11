@@ -10,6 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = ControllGUI
 TEMPLATE = app
+CONFIG += c++14
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -35,6 +36,11 @@ SOURCES += main.cpp\
     initstarcar.cpp \
     automaticmode.cpp \
     manualmode.cpp \
+    ../../IBP/IBC.cpp \
+    ../../IBP/IBC_Inbox.cpp \
+    ../../IBP/IBC_Packet.cpp \
+    ../../IBP/IBC_Rule.cpp \
+    ../../IBP/IBC_Transceiver.cpp \
     ../../IBP/Serial.cpp
 
 HEADERS  += homewindow.h \
@@ -48,6 +54,11 @@ HEADERS  += homewindow.h \
     initstarcar.h \
     automaticmode.h \
     manualmode.h \
+    ../../IBP/IBC.hpp \
+    ../../IBP/IBC_Inbox.hpp \
+    ../../IBP/IBC_Packet.hpp \
+    ../../IBP/IBC_Rule.hpp \
+    ../../IBP/IBC_Transceiver.hpp \
     ../../IBP/Serial.hpp
 
 FORMS    += homewindow.ui

@@ -5,6 +5,9 @@
 #include <QWidget>
 #include <alert.h>
 #include <manualmode.h>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QTimer>
 
 class ManualModeWidget : public QWidget
 {
@@ -13,6 +16,7 @@ class ManualModeWidget : public QWidget
 public:
 
     explicit ManualModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
+    ~ManualModeWidget();
 
 signals:
 
@@ -20,11 +24,39 @@ signals:
 
 public slots:
 
+    void pButtonGoBackPushed();
+    void pButtonNextPushed();
+
+private slots:
+
+    void blinkLable();
+
 private:
 
     // Thread
     Alert       *alertThread;
     ManualMode  *manualMode;
+
+    // QPushButton
+    QPushButton     *pButtonGoBack;
+    QPushButton     *pButtonNext;
+
+    // QVBoxLayout
+    QVBoxLayout     *vBox1;
+
+    // QLabel
+    QLabel          *lblInfo;
+
+    // QTimer
+    QTimer          *blinkTimer;
+
+    // Vars
+    double fontSize = 12.5;
+
+    // Method
+    void generateLayout();
+    void generateStyle();
+    void setupConnects();
 
 };
 

@@ -4,7 +4,11 @@ ManualModeWidget::ManualModeWidget(QWidget *parent, Alert *alertThread) : QWidge
 {
     this->alertThread = alertThread;
 
-    QThread *thread = new QThread;
+    generateLayout();
+    setupConnects();
+    generateStyle();
+
+    /*QThread *thread = new QThread;
     manualMode= new ManualMode(alertThread);
     manualMode->moveToThread(thread);
 
@@ -14,4 +18,91 @@ ManualModeWidget::ManualModeWidget(QWidget *parent, Alert *alertThread) : QWidge
     connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
 
     thread->start();
+*/
+    blinkTimer = new QTimer(this);
+    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkLable()));
+    blinkTimer->start(700);
+
+    alertThread->fireError();
+    alertThread->fireWarning();
+
+}
+
+void ManualModeWidget::generateLayout(){
+
+    vBox1           = new QVBoxLayout(this);
+    pButtonGoBack   = new QPushButton();
+    pButtonNext     = new QPushButton();
+    lblInfo         = new QLabel();
+
+    vBox1->addWidget(lblInfo);
+    vBox1->addSpacing(20);
+    vBox1->addWidget(pButtonNext);
+    vBox1->addWidget(pButtonGoBack);
+}
+
+void ManualModeWidget::generateStyle(){
+
+    vBox1->setContentsMargins(0,0,0,0);
+    vBox1->setAlignment(Qt::AlignBottom);
+    lblInfo->setAlignment(Qt::AlignHCenter);
+
+    lblInfo->setText("Nutze die Uhren, um das StarCar manuell zu steuern! \nLege jetzt die Uhren an dein Handgelenk an.");
+    lblInfo->setWordWrap(true);
+
+    pButtonGoBack->setText("Zurück zur Moduswahl");
+    pButtonNext->setText("Sizt, passt, wackelt und hat Luft!");
+
+    this->setStyleSheet("QLabel{"
+                        "color: orange;"
+                        "font-family: TimesNewRoman;"
+                        "font-style: normal;"
+                        "font-size: 12pt;}"
+                        "QPushButton{"
+                        "color: green;"
+                        "font-family: TimesNewRoman;"
+                        "font-style: normal;"
+                        "font-size: 12pt;"
+                        "font-weight: bold;}");
+}
+
+void ManualModeWidget::blinkLable(){
+
+    QString stylesheetString;
+
+    if(fontSize < 13){
+
+        stylesheetString = "QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: " + QString::number(fontSize) + "pt;}";
+        fontSize+= 0.5;
+    }else{
+        fontSize = 12.5;
+    }
+
+   lblInfo->setStyleSheet(stylesheetString);
+}
+
+void ManualModeWidget::setupConnects(){
+
+    connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(pButtonGoBackPushed()));
+    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(pButtonNextPushed()));
+}
+
+void ManualModeWidget::pButtonGoBackPushed(){
+
+    emit removeWindowformStack();
+}
+
+void ManualModeWidget::pButtonNextPushed(){
+
+    lblInfo->setText("StarCar läuft nun im manuellen Modus!");
+
+    QString stylesheetString = "QLabel{color: green;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
+    lblInfo->setStyleSheet(stylesheetString);
+    vBox1->removeWidget(pButtonNext);
+    delete pButtonNext;
+    vBox1->setContentsMargins(0,0,0,20);
+}
+
+ManualModeWidget::~ManualModeWidget(){
+
 }
