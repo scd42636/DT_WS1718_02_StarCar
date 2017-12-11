@@ -302,49 +302,6 @@ void IBC::next(){
         }
         break;
 /* IBC_MESSAGE_END 0 0 0 */
-/* IBC_MESSAGE_BEGIN 250 2 3 */
-        case 250:
-        {
-           
-
-/*   Recv exactly 2 bytes in the following                              */
-/*   Also calculate their data hash along the way by                    */
-/*      xoring all bytes together once                                  */
-/*      or use the provided function                                    */
-/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
-/* IBC_PRESERVE_RECV_BEGIN 250 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-			
-			byte buffr250[2];
-			recv(buffr250,2);
-			
-			//DONT FORGET TO HASH
-			setDH(createDH(buffr250,2));
-			
-/* IBC_PRESERVE_RECV_END 250 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-
-            if(STAT())break;
-            handleReqFoot();
-            if(STAT())break;
-            handleResHead();
-            if(STAT())break;
-
-/*Send exactly 3 bytes in the following                  */
-/*If you have a dynamic size you have to send this size first!      */
-/*Also calculate their data hash along the way by                   */
-/*  xoring all bytes together once                                  */
-/*  or use the provided function createDH(..)                   */
-/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
-/* IBC_PRESERVE_SEND_BEGIN 250 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-			
-			for(int i = 0 ; i<3;i++) {send(0);}
-			
-			//DONT FORGET TO HASH
-			setDH(0);
-			
-/* IBC_PRESERVE_SEND_END 250 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
-        }
-        break;
-/* IBC_MESSAGE_END 250 2 3 */
 /* IBC_MESSAGE_BEGIN 252 4 8 */
         case 252:
         {
