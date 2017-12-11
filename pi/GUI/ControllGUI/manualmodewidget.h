@@ -29,8 +29,9 @@ public slots:
 
 private slots:
 
-    void blinkLable();
+    void blinklblInfo();
 
+    void blinkArrows();
 private:
 
     // Thread
@@ -43,32 +44,42 @@ private:
 
     // QVBoxLayout
     QVBoxLayout     *vBox1;
-    QVBoxLayout     *vBoxleftImage;
-    QVBoxLayout     *vBoxrightImage;
+    QVBoxLayout     *vBoxLeftTexts;
+    QVBoxLayout     *vBoxRightTexts;
+    QVBoxLayout     *vBoxLeftImagesArrow;
+    QVBoxLayout     *vBoxRightImagesArrow;
 
     // QHBoxLayout
     QHBoxLayout     *hBoxImages;
 
     // QLabel
     QLabel          *lblInfo;
-    QLabel          *lblImageleft;
-    QLabel          *lblImageright;
-    QLabel          *lblUp;
-    QLabel          *lblDown;
-    QLabel          *lblLeft;
-    QLabel          *lblright;
+    QLabel          *lblImageViewClockLeft;
+    QLabel          *lblImageViewClockRight;
+    QLabel          *lblTextSpeedUp;
+    QLabel          *lblTextBreak;
+    QLabel          *lblTextTurnLeft;
+    QLabel          *lblTextTurnRight;
+    QLabel          *lblArrowUpRight;
+    QLabel          *lblArrowDownRight;
+    QLabel          *lblArrowUpLeft;
+    QLabel          *lblArrowDownLeft;
 
     // QTimer
     QTimer          *blinkTimer;
 
     // Vars
-    double fontSize = 12.5;
+    double fontSize = 12;
+    bool   pButtonNextRemoved = false;
 
     // Method
     void generateLayout();
     void generateStyle();
     void setupConnects();
+    void createControllAnimation();
 
+    void setArrowPicsToLabel(QLabel *lbl, QString path);
+    void setStyletoLabel(QLabel *lbl, Qt::Alignment align);
 };
 
 #endif // MANUALMODEWIDGET_H

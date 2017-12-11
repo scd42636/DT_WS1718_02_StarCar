@@ -7,5 +7,9 @@
         <file>Pics/exit.png</file>
         <file>Pics/start.png</file>
         <file>Pics/clock.png</file>
+        <file>Pics/downleft.png</file>
+        <file>Pics/downright.png</file>
+        <file>Pics/upleft.png</file>
+        <file>Pics/upright.png</file>
     </qresource>
 </RCC>

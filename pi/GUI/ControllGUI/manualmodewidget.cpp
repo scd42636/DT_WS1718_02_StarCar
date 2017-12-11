@@ -21,7 +21,7 @@ ManualModeWidget::ManualModeWidget(QWidget *parent, Alert *alertThread) : QWidge
     thread->start();
 */
     blinkTimer = new QTimer(this);
-    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkLable()));
+    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinklblInfo()));
     blinkTimer->start(700);
 
 }
@@ -47,33 +47,45 @@ void ManualModeWidget::generateStyle(){
 
     lblInfo->setText("Nutze die Uhren, um das StarCar manuell zu steuern! \nLege jetzt die Uhren an dein Handgelenk an.");
     lblInfo->setWordWrap(true);
+    lblInfo->setStyleSheet("QLabel{"
+                               "color: orange;"
+                               "font-family: TimesNewRoman;"
+                               "font-style: normal;"
+                               "font-size: 12pt;}");
 
     pButtonGoBack->setText("Zurück zur Moduswahl");
     pButtonNext->setText("Sizt, passt, wackelt und hat Luft!");
 
-    this->setStyleSheet("QLabel{"
-                        "color: orange;"
-                        "font-family: TimesNewRoman;"
-                        "font-style: normal;"
-                        "font-size: 12pt;}"
-                        "QPushButton{"
-                        "color: green;"
-                        "font-family: TimesNewRoman;"
-                        "font-style: normal;"
-                        "font-size: 12pt;"
-                        "font-weight: bold;}");
+    this->setStyleSheet("QPushButton{"
+                            "color: green;"
+                            "font-family: TimesNewRoman;"
+                            "font-style: normal;"
+                            "font-size: 12pt;"
+                            "font-weight: bold;}");
 }
 
-void ManualModeWidget::blinkLable(){
+void ManualModeWidget::blinklblInfo(){
 
     QString stylesheetString;
+    QString fontColor;
 
-    if(fontSize < 13){
+    if(pButtonNextRemoved){
 
-        stylesheetString = "QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: " + QString::number(fontSize) + "pt;}";
-        fontSize+= 0.5;
+        fontColor = "green";
+
     }else{
-        fontSize = 12.5;
+
+        fontColor = "orange";
+    }
+
+    if(fontSize == 12){
+
+        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
+        fontSize = 13;
+    }else{
+
+        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 13pt;}";
+        fontSize = 12;
     }
 
    lblInfo->setStyleSheet(stylesheetString);
@@ -93,45 +105,130 @@ void ManualModeWidget::pButtonGoBackPushed(){
 void ManualModeWidget::pButtonNextPushed(){
 
     lblInfo->setText("StarCar läuft nun im manuellen Modus!");
+    lblInfo->setFixedHeight(20);
 
     QString stylesheetString = "QLabel{color: green;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
     lblInfo->setStyleSheet(stylesheetString);
     vBox1->removeWidget(pButtonNext);
     delete pButtonNext;
+    pButtonNextRemoved = true;
+
+    blinkTimer->stop();
+    delete blinkTimer;
+
+    createControllAnimation();
+}
+
+void ManualModeWidget::createControllAnimation(){
 
     hBoxImages = new QHBoxLayout();
-
     hBoxImages->setAlignment(Qt::AlignHCenter);
 
-    lblImageleft = new QLabel();
-    lblImageleft->setPixmap(QPixmap("://Pics/clock.png"));
-
-    lblImageright = new QLabel();
-    lblImageright->setPixmap(QPixmap("://Pics/clock.png"));
-
-    lblDown = new QLabel("Zurück");
-    lblUp = new QLabel("Vor");
-
-    vBoxleftImage = new QVBoxLayout();
-    vBoxrightImage = new QVBoxLayout();
+    vBoxLeftTexts = new QVBoxLayout();
+    vBoxRightTexts = new QVBoxLayout();
+    vBoxLeftImagesArrow = new QVBoxLayout();
+    vBoxRightImagesArrow = new QVBoxLayout();
 
     vBox1->insertLayout(1,hBoxImages);
 
-    hBoxImages->addLayout(vBoxleftImage);
-    hBoxImages->addWidget(lblImageleft);
-    hBoxImages->addWidget(lblImageright);
-    hBoxImages->addLayout(vBoxrightImage);
 
-    vBoxleftImage->addWidget(lblUp);
-    vBoxleftImage->addWidget(lblDown);
 
-    lblLeft = new QLabel("Links");
-    lblright = new QLabel("Rechts");
+    lblTextBreak = new QLabel("Bremse");
+    setStyletoLabel(lblTextBreak, Qt::AlignRight);
 
-    vBoxrightImage->addWidget(lblLeft);
-    vBoxrightImage->addWidget(lblright);
+    lblTextSpeedUp = new QLabel("Gas");
+    setStyletoLabel(lblTextSpeedUp, Qt::AlignRight);
+
+    lblTextTurnLeft = new QLabel("Links");
+    setStyletoLabel(lblTextTurnLeft, Qt::AlignLeft);
+
+    lblTextTurnRight = new QLabel("Rechts");
+    setStyletoLabel(lblTextTurnRight, Qt::AlignLeft);
+
+    lblImageViewClockLeft = new QLabel();
+    lblImageViewClockLeft->setPixmap(QPixmap("://Pics/clock.png"));
+
+    lblImageViewClockRight = new QLabel();
+    lblImageViewClockRight->setPixmap(QPixmap("://Pics/clock.png"));
+    lblImageViewClockRight->setFixedHeight(50);
+    lblImageViewClockRight->setFixedWidth(50);
+    lblImageViewClockRight->setScaledContents(true);
+
+    hBoxImages->addWidget(lblImageViewClockRight);
+    hBoxImages->addLayout(vBoxRightImagesArrow);
+    hBoxImages->addLayout(vBoxRightTexts);
+
+    hBoxImages->addLayout(vBoxLeftTexts);
+    hBoxImages->addLayout(vBoxLeftImagesArrow);
+    hBoxImages->addWidget(lblImageViewClockLeft);
+
+    lblArrowUpRight = new QLabel();
+    setArrowPicsToLabel(lblArrowUpRight, "upright");
+
+    lblArrowDownRight = new QLabel();
+    setArrowPicsToLabel(lblArrowDownRight, "downright");
+
+    lblArrowUpLeft = new QLabel();
+    setArrowPicsToLabel(lblArrowUpLeft, "upleft");
+
+    lblArrowDownLeft = new QLabel();
+    setArrowPicsToLabel(lblArrowDownLeft, "downleft");
+
+    vBoxRightImagesArrow->addWidget(lblArrowUpLeft);
+    vBoxRightImagesArrow->addWidget(lblArrowDownLeft);
+
+    vBoxLeftImagesArrow->addWidget(lblArrowUpRight);
+    vBoxLeftImagesArrow->addWidget(lblArrowDownRight);
+
+    vBoxLeftTexts->addWidget(lblTextSpeedUp);
+    vBoxLeftTexts->addWidget(lblTextBreak);
+
+    vBoxRightTexts->addWidget(lblTextTurnLeft);
+    vBoxRightTexts->addWidget(lblTextTurnRight);
 
     vBox1->setContentsMargins(0,0,0,0);
+
+    blinkTimer = new QTimer();
+    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkArrows()));
+    blinkTimer->start(700);
+}
+
+void ManualModeWidget::blinkArrows(){
+
+    if(lblArrowUpLeft->isHidden()){
+
+        lblArrowUpLeft->show();
+        lblArrowDownLeft->show();
+        lblArrowUpRight->show();
+        lblArrowDownRight->show();
+        blinkTimer->setInterval(1500);
+
+
+    }else{
+
+        lblArrowDownLeft->hide();
+        lblArrowUpLeft->hide();
+        lblArrowDownRight->hide();
+        lblArrowUpRight->hide();
+        blinkTimer->setInterval(200);
+    }
+}
+
+void ManualModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
+
+    lbl->setPixmap(QPixmap("://Pics/" + path +".png"));
+    lbl->setFixedHeight(25);
+    lbl->setFixedWidth(50);
+    lbl->setScaledContents(true);
+    QSizePolicy sp_retain = lbl->sizePolicy();
+    sp_retain.setRetainSizeWhenHidden(true);
+    lbl->setSizePolicy(sp_retain);
+}
+
+void ManualModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
+
+    lbl->setAlignment(align);
+    lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;font-weight: bold;}");
 }
 
 ManualModeWidget::~ManualModeWidget(){
