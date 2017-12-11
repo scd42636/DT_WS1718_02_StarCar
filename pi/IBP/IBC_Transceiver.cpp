@@ -159,14 +159,16 @@ void Transceiver::body()
 		//now recv header first
 		recv_intern(res_buffer, 1); //response header 1 byte long
 
+		std::cout << std::hex << "\n STATUSReceived : " <<(unsigned int) res_buffer[0] << '\n';
+
 		//check header hash
 		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03))
 		{
 			failcount++;
 			
-			std::cerr << "\n[IBC TRANSCEIVER] Response Sizehash failed ! ";
+			std::cerr << "\n[IBC TRANSCEIVER] Response Headhash failed ! ";
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
-			std::cerr << " | ";
+			std::cerr << " \n| ";
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
 			std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
 
@@ -177,6 +179,35 @@ void Transceiver::body()
 				tosend.pop();
 				s.emptyRecvBuffer();
 				continue;
+			}
+		}
+
+		//check the received status here
+		uint8_t recvstat = res_buffer[0] >> 4;
+		if (recvstat)
+		{
+			if(recvstat & 0x08)
+			{
+				//own error pass on
+				tosend.pop();
+				recv_intern(res_buffer+1,2);
+				Packet p (req_buffer[0], 3, res_buffer);
+			}
+			else
+			{
+				failcount++;
+				std::cerr << "[IBC_TRANSCEIVER] Hashes on message with id : "<< (unsigned int)req_buffer[0] << " failed remotely: " ;
+				if(recvstat & 0x04) std::cerr << ":HH:";
+				if(recvstat & 0x02) std::cerr << ":SH:";
+				if(recvstat & 0x01) std::cerr << ":DH:";
+				std::cerr << "(Failcount : " << failcount <<")\n";
+				if(failcount > IBP_FAIL_MAX)
+				{
+					failcount = 0;
+					tosend.pop();
+					s.emptyRecvBuffer();
+					continue;
+				}
 			}
 		}
 
@@ -224,7 +255,7 @@ void Transceiver::body()
 		{
 			failcount++;
 			
-			std::cerr << "\n[IBC TRANSCEIVER] Response Sizehash failed ! ";
+			std::cerr << "\n[IBC TRANSCEIVER] Response Datahash failed ! ";
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
 			std::cerr << " | ";
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}

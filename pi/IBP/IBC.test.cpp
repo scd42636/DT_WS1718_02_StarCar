@@ -38,7 +38,7 @@ int run ()
 
 	uint8_t ms1 [4] = {1,2,3,4};
 	Packet p1(252, ibc.requestsize(252), (uint8_t*) ms1 );
-	ibc.send(p1);
+//	ibc.send(p1);
 
 	uint8_t ms2[2] = {42,42};
 	Packet p2 (253, 2, ms2);
