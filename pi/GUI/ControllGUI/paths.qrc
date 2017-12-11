@@ -6,5 +6,6 @@
         <file>Pics/alert_white.png</file>
         <file>Pics/exit.png</file>
         <file>Pics/start.png</file>
+        <file>Pics/clock.png</file>
     </qresource>
 </RCC>

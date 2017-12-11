@@ -17,11 +17,12 @@ void OperationModeWidget::generateLayout(){
     pButtonAutomaticMode = new QPushButton();
 
     vBox1->addWidget(lblHeadline);
+    vBox1->addSpacing(20);
     vBox1->addLayout(hBox1);
 
     hBox1->addWidget(pButtonManualMode);
-    hBox1->addSpacing(30);
-    hBox1->addWidget(pButtonAutomaticMode);
+    //hBox1->addSpacing(30);
+    //hBox1->addWidget(pButtonAutomaticMode);
 }
 
 void OperationModeWidget::generateStyle(){
@@ -40,11 +41,17 @@ void OperationModeWidget::generateStyle(){
     pButtonAutomaticMode->setMinimumSize(20,20);
 
     this->setStyleSheet("QPushButton{"
-                        "color: green;"
-                        "font-family: TimesNewRoman;"
-                        "font-style: normal;"
-                        "font-size: 20pt;"
-                        "font-weight: bold;}");
+                            "color: green;"
+                            "font-family: TimesNewRoman;"
+                            "font-style: normal;"
+                            "font-size: 20pt;"
+                            "font-weight: bold;}"
+                        "QLabel{"
+                            "color: white;"
+                            "font-family: TimesNewRoman;"
+                            "font-style: normal;"
+                            "font-size: 15pt;"
+                            "font-weight: bold;}");
 
 }
 

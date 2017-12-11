@@ -43,9 +43,20 @@ private:
 
     // QVBoxLayout
     QVBoxLayout     *vBox1;
+    QVBoxLayout     *vBoxleftImage;
+    QVBoxLayout     *vBoxrightImage;
+
+    // QHBoxLayout
+    QHBoxLayout     *hBoxImages;
 
     // QLabel
     QLabel          *lblInfo;
+    QLabel          *lblImageleft;
+    QLabel          *lblImageright;
+    QLabel          *lblUp;
+    QLabel          *lblDown;
+    QLabel          *lblLeft;
+    QLabel          *lblright;
 
     // QTimer
     QTimer          *blinkTimer;

@@ -1,4 +1,5 @@
 #include "manualmodewidget.h"
+#include <QImage>
 
 ManualModeWidget::ManualModeWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 {
@@ -22,9 +23,6 @@ ManualModeWidget::ManualModeWidget(QWidget *parent, Alert *alertThread) : QWidge
     blinkTimer = new QTimer(this);
     connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkLable()));
     blinkTimer->start(700);
-
-    alertThread->fireError();
-    alertThread->fireWarning();
 
 }
 
@@ -100,7 +98,40 @@ void ManualModeWidget::pButtonNextPushed(){
     lblInfo->setStyleSheet(stylesheetString);
     vBox1->removeWidget(pButtonNext);
     delete pButtonNext;
-    vBox1->setContentsMargins(0,0,0,20);
+
+    hBoxImages = new QHBoxLayout();
+
+    hBoxImages->setAlignment(Qt::AlignHCenter);
+
+    lblImageleft = new QLabel();
+    lblImageleft->setPixmap(QPixmap("://Pics/clock.png"));
+
+    lblImageright = new QLabel();
+    lblImageright->setPixmap(QPixmap("://Pics/clock.png"));
+
+    lblDown = new QLabel("Zurück");
+    lblUp = new QLabel("Vor");
+
+    vBoxleftImage = new QVBoxLayout();
+    vBoxrightImage = new QVBoxLayout();
+
+    vBox1->insertLayout(1,hBoxImages);
+
+    hBoxImages->addLayout(vBoxleftImage);
+    hBoxImages->addWidget(lblImageleft);
+    hBoxImages->addWidget(lblImageright);
+    hBoxImages->addLayout(vBoxrightImage);
+
+    vBoxleftImage->addWidget(lblUp);
+    vBoxleftImage->addWidget(lblDown);
+
+    lblLeft = new QLabel("Links");
+    lblright = new QLabel("Rechts");
+
+    vBoxrightImage->addWidget(lblLeft);
+    vBoxrightImage->addWidget(lblright);
+
+    vBox1->setContentsMargins(0,0,0,0);
 }
 
 ManualModeWidget::~ManualModeWidget(){
