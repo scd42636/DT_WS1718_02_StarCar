@@ -4,7 +4,10 @@ CXX=g++
 CXXFLAGS=-std=c++14
 LDLIBS+=-lpthread
 
-default: IBCEmu
+default: IBC
+
+IBC: IBC.o IBC_Inbox.o IBC_Packet.o IBC_Rule.o IBC_Transceiver.o Serial.o IBC.test.o
+	$(LINK.cpp) $^ $(LDLIBS) -o $@ 
 
 IBCEmu: CXXFLAGS += -D IBC_EMULATED
 IBCEmu: IBC.o IBC_Inbox.o IBC_Packet.o IBC_Rule.o IBC_Transceiver.o Serial_emulated.o IBC.test.o
@@ -36,5 +39,7 @@ clean:
 	-rm IBCEmu
 	-rm PacketTest
 	-rm -r ../../dokumentation/grr/doc/*
+	-rm IB
+	-rm IBC
 
-.PHONY:clean IBCEmu IBCRuleTest PacketTest SerialEmulatedTest SerialTest dox
+.PHONY:clean IBCEmu IBCRuleTest PacketTest SerialEmulatedTest SerialTest dox IBC
