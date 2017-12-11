@@ -8,7 +8,8 @@
 #include "IBC_Inbox.hpp"
 
 // a static message size value of IBC_SIZE_DYNAMIC in truth means the message has dynamic size
-#define IBC_SIZE_DYNAMIC 255
+#include "IBC_defines.hpp"
+#define IBC_SIZE_DYNAMIC IBC_RULE_DYNAMICSIZE
 
 class IBC
 {

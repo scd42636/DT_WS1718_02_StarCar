@@ -95,3 +95,11 @@ int Serial::recv(void * data , int maxsize) const
                                                 // Write it to the location at <data>
                                                 // Write <maxsize> bytes at maximum to not overrun buffersizes
 }
+
+void Serial::emptyRecvBuffer() const
+{
+	sleep(1);
+	while ((fgetc((FILE*)fd)) != EOF) {
+		/* ... */
+	}
+}

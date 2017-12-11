@@ -55,6 +55,14 @@ Inbox& Inbox::operator= (const Inbox& other)
 	return *this;
 }
 
+void Inbox::fetch()
+{
+	std::lock_guard<std::mutex> guard (l);
+
+	this->splice(this->end(), dump);
+	dump.clear();
+}
+
 void Inbox::listen(uint8_t id) 
 {
 	t->addreceiver(*this, id);

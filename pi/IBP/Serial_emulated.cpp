@@ -94,13 +94,13 @@ int Serial::send(char * data , int size)
 					break;
 				}
 				//status
-				recvbuff.push_back(0);
+				recvbuff.push_back(4);
 				//size
 				recvbuff.push_back(1);
 				//data
 				recvbuff.push_back(42);
 				//hash
-				recvbuff.push_back(1);
+				recvbuff.push_back(42);
 	
 				sendbuff.erase(sendbuff.begin(), sendbuff.begin()+5);
 
@@ -117,4 +117,9 @@ int Serial::recv(char * data , int maxsize)
 	std::memcpy(data, recvbuff.data(), extract);
 	recvbuff.erase(recvbuff.begin(), recvbuff.begin()+extract);
 	return extract;
+}
+
+void Serial::emptyRecvBuffer()
+{
+	recvbuff.clear();
 }

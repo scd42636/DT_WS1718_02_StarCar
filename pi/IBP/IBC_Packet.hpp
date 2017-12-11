@@ -1,7 +1,9 @@
 #ifndef IBC_PACKET_HPP
 #     define IBC_PACKET_HPP
 
-#define IBC_PACKET_SIZE_DYNAMIC 255
+#include "IBC_defines.hpp"
+
+#define IBC_PACKET_SIZE_DYNAMIC IBC_RULE_DYNAMICSIZE
 
 #include <cstdint>
 

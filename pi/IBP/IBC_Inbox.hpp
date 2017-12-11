@@ -6,6 +6,7 @@
 #include <vector>
 #include <cstdint>
 #include <memory>
+#include <mutex>
 #include "IBC_Packet.hpp"
 #include "IBC_Transceiver.hpp"
 
@@ -15,6 +16,9 @@
 		//this will be necessary mainly in case the Transceiver object at *t is destroyed
 		Transceiver* t;
 		std::set<uint8_t> listening;
+
+		std::mutex l;
+		std::list<std::shared_ptr<const Packet>> dump;
 
 	public:
 		Inbox(Transceiver& t);
@@ -29,6 +33,8 @@
 		//front()
 		//and pop_front()
 		//of std::list
+
+		void fetch();
 
 		void listen (uint8_t id);
 		void listen (std::vector<uint8_t> ids);
