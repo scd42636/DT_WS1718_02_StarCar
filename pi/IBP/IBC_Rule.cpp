@@ -36,7 +36,7 @@ void Rule::reloadcfg(std::string configfile)
 
 		if(!regex_match(line, e)) continue;
 
-		std::istringstream iss (line);
+        std::istringstream iss (line);
 		
 		int id, req, answ;
 

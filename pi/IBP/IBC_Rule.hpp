@@ -3,6 +3,7 @@
 #     define IBC_RULE_HPP
 
 #include <string>
+#include <sstream>
 
 
 // a static message size value of Rule_SIZE_DYNAMIC in truth means the message has dynamic size

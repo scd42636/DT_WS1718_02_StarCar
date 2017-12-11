@@ -230,7 +230,7 @@ void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
 		{
 			std::this_thread::sleep_for(IBC_TRANSCEIVER_IDLE_TIME);
 		}
-		torecv -= received ;
+        torecv -= received;
 		data += received;
 	}
 }
