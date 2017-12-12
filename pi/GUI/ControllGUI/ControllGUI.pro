@@ -24,6 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 
+win32{
+
 SOURCES += main.cpp\
     homewindow.cpp \
     startwidget.cpp \
@@ -36,12 +38,6 @@ SOURCES += main.cpp\
     clockcontrollmode.cpp \
     controllercontrolmodewidget.cpp \
     sensorvalueswidget.cpp \
-    #../../IBP/IBC.cpp \
-    #../../IBP/IBC_Inbox.cpp \
-    #../../IBP/IBC_Packet.cpp \
-    #../../IBP/IBC_Rule.cpp \
-    #../../IBP/IBC_Transceiver.cpp \
-    #../../IBP/Serial.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
@@ -54,12 +50,47 @@ HEADERS  += homewindow.h \
     clockcontrolmode.h \
     controllercontrolmodewidget.h \
     sensorvalueswidget.h \
-    #../../IBP/IBC.hpp \
-    #../../IBP/IBC_Inbox.hpp \
-    #../../IBP/IBC_Packet.hpp \
-    #../../IBP/IBC_Rule.hpp \
-    #../../IBP/IBC_Transceiver.hpp \
-    #../../IBP/Serial.hpp
+}
+
+!win32{
+
+SOURCES += main.cpp\
+    homewindow.cpp \
+    startwidget.cpp \
+    alert.cpp \
+    alertwidget.cpp \
+    exitwidget.cpp \
+    operationmodewidget.cpp \
+    initstarcar.cpp \
+    clockcontrolmodewidget.cpp \
+    clockcontrollmode.cpp \
+    controllercontrolmodewidget.cpp \
+    sensorvalueswidget.cpp \
+    ../../IBP/IBC.cpp \
+    ../../IBP/IBC_Inbox.cpp \
+    ../../IBP/IBC_Packet.cpp \
+    ../../IBP/IBC_Rule.cpp \
+    ../../IBP/IBC_Transceiver.cpp \
+    ../../IBP/Serial.cpp
+
+HEADERS  += homewindow.h \
+    startwidget.h \
+    alert.h \
+    alertwidget.h \
+    exitwidget.h \
+    operationmodewidget.h \
+    initstarcar.h \
+    clockcontrolmodewidget.h \
+    clockcontrolmode.h \
+    controllercontrolmodewidget.h \
+    sensorvalueswidget.h \
+    ../../IBP/IBC.hpp \
+    ../../IBP/IBC_Inbox.hpp \
+    ../../IBP/IBC_Packet.hpp \
+    ../../IBP/IBC_Rule.hpp \
+    ../../IBP/IBC_Transceiver.hpp \
+    ../../IBP/Serial.hpp
+}
 
 FORMS    += homewindow.ui
 

@@ -78,7 +78,7 @@ void SensorValuesWidget::generateStyle(){
                             "color: green;"
                             "font-family: TimesNewRoman;"
                             "font-style: normal;"
-                            "font-size: 10pt;"
+                            "font-size: 12pt;"
                             "font-weight: bold;}");
 
     vBox1->setContentsMargins(8,0,8,0);
