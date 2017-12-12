@@ -69,7 +69,7 @@ private:
     QTimer          *blinkTimer;
 
     // Vars
-    double fontSize = 12;
+    double fontSize = 10;
     bool   pButtonNextRemoved = false;
 
     // Method

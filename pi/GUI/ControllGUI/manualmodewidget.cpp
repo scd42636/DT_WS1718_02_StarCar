@@ -51,7 +51,7 @@ void ManualModeWidget::generateStyle(){
                                "color: orange;"
                                "font-family: TimesNewRoman;"
                                "font-style: normal;"
-                               "font-size: 12pt;}");
+                               "font-size: 10pt;}");
 
     pButtonGoBack->setText("Zurück zur Moduswahl");
     pButtonNext->setText("Sizt, passt, wackelt und hat Luft!");
@@ -78,14 +78,14 @@ void ManualModeWidget::blinklblInfo(){
         fontColor = "orange";
     }
 
-    if(fontSize == 12){
+    if(fontSize == 10){
 
-        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
-        fontSize = 13;
+        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 10pt;}";
+        fontSize = 11;
     }else{
 
-        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 13pt;}";
-        fontSize = 12;
+        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 11pt;}";
+        fontSize = 10;
     }
 
    lblInfo->setStyleSheet(stylesheetString);
@@ -228,7 +228,7 @@ void ManualModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
 void ManualModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
 
     lbl->setAlignment(align);
-    lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;font-weight: bold;}");
+    lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 10pt;font-weight: bold;}");
 }
 
 ManualModeWidget::~ManualModeWidget(){
