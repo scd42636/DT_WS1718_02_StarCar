@@ -8,22 +8,10 @@ ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertTh
     generateLayout();
     setupConnects();
     generateStyle();
-/*
-    QThread *thread = new QThread;
-    manualMode= new ClockControlMode(alertThread);
-    manualMode->moveToThread(thread);
 
-    connect(thread, SIGNAL(started()), manualMode, SLOT(startProcess()));
-    connect(manualMode, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(manualMode, SIGNAL(finished()), manualMode, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-
-    thread->start();
-*/
     blinkTimer = new QTimer(this);
     connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinklblInfo()));
     blinkTimer->start(700);
-
 }
 
 void ClockControllModeWidget::generateLayout(){
@@ -121,36 +109,36 @@ void ClockControllModeWidget::pButtonNextPushed(){
 
 void ClockControllModeWidget::createControllAnimation(){
 
-    hBoxImages = new QHBoxLayout();
+    hBoxImages              = new QHBoxLayout();
     hBoxImages->setAlignment(Qt::AlignHCenter);
 
-    vBoxLeftTexts = new QVBoxLayout();
-    vBoxRightTexts = new QVBoxLayout();
-    vBoxLeftImagesArrow = new QVBoxLayout();
-    vBoxRightImagesArrow = new QVBoxLayout();
+    vBoxLeftTexts           = new QVBoxLayout();
+    vBoxRightTexts          = new QVBoxLayout();
+    vBoxLeftImagesArrow     = new QVBoxLayout();
+    vBoxRightImagesArrow    = new QVBoxLayout();
 
     vBox1->insertLayout(1,hBoxImages);
     hBoxImages->setContentsMargins(0,10,0,0);
 
-    lblTextBreak = new QLabel("Bremse");
+    lblTextBreak            = new QLabel("Bremse");
     setStyletoLabel(lblTextBreak, Qt::AlignRight);
 
-    lblTextSpeedUp = new QLabel("Gas");
+    lblTextSpeedUp          = new QLabel("Gas");
     setStyletoLabel(lblTextSpeedUp, Qt::AlignRight);
 
-    lblTextTurnLeft = new QLabel("Links");
+    lblTextTurnLeft         = new QLabel("Links");
     setStyletoLabel(lblTextTurnLeft, Qt::AlignLeft);
 
-    lblTextTurnRight = new QLabel("Rechts");
+    lblTextTurnRight        = new QLabel("Rechts");
     setStyletoLabel(lblTextTurnRight, Qt::AlignLeft);
 
     QPixmap clock = QPixmap("://Pics/clock.png");
 
-    lblImageViewClockLeft = new QLabel();
+    lblImageViewClockLeft   = new QLabel();
     lblImageViewClockLeft->setPixmap(clock);
     lblImageViewClockLeft->setScaledContents(true);
 
-    lblImageViewClockRight = new QLabel();
+    lblImageViewClockRight  = new QLabel();
     lblImageViewClockRight->setPixmap(clock);
     lblImageViewClockRight->setScaledContents(true);
 
@@ -162,16 +150,16 @@ void ClockControllModeWidget::createControllAnimation(){
     hBoxImages->addLayout(vBoxLeftImagesArrow);
     hBoxImages->addWidget(lblImageViewClockLeft);
 
-    lblArrowUpRight = new QLabel();
+    lblArrowUpRight         = new QLabel();
     setArrowPicsToLabel(lblArrowUpRight, "upright");
 
-    lblArrowDownRight = new QLabel();
+    lblArrowDownRight       = new QLabel();
     setArrowPicsToLabel(lblArrowDownRight, "downright");
 
-    lblArrowUpLeft = new QLabel();
+    lblArrowUpLeft          = new QLabel();
     setArrowPicsToLabel(lblArrowUpLeft, "upleft");
 
-    lblArrowDownLeft = new QLabel();
+    lblArrowDownLeft        = new QLabel();
     setArrowPicsToLabel(lblArrowDownLeft, "downleft");
 
     vBoxRightImagesArrow->addWidget(lblArrowUpLeft);
@@ -188,7 +176,7 @@ void ClockControllModeWidget::createControllAnimation(){
 
     vBox1->setContentsMargins(8,0,8,0);
 
-    blinkTimer = new QTimer();
+    blinkTimer              = new QTimer();
     connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkArrows()));
     blinkTimer->start(700);
 }

@@ -11,6 +11,7 @@ AlertWidget::AlertWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
     if(alertThread->getwarMsg().isEmpty()){
 
         warIsEmpty = true;
+
     }else{
 
         warIsEmpty = false;
@@ -32,12 +33,12 @@ AlertWidget::AlertWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 
 void AlertWidget::generateLayout(){
 
-    vBox1 = new QVBoxLayout(this);
-    checkWarErr = new QPushButton();
+    vBox1           = new QVBoxLayout(this);
+    checkWarErr     = new QPushButton();
 
-    listView = new QListView();
+    listView        = new QListView();
     stringListModel = new QStringListModel(this);
-    stringList = new QStringList();
+    stringList      = new QStringList();
 
     vBox1->addWidget(listView);
     vBox1->addWidget(checkWarErr);

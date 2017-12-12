@@ -10,39 +10,37 @@ OperationModeWidget::OperationModeWidget(QWidget *parent, Alert *alertThread) : 
 
 void OperationModeWidget::generateLayout(){
 
-    vBox1 = new QVBoxLayout(this);
-    lblHeadline = new QLabel();
-    //hBox1 = new QHBoxLayout();
-    pButtonClockControlMode = new QPushButton();
-    //pButtonAutomaticMode = new QPushButton();
+    vBox1                        = new QVBoxLayout(this);
+
+    lblHeadline                  = new QLabel();
+
+    pButtonClockControlMode      = new QPushButton();
     pButtonControllerControlMode = new QPushButton();
+    pButtonSensorValues          = new QPushButton();
 
     vBox1->addWidget(lblHeadline);
-    vBox1->addSpacing(20);
-    //vBox1->addLayout(hBox1);
+    vBox1->addSpacing(10);
+
     vBox1->addWidget(pButtonClockControlMode);
     vBox1->addWidget(pButtonControllerControlMode);
-
-    //hBox1->addWidget(pButtonClockControlMode);
-    //hBox1->addSpacing(30);
-    //hBox1->addWidget(pButtonAutomaticMode);
+    vBox1->addWidget(pButtonSensorValues);
 }
 
 void OperationModeWidget::generateStyle(){
 
     vBox1->setAlignment(Qt::AlignVCenter);
-    lblHeadline->setAlignment(Qt::AlignHCenter);
-    //hBox1->setAlignment(Qt::AlignVCenter);
 
+    lblHeadline->setAlignment(Qt::AlignHCenter);
     lblHeadline->setText("Betriebsmodi Auswahl");
 
 
     pButtonClockControlMode->setText("Uhrsteuerung");
     pButtonControllerControlMode->setText("Controllersteuerung");
-    //pButtonAutomaticMode->setText("Automatik");
+    pButtonSensorValues->setText("Sensorwerte");
 
-    pButtonClockControlMode->setMinimumSize(20,20);
-    //pButtonAutomaticMode->setMinimumSize(20,20);
+    pButtonClockControlMode->setMinimumHeight(30);
+    pButtonControllerControlMode->setMinimumHeight(30);
+    pButtonSensorValues->setMinimumHeight(30);
 
     this->setStyleSheet("QPushButton{"
                             "color: green;"
@@ -54,7 +52,7 @@ void OperationModeWidget::generateStyle(){
                             "color: white;"
                             "font-family: TimesNewRoman;"
                             "font-style: normal;"
-                            "font-size: 15pt;"
+                            "font-size: 13pt;"
                             "font-weight: bold;}");
 
 }
@@ -62,8 +60,8 @@ void OperationModeWidget::generateStyle(){
 void OperationModeWidget::setupConnects(){
 
     connect(pButtonClockControlMode, SIGNAL(clicked(bool)), this, SLOT(slotShowClockControlModeWidget()));
-    //connect(pButtonAutomaticMode, SIGNAL(clicked(bool)), this, SLOT(slotShowAutomaticModeWidget()));
     connect(pButtonControllerControlMode, SIGNAL(clicked(bool)), this, SLOT(slotShowControllerControlModeWidget()));
+    connect(pButtonSensorValues, SIGNAL(clicked(bool)), this, SLOT(slotShowSensorValuesWidget()));
 
 }
 
@@ -72,14 +70,14 @@ void OperationModeWidget::slotShowClockControlModeWidget(){
     emit showclockcontrollmodewidget();
 }
 
-void OperationModeWidget::slotShowAutomaticModeWidget(){
-
-    emit showautomaticmodewidget();
-}
-
 void OperationModeWidget::slotShowControllerControlModeWidget(){
 
     emit showcontrollercontrolmodewidget();
+}
+
+void OperationModeWidget::slotShowSensorValuesWidget(){
+
+    emit showsensorvalueswidget();
 }
 
 OperationModeWidget::~OperationModeWidget(){

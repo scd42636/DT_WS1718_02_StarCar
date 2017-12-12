@@ -18,12 +18,10 @@ StartWidget::StartWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 
 void StartWidget::generateLayout(){
 
-    // Generate needed UI-Elements
-    vBox1 = new QVBoxLayout(this);
-    progressBar = new QProgressBar();
-    pButtonStart = new QPushButton(QIcon("://Pics/start.png"),"");
+    vBox1           = new QVBoxLayout(this);
+    progressBar     = new QProgressBar();
+    pButtonStart    = new QPushButton(QIcon("://Pics/start.png"),"");
 
-    // Add all UI-Elements to the layout
     vBox1->addWidget(pButtonStart);
     vBox1->addSpacing(20);
     vBox1->addWidget(progressBar);
@@ -39,7 +37,6 @@ void StartWidget::setupProgressBar(){
 
 void StartWidget::setupConnects(){
 
-    //connect the start-button clicked event with methode ...
     connect(pButtonStart, SIGNAL(clicked()), this, SLOT(initializeStarCar()));
 }
 
@@ -80,7 +77,7 @@ void StartWidget::initializeStarCar(){
     pButtonStart->setEnabled(false);
 
     QThread *thread = new QThread;
-    initStarCar = new InitStarCar(alertThread);
+    initStarCar     = new InitStarCar(alertThread);
     initStarCar->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), initStarCar, SLOT(startProcess()));

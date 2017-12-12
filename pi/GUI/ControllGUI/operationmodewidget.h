@@ -22,7 +22,7 @@ signals:
 
     void removeWindowformStack();
     void showclockcontrollmodewidget();
-    void showautomaticmodewidget();
+    void showsensorvalueswidget();
     void showcontrollercontrolmodewidget();
 
 public slots:
@@ -31,7 +31,7 @@ public slots:
 private slots:
 
     void slotShowClockControlModeWidget();
-    void slotShowAutomaticModeWidget();
+    void slotShowSensorValuesWidget();
     void slotShowControllerControlModeWidget();
 
 
@@ -45,8 +45,8 @@ private:
 
     // QPushButton
     QPushButton     *pButtonClockControlMode;
-    QPushButton     *pButtonAutomaticMode;
     QPushButton     *pButtonControllerControlMode;
+    QPushButton     *pButtonSensorValues;
 
     // QLabel
     QLabel          *lblHeadline;

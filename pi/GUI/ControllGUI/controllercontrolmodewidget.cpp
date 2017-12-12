@@ -65,6 +65,7 @@ void ControllerControlModeWidget::pButtonNextPushed(){
 
     QString stylesheetString = "QLabel{color: green;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
     lblInfo->setStyleSheet(stylesheetString);
+
     vBox1->removeWidget(pButtonNext);
     delete pButtonNext;
     pButtonNextRemoved = true;
@@ -77,36 +78,36 @@ void ControllerControlModeWidget::pButtonNextPushed(){
 
 void ControllerControlModeWidget::createControllAnimation(){
 
-    hBoxImages = new QHBoxLayout();
+    hBoxImages              = new QHBoxLayout();
     hBoxImages->setAlignment(Qt::AlignHCenter);
 
-    vBoxRightTexts = new QVBoxLayout();
-    vBoxLeftTexts = new QVBoxLayout();
-    vBoxRightImagesArrow = new QVBoxLayout();
-    vBoxLeftImagesArrow = new QVBoxLayout();
+    vBoxRightTexts          = new QVBoxLayout();
+    vBoxLeftTexts           = new QVBoxLayout();
+    vBoxRightImagesArrow    = new QVBoxLayout();
+    vBoxLeftImagesArrow     = new QVBoxLayout();
 
-    hBoxArrowsLeft = new QHBoxLayout();
-    hBoxTextsLeft = new QHBoxLayout();
-    vBoxLeftImagesAndTexts = new QVBoxLayout();
+    hBoxArrowsLeft          = new QHBoxLayout();
+    hBoxTextsLeft           = new QHBoxLayout();
+    vBoxLeftImagesAndTexts  = new QVBoxLayout();
 
     vBox1->insertLayout(1,hBoxImages);
     hBoxImages->setContentsMargins(0,10,0,0);
 
-    lblTextBreak = new QLabel("Bremse");
+    lblTextBreak            = new QLabel("Bremse");
     setStyletoLabel(lblTextBreak, Qt::AlignLeft);
 
-    lblTextSpeedUp = new QLabel("Gas");
+    lblTextSpeedUp          = new QLabel("Gas");
     setStyletoLabel(lblTextSpeedUp, Qt::AlignLeft);
 
-    lblTextTurnLeft = new QLabel("Links");
+    lblTextTurnLeft         = new QLabel("Links");
     setStyletoLabel(lblTextTurnLeft, Qt::AlignHCenter);
 
-    lblTextTurnRight = new QLabel("Rechts");
+    lblTextTurnRight        = new QLabel("Rechts");
     setStyletoLabel(lblTextTurnRight, Qt::AlignHCenter);
 
     QPixmap controller = QPixmap("://Pics/controller.png");
 
-    lblImageViewController = new QLabel();
+    lblImageViewController  = new QLabel();
     lblImageViewController->setPixmap(controller);
     lblImageViewController->setScaledContents(true);
 
@@ -120,16 +121,16 @@ void ControllerControlModeWidget::createControllAnimation(){
     hBoxImages->addLayout(vBoxRightImagesArrow);
     hBoxImages->addLayout(vBoxRightTexts);
 
-    lblArrowUp = new QLabel();
+    lblArrowUp               = new QLabel();
     setArrowPicsToLabel(lblArrowUp, "arrowUp", 25, 50);
 
-    lblArrowDown = new QLabel();
+    lblArrowDown             = new QLabel();
     setArrowPicsToLabel(lblArrowDown, "arrowDown", 25, 50);
 
-    lblArrowLeft = new QLabel();
+    lblArrowLeft             = new QLabel();
     setArrowPicsToLabel(lblArrowLeft, "arrowLeft", 40, 50);
 
-    lblArrowRight = new QLabel();
+    lblArrowRight            = new QLabel();
     setArrowPicsToLabel(lblArrowRight, "arrowRight", 40, 50);
 
     hBoxArrowsLeft->addWidget(lblArrowLeft);
@@ -146,7 +147,7 @@ void ControllerControlModeWidget::createControllAnimation(){
 
     vBox1->setContentsMargins(8,0,8,0);
 
-    blinkTimer = new QTimer();
+    blinkTimer                = new QTimer();
     connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkArrows()));
     blinkTimer->start(700);
 }

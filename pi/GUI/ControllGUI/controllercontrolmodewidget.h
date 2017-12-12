@@ -26,7 +26,9 @@ public slots:
     void pButtonNextPushed();
 
 private slots:
+
     void blinkArrows();
+
 private:
 
     // Thread

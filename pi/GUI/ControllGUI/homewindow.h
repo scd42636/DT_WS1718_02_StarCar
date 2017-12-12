@@ -16,9 +16,9 @@
 #include "exitwidget.h"
 #include "alertwidget.h"
 #include "operationmodewidget.h"
-#include "automaticmodewidget.h"
 #include "clockcontrolmodewidget.h"
 #include "controllercontrolmodewidget.h"
+#include "sensorvalueswidget.h"
 
 namespace Ui {
 class HomeWindow;
@@ -45,9 +45,9 @@ private slots:
     void showExitWidget();
     void showAlertWidget();
     void showOperationModeWidget();
-    void showAutomaticModeWidget();
     void showClockControlModeWidget();
     void showControllerControlModeWidget();
+    void showSensorValuesWidget();
     void showStartWidget();
 
 private:
@@ -67,7 +67,7 @@ private:
     ExitWidget                  *exitWidget;
     AlertWidget                 *alertWidget = nullptr;
     OperationModeWidget         *operationModeWidget;
-    AutomaticModeWidget         *automaticModeWidget;
+    SensorValuesWidget          *sensorValuesWidget;
     ClockControllModeWidget     *clockcontrolModeWidget;
     ControllerControlModeWidget *controllercontrolModeWidget;
 

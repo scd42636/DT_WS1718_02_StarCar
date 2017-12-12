@@ -12,9 +12,9 @@ ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 
 void ExitWidget::generateLayout(){
 
-    vBox1 = new QVBoxLayout(this);
-    pButtonBack = new QPushButton();
-    pButtonRestart = new QPushButton();
+    vBox1           = new QVBoxLayout(this);
+    pButtonBack     = new QPushButton();
+    pButtonRestart  = new QPushButton();
     pButtonShutdown = new QPushButton();
 
     vBox1->addWidget(pButtonBack);
@@ -42,11 +42,11 @@ void ExitWidget::generateStyle(){
     pButtonShutdown->setMinimumHeight(30);
 
     this->setStyleSheet("QPushButton{"
-                        "color: green;"
-                        "font-family: TimesNewRoman;"
-                        "font-style: normal;"
-                        "font-size: 10pt;"
-                        "font-weight: bold;}");
+                            "color: green;"
+                            "font-family: TimesNewRoman;"
+                            "font-style: normal;"
+                            "font-size: 10pt;"
+                            "font-weight: bold;}");
 }
 
 void ExitWidget::setupConnect(){
@@ -63,8 +63,8 @@ void ExitWidget::goBack(){
 
 void ExitWidget::restartApplication(){
 
-qApp->quit();
-QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
+    qApp->quit();
+    QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 
 }
 

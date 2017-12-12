@@ -45,7 +45,7 @@ void HomeWindow::setupConnects(){
 void HomeWindow::createAlertThread(){
 
     QThread *thread = new QThread;
-    alertThread = new Alert(pButtonAlert);
+    alertThread     = new Alert(pButtonAlert);
     alertThread->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), alertThread, SLOT(process()));
@@ -55,7 +55,7 @@ void HomeWindow::createAlertThread(){
 
     thread->start();
 
-    alertTimer = new QTimer(this);
+    alertTimer      = new QTimer(this);
     connect(alertTimer, SIGNAL(timeout()), alertThread, SLOT(changeAlertIcon()));
     alertTimer->start(300);
 }
@@ -120,11 +120,11 @@ void HomeWindow::removeActiveWidget(){
     mainStackedWidget->removeWidget(mainStackedWidget->currentWidget());
 }
 
-void HomeWindow::showAutomaticModeWidget(){
+void HomeWindow::showSensorValuesWidget(){
 
-    automaticModeWidget = new AutomaticModeWidget(this, this->alertThread);
-    connect(automaticModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
-    addWidgetToMainStackWidget(automaticModeWidget);
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread);
+    connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
+    addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
 void HomeWindow::showClockControlModeWidget(){
@@ -147,6 +147,7 @@ void HomeWindow::showOperationModeWidget(){
     connect(operationModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     connect(operationModeWidget, SIGNAL(showclockcontrollmodewidget()), this, SLOT(showClockControlModeWidget()));
     connect(operationModeWidget, SIGNAL(showcontrollercontrolmodewidget()), this, SLOT(showControllerControlModeWidget()));
+    connect(operationModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(showSensorValuesWidget()));
     addWidgetToMainStackWidget(operationModeWidget);
 }
 
