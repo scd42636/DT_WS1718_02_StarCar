@@ -2,7 +2,7 @@
 #define MANUALMODE_H
 
 #include <QObject>
-#include <alert.h>
+#include "alert.h"
 
 class ClockControlMode : public QObject
 {

@@ -1,7 +1,5 @@
 #include "homewindow.h"
 #include <QApplication>
-#include <initstarcar.h>
-#include <QThread>
 #include <QObject>
 
 int main(int argc, char *argv[])

@@ -31,12 +31,11 @@ SOURCES += main.cpp\
     alertwidget.cpp \
     exitwidget.cpp \
     operationmodewidget.cpp \
-    automaticmodewidget.cpp \
     initstarcar.cpp \
-    automaticmode.cpp \
     clockcontrolmodewidget.cpp \
     clockcontrollmode.cpp \
-    controllercontrolmodewidget.cpp
+    controllercontrolmodewidget.cpp \
+    sensorvalueswidget.cpp \
     #../../IBP/IBC.cpp \
     #../../IBP/IBC_Inbox.cpp \
     #../../IBP/IBC_Packet.cpp \
@@ -50,12 +49,11 @@ HEADERS  += homewindow.h \
     alertwidget.h \
     exitwidget.h \
     operationmodewidget.h \
-    automaticmodewidget.h \
     initstarcar.h \
-    automaticmode.h \
     clockcontrolmodewidget.h \
     clockcontrolmode.h \
-    controllercontrolmodewidget.h
+    controllercontrolmodewidget.h \
+    sensorvalueswidget.h \
     #../../IBP/IBC.hpp \
     #../../IBP/IBC_Inbox.hpp \
     #../../IBP/IBC_Packet.hpp \
