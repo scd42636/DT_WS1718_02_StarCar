@@ -12,5 +12,9 @@
         <file>Pics/upleft.png</file>
         <file>Pics/upright.png</file>
         <file>Pics/controller.png</file>
+        <file>Pics/arrowDown.png</file>
+        <file>Pics/arrowLeft.png</file>
+        <file>Pics/arrowRight.png</file>
+        <file>Pics/arrowUp.png</file>
     </qresource>
 </RCC>

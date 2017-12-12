@@ -72,7 +72,83 @@ void ControllerControlModeWidget::pButtonNextPushed(){
     blinkTimer->stop();
     delete blinkTimer;
 
-    //createControllAnimation();
+    createControllAnimation();
+}
+
+void ControllerControlModeWidget::createControllAnimation(){
+
+    hBoxImages = new QHBoxLayout();
+    hBoxImages->setAlignment(Qt::AlignHCenter);
+
+    vBoxRightTexts = new QVBoxLayout();
+    vBoxLeftTexts = new QVBoxLayout();
+    vBoxRightImagesArrow = new QVBoxLayout();
+    vBoxLeftImagesArrow = new QVBoxLayout();
+
+    hBoxArrowsLeft = new QHBoxLayout();
+    hBoxTextsLeft = new QHBoxLayout();
+    vBoxLeftImagesAndTexts = new QVBoxLayout();
+
+    vBox1->insertLayout(1,hBoxImages);
+    hBoxImages->setContentsMargins(0,10,0,0);
+
+    lblTextBreak = new QLabel("Bremse");
+    setStyletoLabel(lblTextBreak, Qt::AlignLeft);
+
+    lblTextSpeedUp = new QLabel("Gas");
+    setStyletoLabel(lblTextSpeedUp, Qt::AlignLeft);
+
+    lblTextTurnLeft = new QLabel("Links");
+    setStyletoLabel(lblTextTurnLeft, Qt::AlignHCenter);
+
+    lblTextTurnRight = new QLabel("Rechts");
+    setStyletoLabel(lblTextTurnRight, Qt::AlignHCenter);
+
+    QPixmap controller = QPixmap("://Pics/controller.png");
+
+    lblImageViewController = new QLabel();
+    lblImageViewController->setPixmap(controller);
+    lblImageViewController->setScaledContents(true);
+
+
+    hBoxImages->addLayout(vBoxLeftImagesAndTexts);
+    vBoxLeftImagesAndTexts->addLayout(hBoxArrowsLeft);
+    vBoxLeftImagesAndTexts->addLayout(hBoxTextsLeft);
+
+    hBoxImages->addWidget(lblImageViewController);
+
+    hBoxImages->addLayout(vBoxRightImagesArrow);
+    hBoxImages->addLayout(vBoxRightTexts);
+
+    lblArrowUp = new QLabel();
+    setArrowPicsToLabel(lblArrowUp, "arrowUp", 25, 50);
+
+    lblArrowDown = new QLabel();
+    setArrowPicsToLabel(lblArrowDown, "arrowDown", 25, 50);
+
+    lblArrowLeft = new QLabel();
+    setArrowPicsToLabel(lblArrowLeft, "arrowLeft", 40, 50);
+
+    lblArrowRight = new QLabel();
+    setArrowPicsToLabel(lblArrowRight, "arrowRight", 40, 50);
+
+    hBoxArrowsLeft->addWidget(lblArrowLeft);
+    hBoxArrowsLeft->addWidget(lblArrowRight);
+
+    vBoxRightImagesArrow->addWidget(lblArrowUp);
+    vBoxRightImagesArrow->addWidget(lblArrowDown);
+
+    vBoxRightTexts->addWidget(lblTextSpeedUp);
+    vBoxRightTexts->addWidget(lblTextBreak);
+
+    hBoxTextsLeft->addWidget(lblTextTurnLeft);
+    hBoxTextsLeft->addWidget(lblTextTurnRight);
+
+    vBox1->setContentsMargins(8,0,8,0);
+
+    blinkTimer = new QTimer();
+    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkArrows()));
+    blinkTimer->start(700);
 }
 
 void ControllerControlModeWidget::pButtonGoBackPushed(){
@@ -105,4 +181,43 @@ void ControllerControlModeWidget::blinklblInfo(){
     }
 
    lblInfo->setStyleSheet(stylesheetString);
+}
+
+void ControllerControlModeWidget::blinkArrows(){
+
+    if(lblArrowLeft->isHidden()){
+
+        lblArrowUp->show();
+        lblArrowDown->show();
+        lblArrowRight->show();
+        lblArrowLeft->show();
+        blinkTimer->setInterval(1500);
+
+
+    }else{
+
+        lblArrowLeft->hide();
+        lblArrowUp->hide();
+        lblArrowDown->hide();
+        lblArrowRight->hide();
+        blinkTimer->setInterval(200);
+    }
+
+}
+
+void ControllerControlModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path, int height, int width){
+
+    lbl->setPixmap(QPixmap("://Pics/" + path +".png"));
+    lbl->setFixedHeight(height);//25
+    lbl->setFixedWidth(width);//50
+    lbl->setScaledContents(true);
+    QSizePolicy sp_retain = lbl->sizePolicy();
+    sp_retain.setRetainSizeWhenHidden(true);
+    lbl->setSizePolicy(sp_retain);
+}
+
+void ControllerControlModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
+
+    lbl->setAlignment(align);
+    lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 9pt;font-weight: bold;}");
 }

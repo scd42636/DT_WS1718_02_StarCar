@@ -25,6 +25,8 @@ public slots:
     void blinklblInfo();
     void pButtonNextPushed();
 
+private slots:
+    void blinkArrows();
 private:
 
     // Thread
@@ -36,9 +38,28 @@ private:
 
     // QVBoxLayout
     QVBoxLayout     *vBox1;
+    QVBoxLayout     *vBoxRightTexts;
+    QVBoxLayout     *vBoxLeftTexts;
+    QVBoxLayout     *vBoxRightImagesArrow;
+    QVBoxLayout     *vBoxLeftImagesArrow;
+    QVBoxLayout     *vBoxLeftImagesAndTexts;
+
+    // QHBoxLayout
+    QHBoxLayout     *hBoxImages;
+    QHBoxLayout     *hBoxArrowsLeft;
+    QHBoxLayout     *hBoxTextsLeft;
 
     // QLabel
     QLabel          *lblInfo;
+    QLabel          *lblImageViewController;
+    QLabel          *lblTextSpeedUp;
+    QLabel          *lblTextBreak;
+    QLabel          *lblTextTurnLeft;
+    QLabel          *lblTextTurnRight;
+    QLabel          *lblArrowUp;
+    QLabel          *lblArrowDown;
+    QLabel          *lblArrowLeft;
+    QLabel          *lblArrowRight;
 
     // QTimer
     QTimer          *blinkTimer;
@@ -51,6 +72,9 @@ private:
     void generateLayout();
     void generateStyle();
     void setupConnects();
+    void createControllAnimation();
+    void setStyletoLabel(QLabel *lbl, Qt::Alignment align);
+    void setArrowPicsToLabel(QLabel *lbl, QString path, int height, int width);
 };
 
 #endif // CONTROLLERCONTROLMODEWIDGET_H
