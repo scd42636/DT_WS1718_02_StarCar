@@ -102,6 +102,13 @@ void Transceiver::body()
 		res_contentsize = 0;
 		res_content = nullptr;
 
+		//Set buffers 0
+		for(int i = 0 ; i<256; i++)
+		{
+			req_buffer[i] = 0;
+			res_buffer[i] = 0;
+		}
+
 		req_buffer[0] = next->id();
 
 		req_buffer[1] = 0;
@@ -153,14 +160,6 @@ void Transceiver::body()
 
 		send_intern(req_buffer, req_size);
 
-		std::cerr << "\nDEBUG : \n";
-		for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
-
-		//now recv header first
-		recv_intern(res_buffer, 1); //response header 1 byte long
-
-		std::cout << std::hex << "\n STATUSReceived : " <<(unsigned int) res_buffer[0] << '\n';
-
 		//check header hash
 		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03))
 		{
@@ -172,26 +171,28 @@ void Transceiver::body()
 			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
 			std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
 
+			s.emptyRecvBuffer();
+
 			if(failcount > IBP_FAIL_MAX)
 			{
 				failcount = 0;
 				//discard this packet because it failed to often
 				tosend.pop();
-				s.emptyRecvBuffer();
-				continue;
 			}
+			continue;
 		}
 
 		//check the received status here
 		uint8_t recvstat = res_buffer[0] >> 4;
 		if (recvstat)
 		{
+			recv_intern(res_buffer+1,2);
 			if(recvstat & 0x08)
 			{
 				//own error pass on
 				tosend.pop();
-				recv_intern(res_buffer+1,2);
-				Packet p (req_buffer[0], 3, res_buffer);
+				std::shared_ptr<const Packet> p (new Packet (req_buffer[0], 3, res_buffer));
+				store(p);
 			}
 			else
 			{
@@ -205,21 +206,21 @@ void Transceiver::body()
 				{
 					failcount = 0;
 					tosend.pop();
-					s.emptyRecvBuffer();
-					continue;
 				}
 			}
+			continue;
 		}
 
 		if(rule.answersize(next->id()) == IBC_RULE_SIZE_DYNAMIC)
 		{
 			res_dynamic = true;
 			recv_intern(res_buffer+1, 1);		//recv size
-			//check se size hash
-			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 6))
+			//check size hash
+			if(sizehash(res_buffer[1]) != ((res_buffer[0] << 4) >> 6))
 			{
 				failcount++;
 				
+				s.emptyRecvBuffer();
 				
 				std::cerr << "\n[IBC TRANSCEIVER] Response Sizehash failed ! ";
 				for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
@@ -229,12 +230,12 @@ void Transceiver::body()
 
 				if(failcount > IBP_FAIL_MAX)
 				{
-					failcount++;
+					failcount = 0;
 					//discard this packet because it failed to often
 					tosend.pop();
-					s.emptyRecvBuffer();
-					continue;	
 				}
+
+				continue;
 			}
 			res_content = res_buffer + 2;
 			res_contentsize = res_buffer[1];
@@ -263,12 +264,12 @@ void Transceiver::body()
 
 			if(failcount > IBP_FAIL_MAX)
 			{
-				failcount++;
+				failcount = 0;
 				//discard this packet because it failed to often
 				tosend.pop();
 				s.emptyRecvBuffer();
-				continue;
 			}
+			continue;
 		}
 
 		//construct and store the answer packet
@@ -279,10 +280,6 @@ void Transceiver::body()
 		//this request has been handled, so we erase it from the queue
 		tosend.pop();
 		failcount = 0;
-
-
-		std::cerr << "DEBUGR : \n";
-		for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
 	}
 }
 

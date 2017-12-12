@@ -98,9 +98,10 @@ int Serial::recv(void * data , int maxsize) const
 
 void Serial::emptyRecvBuffer() const
 {
-	sleep(1);
 	char buff [20];
-	while (read(fd, buff, 20) != 0) {
-		/* ... */
+
+	int i=0;
+	while (i < 10000) {
+		read(fd, buff, 20);
 	}
 }

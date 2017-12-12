@@ -34,7 +34,7 @@ int run ()
 	Inbox i2 = ibc.getInbox(std::vector<uint8_t>({253,254}));
 
 //	//copy inbox
-//	Inbox i3 (i1);
+	Inbox i3 (i1);
 
 	uint8_t ms1 [4] = {1,2,3,4};
 	Packet p1(252, ibc.requestsize(252), (uint8_t*) ms1 );
@@ -42,20 +42,20 @@ int run ()
 
 	uint8_t ms2[2] = {42,42};
 	Packet p2 (253, 2, ms2);
-	ibc.send(p2);
+//	ibc.send(p2);
 
 
-//	uint8_t ms3[2] = {1,1};
-//	Packet p3(254, ibc.requestsize(254), (uint8_t*) ms3);
-//	ibc.send(p3);
+	uint8_t ms3[2] = {1,1};
+	Packet p3(254, ibc.requestsize(254), (uint8_t*) ms3);
+	ibc.send(p3);
 
 	std::this_thread::sleep_for(std::chrono::seconds(10));
 
 	i1.fetch();
 	i2.fetch();
-//	i3.fetch();
+	//	i3.fetch();
 
-	if(!i1.size() || ! i2.size()) std::cerr << "FOOOOOOOOOOOOL !";
+//	if(!i1.size() || ! i2.size()) std::cerr << "FOOOOOOOOOOOOL !";
 
 	std::cout << "i1:\n";
 	for(auto e : i1)
