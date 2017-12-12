@@ -71,6 +71,7 @@ void HomeWindow::generateStyle(){
 
     this->setStyleSheet("QWidget{"
                         "background-color: #2b2b2b;}");
+    //#2b2b2b
 
 /*****************************Windowstyle*****************************************/
 
@@ -126,19 +127,26 @@ void HomeWindow::showAutomaticModeWidget(){
     addWidgetToMainStackWidget(automaticModeWidget);
 }
 
-void HomeWindow::showManualModeWidget(){
+void HomeWindow::showClockControlModeWidget(){
 
-    manualModeWidget = new ManualModeWidget(this, this->alertThread);
-    connect(manualModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
-    addWidgetToMainStackWidget(manualModeWidget);
+    clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread);
+    connect(clockcontrolModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
+    addWidgetToMainStackWidget(clockcontrolModeWidget);
+}
+
+void HomeWindow::showControllerControlModeWidget(){
+
+    controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread);
+    connect(controllercontrolModeWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
+    addWidgetToMainStackWidget(controllercontrolModeWidget);
 }
 
 void HomeWindow::showOperationModeWidget(){
 
     operationModeWidget = new OperationModeWidget(this, this->alertThread);
     connect(operationModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
-    connect(operationModeWidget, SIGNAL(showmanualmodewidget()), this, SLOT(showManualModeWidget()));
-    connect(operationModeWidget, SIGNAL(showautomaticmodewidget()), this, SLOT(showAutomaticModeWidget()));
+    connect(operationModeWidget, SIGNAL(showclockcontrollmodewidget()), this, SLOT(showClockControlModeWidget()));
+    connect(operationModeWidget, SIGNAL(showcontrollercontrolmodewidget()), this, SLOT(showControllerControlModeWidget()));
     addWidgetToMainStackWidget(operationModeWidget);
 }
 

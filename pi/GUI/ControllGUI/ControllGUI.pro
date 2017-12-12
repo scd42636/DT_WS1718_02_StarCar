@@ -32,16 +32,17 @@ SOURCES += main.cpp\
     exitwidget.cpp \
     operationmodewidget.cpp \
     automaticmodewidget.cpp \
-    manualmodewidget.cpp \
     initstarcar.cpp \
     automaticmode.cpp \
-    manualmode.cpp \
-    ../../IBP/IBC.cpp \
-    ../../IBP/IBC_Inbox.cpp \
-    ../../IBP/IBC_Packet.cpp \
-    ../../IBP/IBC_Rule.cpp \
-    ../../IBP/IBC_Transceiver.cpp \
-    ../../IBP/Serial.cpp
+    clockcontrolmodewidget.cpp \
+    clockcontrollmode.cpp \
+    controllercontrolmodewidget.cpp
+    #../../IBP/IBC.cpp \
+    #../../IBP/IBC_Inbox.cpp \
+    #../../IBP/IBC_Packet.cpp \
+    #../../IBP/IBC_Rule.cpp \
+    #../../IBP/IBC_Transceiver.cpp \
+    #../../IBP/Serial.cpp
 
 HEADERS  += homewindow.h \
     startwidget.h \
@@ -50,16 +51,17 @@ HEADERS  += homewindow.h \
     exitwidget.h \
     operationmodewidget.h \
     automaticmodewidget.h \
-    manualmodewidget.h \
     initstarcar.h \
     automaticmode.h \
-    manualmode.h \
-    ../../IBP/IBC.hpp \
-    ../../IBP/IBC_Inbox.hpp \
-    ../../IBP/IBC_Packet.hpp \
-    ../../IBP/IBC_Rule.hpp \
-    ../../IBP/IBC_Transceiver.hpp \
-    ../../IBP/Serial.hpp
+    clockcontrolmodewidget.h \
+    clockcontrolmode.h \
+    controllercontrolmodewidget.h
+    #../../IBP/IBC.hpp \
+    #../../IBP/IBC_Inbox.hpp \
+    #../../IBP/IBC_Packet.hpp \
+    #../../IBP/IBC_Rule.hpp \
+    #../../IBP/IBC_Transceiver.hpp \
+    #../../IBP/Serial.hpp
 
 FORMS    += homewindow.ui
 

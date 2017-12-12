@@ -17,7 +17,8 @@
 #include "alertwidget.h"
 #include "operationmodewidget.h"
 #include "automaticmodewidget.h"
-#include "manualmodewidget.h"
+#include "clockcontrolmodewidget.h"
+#include "controllercontrolmodewidget.h"
 
 namespace Ui {
 class HomeWindow;
@@ -45,7 +46,8 @@ private slots:
     void showAlertWidget();
     void showOperationModeWidget();
     void showAutomaticModeWidget();
-    void showManualModeWidget();
+    void showClockControlModeWidget();
+    void showControllerControlModeWidget();
     void showStartWidget();
 
 private:
@@ -61,12 +63,13 @@ private:
     QStackedWidget  *mainStackedWidget;
 
     // Widget
-    QWidget             *startWidget;
-    ExitWidget          *exitWidget;
-    AlertWidget         *alertWidget = nullptr;
-    OperationModeWidget *operationModeWidget;
-    AutomaticModeWidget *automaticModeWidget;
-    ManualModeWidget    *manualModeWidget;
+    QWidget                     *startWidget;
+    ExitWidget                  *exitWidget;
+    AlertWidget                 *alertWidget = nullptr;
+    OperationModeWidget         *operationModeWidget;
+    AutomaticModeWidget         *automaticModeWidget;
+    ClockControllModeWidget     *clockcontrolModeWidget;
+    ControllerControlModeWidget *controllercontrolModeWidget;
 
     // Button
     QPushButton     *pButtonExit;

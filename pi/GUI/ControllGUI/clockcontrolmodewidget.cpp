@@ -1,16 +1,16 @@
-#include "manualmodewidget.h"
+#include "clockcontrolmodewidget.h"
 #include <QImage>
 
-ManualModeWidget::ManualModeWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
+ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 {
     this->alertThread = alertThread;
 
     generateLayout();
     setupConnects();
     generateStyle();
-
-    /*QThread *thread = new QThread;
-    manualMode= new ManualMode(alertThread);
+/*
+    QThread *thread = new QThread;
+    manualMode= new ClockControlMode(alertThread);
     manualMode->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), manualMode, SLOT(startProcess()));
@@ -26,7 +26,7 @@ ManualModeWidget::ManualModeWidget(QWidget *parent, Alert *alertThread) : QWidge
 
 }
 
-void ManualModeWidget::generateLayout(){
+void ClockControllModeWidget::generateLayout(){
 
     vBox1           = new QVBoxLayout(this);
     pButtonGoBack   = new QPushButton();
@@ -39,7 +39,7 @@ void ManualModeWidget::generateLayout(){
     vBox1->addWidget(pButtonGoBack);
 }
 
-void ManualModeWidget::generateStyle(){
+void ClockControllModeWidget::generateStyle(){
 
     vBox1->setContentsMargins(0,0,0,0);
     vBox1->setAlignment(Qt::AlignBottom);
@@ -64,7 +64,7 @@ void ManualModeWidget::generateStyle(){
                             "font-weight: bold;}");
 }
 
-void ManualModeWidget::blinklblInfo(){
+void ClockControllModeWidget::blinklblInfo(){
 
     QString stylesheetString;
     QString fontColor;
@@ -91,20 +91,20 @@ void ManualModeWidget::blinklblInfo(){
    lblInfo->setStyleSheet(stylesheetString);
 }
 
-void ManualModeWidget::setupConnects(){
+void ClockControllModeWidget::setupConnects(){
 
     connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(pButtonGoBackPushed()));
     connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(pButtonNextPushed()));
 }
 
-void ManualModeWidget::pButtonGoBackPushed(){
+void ClockControllModeWidget::pButtonGoBackPushed(){
 
     emit removeWindowformStack();
 }
 
-void ManualModeWidget::pButtonNextPushed(){
+void ClockControllModeWidget::pButtonNextPushed(){
 
-    lblInfo->setText("StarCar läuft nun im manuellen Modus!");
+    lblInfo->setText("StarCar läuft mit der Uhrsteuerung!");
     lblInfo->setFixedHeight(20);
 
     QString stylesheetString = "QLabel{color: green;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
@@ -119,7 +119,7 @@ void ManualModeWidget::pButtonNextPushed(){
     createControllAnimation();
 }
 
-void ManualModeWidget::createControllAnimation(){
+void ClockControllModeWidget::createControllAnimation(){
 
     hBoxImages = new QHBoxLayout();
     hBoxImages->setAlignment(Qt::AlignHCenter);
@@ -130,8 +130,7 @@ void ManualModeWidget::createControllAnimation(){
     vBoxRightImagesArrow = new QVBoxLayout();
 
     vBox1->insertLayout(1,hBoxImages);
-
-
+    hBoxImages->setContentsMargins(0,10,0,0);
 
     lblTextBreak = new QLabel("Bremse");
     setStyletoLabel(lblTextBreak, Qt::AlignRight);
@@ -145,13 +144,14 @@ void ManualModeWidget::createControllAnimation(){
     lblTextTurnRight = new QLabel("Rechts");
     setStyletoLabel(lblTextTurnRight, Qt::AlignLeft);
 
+    QPixmap clock = QPixmap("://Pics/clock.png");
+
     lblImageViewClockLeft = new QLabel();
-    lblImageViewClockLeft->setPixmap(QPixmap("://Pics/clock.png"));
+    lblImageViewClockLeft->setPixmap(clock);
+    lblImageViewClockLeft->setScaledContents(true);
 
     lblImageViewClockRight = new QLabel();
-    lblImageViewClockRight->setPixmap(QPixmap("://Pics/clock.png"));
-    lblImageViewClockRight->setFixedHeight(50);
-    lblImageViewClockRight->setFixedWidth(50);
+    lblImageViewClockRight->setPixmap(clock);
     lblImageViewClockRight->setScaledContents(true);
 
     hBoxImages->addWidget(lblImageViewClockRight);
@@ -186,14 +186,14 @@ void ManualModeWidget::createControllAnimation(){
     vBoxRightTexts->addWidget(lblTextTurnLeft);
     vBoxRightTexts->addWidget(lblTextTurnRight);
 
-    vBox1->setContentsMargins(0,0,0,0);
+    vBox1->setContentsMargins(8,0,8,0);
 
     blinkTimer = new QTimer();
     connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkArrows()));
     blinkTimer->start(700);
 }
 
-void ManualModeWidget::blinkArrows(){
+void ClockControllModeWidget::blinkArrows(){
 
     if(lblArrowUpLeft->isHidden()){
 
@@ -214,7 +214,7 @@ void ManualModeWidget::blinkArrows(){
     }
 }
 
-void ManualModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
+void ClockControllModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
 
     lbl->setPixmap(QPixmap("://Pics/" + path +".png"));
     lbl->setFixedHeight(25);
@@ -225,12 +225,12 @@ void ManualModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
     lbl->setSizePolicy(sp_retain);
 }
 
-void ManualModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
+void ClockControllModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
 
     lbl->setAlignment(align);
-    lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 10pt;font-weight: bold;}");
+    lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 9pt;font-weight: bold;}");
 }
 
-ManualModeWidget::~ManualModeWidget(){
+ClockControllModeWidget::~ClockControllModeWidget(){
 
 }

@@ -4,13 +4,13 @@
 #include <QObject>
 #include <alert.h>
 
-class ManualMode : public QObject
+class ClockControlMode : public QObject
 {
     Q_OBJECT
 
 public:
 
-    explicit ManualMode(Alert *alertThread);
+    explicit ClockControlMode(Alert *alertThread);
 
 signals:
 

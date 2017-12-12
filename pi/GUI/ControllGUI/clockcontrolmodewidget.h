@@ -1,22 +1,22 @@
-#ifndef MANUALMODEWIDGET_H
-#define MANUALMODEWIDGET_H
+#ifndef CLOCKCONTROLMODEWIDGET_H
+#define CLOCKCONTROLMODEWIDGET_H
 
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
-#include <manualmode.h>
+#include <clockcontrolmode.h>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QTimer>
 
-class ManualModeWidget : public QWidget
+class ClockControllModeWidget : public QWidget
 {
     Q_OBJECT
 
 public:
 
-    explicit ManualModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
-    ~ManualModeWidget();
+    explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
+    ~ClockControllModeWidget();
 
 signals:
 
@@ -30,13 +30,13 @@ public slots:
 private slots:
 
     void blinklblInfo();
-
     void blinkArrows();
+
 private:
 
     // Thread
     Alert       *alertThread;
-    ManualMode  *manualMode;
+    ClockControlMode  *manualMode;
 
     // QPushButton
     QPushButton     *pButtonGoBack;
@@ -82,4 +82,4 @@ private:
     void setStyletoLabel(QLabel *lbl, Qt::Alignment align);
 };
 
-#endif // MANUALMODEWIDGET_H
+#endif // CLOCKCONTROLMODEWIDGET_H

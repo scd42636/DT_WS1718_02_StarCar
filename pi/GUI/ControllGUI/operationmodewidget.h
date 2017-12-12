@@ -21,15 +21,19 @@ public:
 signals:
 
     void removeWindowformStack();
-    void showmanualmodewidget();
+    void showclockcontrollmodewidget();
     void showautomaticmodewidget();
+    void showcontrollercontrolmodewidget();
 
 public slots:
 
+
 private slots:
 
-    void slotShowManualModeWidget();
+    void slotShowClockControlModeWidget();
     void slotShowAutomaticModeWidget();
+    void slotShowControllerControlModeWidget();
+
 
 private:
 
@@ -40,8 +44,9 @@ private:
     QVBoxLayout     *vBox1;
 
     // QPushButton
-    QPushButton     *pButtonManualMode;
+    QPushButton     *pButtonClockControlMode;
     QPushButton     *pButtonAutomaticMode;
+    QPushButton     *pButtonControllerControlMode;
 
     // QLabel
     QLabel          *lblHeadline;
