@@ -29,8 +29,7 @@ int main (int argc , char** argv)
 int run (IBC* ibc)
 {
 	
-
-	Inbox* i = new Inbox(ibc->getInbox(180));
+	Inbox *i = new Inbox(ibc->getInbox(180));
 
 	Packet p (180, 0);
 

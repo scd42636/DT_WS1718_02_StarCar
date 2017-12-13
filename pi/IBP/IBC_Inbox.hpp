@@ -29,7 +29,8 @@
 		Inbox(const Inbox&);
 		Inbox& operator= (const Inbox&);
 
-		Inbox(Inbox&&) = delete;
+		Inbox(Inbox&&);
+		Inbox& operator= (Inbox&&);
 
 		//for usage :
 		//front()

@@ -29,13 +29,14 @@ Inbox::~Inbox()
 	{
 		mute(id);
 	}
+	listening.clear();
 }
 
 Inbox::Inbox(const Inbox& other)
 	:
 	std::list<std::shared_ptr<const Packet>> (other), //strangely necessary to copy the list
 	t(other.t),
-	listening(other.listening)
+	dump(other.dump)
 {
 	for(auto id : listening)
 	{
@@ -47,12 +48,41 @@ Inbox& Inbox::operator= (const Inbox& other)
 {
 	if(this == &other) return *this;
 	this->t = other.t;
-	this->listening = listening;
+	this->dump = other.dump;
 	for (auto id : listening)
 	{
 		listen(id);
 	}
 	return *this;
+}
+
+Inbox::Inbox(Inbox&& other)
+:
+	t(other.t),
+	std::list<std::shared_ptr<const Packet>> (other),
+	dump(other.dump)
+{
+	other.dump.clear();
+	for(auto id: other.listening)
+	{
+		this->listen(id);
+		other.mute(id);
+	}
+	other.listening.clear();
+}
+
+Inbox& Inbox::operator= (Inbox&& other)
+{
+	if(this == &other) return *this;
+	this->t = other.t;
+	this->dump = other.dump;
+	other.dump.clear();
+	for(auto id: other.listening)
+	{
+		this->listen(id);
+		other.mute(id);
+	}
+	other.listening.clear();
 }
 
 void Inbox::fetch()
