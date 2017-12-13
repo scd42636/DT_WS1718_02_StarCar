@@ -29,6 +29,8 @@
 		Inbox(const Inbox&);
 		Inbox& operator= (const Inbox&);
 
+		Inbox(Inbox&&) = delete;
+
 		//for usage :
 		//front()
 		//and pop_front()

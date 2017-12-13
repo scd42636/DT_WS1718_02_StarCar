@@ -11,12 +11,13 @@
 
 using std::cout;
 
-int run();
+int run(IBC*);
 
 int main (int argc , char** argv)
 {
+	IBC* ibc = new IBC("/dev/ttyUSB0", "IBC_config.cfg");
 	try{
-	run();
+		run(ibc);
 	}
 	catch(std::runtime_error e)
 	{
@@ -25,24 +26,26 @@ int main (int argc , char** argv)
 	return 0;
 }
 
-int run ()
+int run (IBC* ibc)
 {
-	IBC ibc("/dev/ttyUSB0", "IBC_config.cfg");
+	
 
-	Inbox i = ibc.getInbox(180);
+	Inbox* i = new Inbox(ibc->getInbox(180));
 
 	Packet p (180, 0);
 
-	ibc.send(p);
+	ibc->send(p);
 
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 
-	i.fetch();
+	i->fetch();
 
-	if(i.size())
+	if(i->size())
     {
-		std::cout << *i.front() << '\n';
+		std::cout << *(i->front()) << '\n';
     }
+
+	delete i;
 
 	return 0;
 }
