@@ -62,11 +62,16 @@ void Transceiver::runworker(bool running)
 
 void Transceiver::body()
 {
+	uint8_t& mstat = this->status;
+	uint8_t sstat = 0;
+
+	int failcount = 0;
 
 	while (running)
 	{
 		//reset status
-		this->status = 0;
+		mstat = 0;
+		sstat = 0;
 
 		transfer_sendbuffer();
 
@@ -77,52 +82,67 @@ void Transceiver::body()
 		}
 		Packet* next = tosend.top().get();		//retrieve the next packet to send
 
-		uint8_t req_header[2] = {0};	
 
-		req_header[0] = next->id();
-		req_header[1] |= (this->status << 4);
-		req_header[1] |= headhash_request(header);
+		//actual sending and receiving stuff begins here
 
-		send_intern(header, 2);
+		uint8_t message_header[2] = {0};
 
+		message_header[0] = next->id();
 
-		uint8_t res_header[1] = {0};
+		send_intern(message_header, 2);
 
-		recv_intern(res_header, 1);		
+		recv_intern(&sstat, 1);
 
-		//TODO check res_header hash and status handle
-		
+		send_intern(&mstat, 1);
 
-		uint8_t req_data_header = statbyte();
-		//send dataheader
-		send_intern(req_data_header, 1);
-		//send data
-		send_intern(next->content(), next.contentsize());
-
-		if(req_size != next.contentsize()){
-			//TODO padding
+		//determine a possible padding
+		int padding = 0;
+		if(rule.requestsize(next->id()) > next->contentsize())
+		{
+			//TODO WARNING
+			padding = rule.requestsize(next->id()) - next->contentsize();
+		}
+		if(rule.requestsize(next->id()) < next->contentsize())
+		{
+			//TODO WARNING !
 		}
 
+		//send data over
+		send_intern(next->content(), next->contentsize());
+		//and the corresponding hash
+		{
+			uint8_t dh = datahash(next->content(), next->contentsize(), 0);
 
-		//send data hash
-		send_intern(datahash(next->content(), req_size, 0) , 1);
+			//with possible padding
+			if(padding)
+			{
+				uint8_t padd = IBP_PADDING;
+				for(int i = 0 ; i < padding; i++)
+				{
+					send_intern(&padd, 1);
+					dh = datahash(&padd, 1, dh);
+				}
+			}
 
-		//recv dataheader
-		uint8_t req_data_header [1] = {0};
+			send_intern(&dh, 1);
+		}
 
-		recv_intern(req_data_header, 1);
+		recv_intern(&sstat, 1);
 
-		//TODO check data header and handle status
-		
-		
-	}
-}
+		uint8_t * res_buffer = new uint8_t [rule.answersize(next->id())];
+		recv_intern(res_buffer, rule.answersize(next->id()));
 
-void Transceiver::padd(uint8_t * begin, uint8_t paddinglength)
-{
-	for( ; begin < begin+paddinglength; begin++)
-	{
-		*begin = IBP_PADDING;
+		uint8_t datahash;
+		recv_intern(&datahash, 1);
+
+
+		//create packet and store it
+		std::shared_ptr<const Packet> p (new Packet(next->id(), rule.answersize(next->id()), res_buffer));
+		store(p);
+		tosend.pop();
+	
+		std::cout << "3\n";
+	
 	}
 }
 
@@ -144,6 +164,8 @@ void Transceiver::removereceiver(Inbox& i, uint8_t id)
 
 void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
 {
+	unsigned int mtorecv = torecv;
+
 	while(torecv > 0)
 	{
 		unsigned int received = 0;
@@ -155,10 +177,22 @@ void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
         torecv -= received;
 		data += received;
 	}
+
+
+		data -= mtorecv;
+		std::cout << "\nRECV["<<(unsigned int)mtorecv<<"] ";
+		for(int i = 0; i < mtorecv; i++)
+		{
+			std::cout << std::hex << (unsigned int) data[i] << ":";
+		}
+		std::cout << '\n';
+
 }
 
 void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 {
+		unsigned int mtosend = tosend;
+
 		//send data
 		unsigned int sent = 0;
 		while(tosend  > 0)
@@ -172,23 +206,14 @@ void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 			tosend -= sent;
 			data += sent;
 		}
-}
 
-uint8_t Transceiver::headhash_request(uint8_t* headerbegin) const
-{
-	return (headerbegin[0] ^ (headerbegin[0]>>4) ^ (headerbegin[1]>>4)) & 0x0F;
-}
-
-uint8_t Transceiver::headhash_response(uint8_t* headerbegin) const
-{
-	return	(headerbegin[0]>>4) & 0x0F;
-}
-
-uint8_t Transceiver::statbyte()
-{
-	return = (this->status << 4) | (this->status)
-
-
+		data = data-mtosend;
+		std::cout << "\nSENT["<<(unsigned int)mtosend<<"] ";
+		for(int i = 0; i < mtosend; i++)
+		{
+			std::cout << std::hex << (unsigned int) data[i] << ":";
+		}
+		std::cout << '\n';
 }
 
 uint8_t Transceiver::datahash(uint8_t * data, uint8_t length, uint8_t in) const

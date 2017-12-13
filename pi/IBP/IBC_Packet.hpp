@@ -2,6 +2,8 @@
 #     define IBC_PACKET_HPP
 
 #include "IBC_defines.hpp"
+#include <iostream>
+
 
 #define IBC_PACKET_SIZE_DYNAMIC IBC_RULE_DYNAMICSIZE
 
@@ -28,5 +30,9 @@
 		uint8_t id() const;
 		uint8_t contentsize() const;
 		uint8_t * content() const;
+
 	};
+		
+	std::ostream& operator<< (std::ostream& os, const Packet& p);
+
 #endif /* IBC_PACKET_HPP */

@@ -87,3 +87,11 @@ uint8_t* Packet::content()const
 	return m_content;
 }
 
+std::ostream& operator<<(std::ostream& os, const Packet& p)
+{
+	os << "Packet:["<< (unsigned int) p.id()<<"]"<<"["<<(unsigned int)p.contentsize()<<"]";
+	for(int i = 0; i < p.contentsize(); i++){
+		os << std::hex << (unsigned int)p.content()[i] << ":";
+	}
+	return os << std::dec;
+}
