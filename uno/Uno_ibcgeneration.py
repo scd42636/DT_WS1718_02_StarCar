@@ -97,20 +97,24 @@ tagmap = {}
 for e in rules:
  tagmap[e[0]] = [0,0,0,0]
 
-for linenr in taglines:
- l = olines[linenr]
- m = re.search('\d{1,3}', olines[linenr])
- if 'BEGIN' in l:
-  if 'SEND' in l:
-   tagmap[int(m.group(0))][2] = linenr
-  elif 'RECV' in l:
-   tagmap[int(m.group(0))][0] = linenr
- elif 'END' in l:
-  if 'SEND' in l:
-   tagmap[int(m.group(0))][3] = linenr
-  elif 'RECV' in l:
-   tagmap[int(m.group(0))][1] = linenr
- 
+try:
+ for linenr in taglines:
+  l = olines[linenr]
+  m = re.search('\d{1,3}', olines[linenr])
+  if 'BEGIN' in l:
+   if 'SEND' in l:
+    tagmap[int(m.group(0))][2] = linenr
+   elif 'RECV' in l:
+    tagmap[int(m.group(0))][0] = linenr
+  elif 'END' in l:
+   if 'SEND' in l:
+    tagmap[int(m.group(0))][3] = linenr
+   elif 'RECV' in l:
+    tagmap[int(m.group(0))][1] = linenr
+except KeyError as e:
+ print("ERROR : You should delete old tags in your code file, which are no longer in config !in your code file, which are no longer in config !")
+ exit()
+
 print(tagmap)
 
 sendpreserve = {}
@@ -151,36 +155,17 @@ def dummy_send(mid,num):
  ret = ['\t\t\t'+x for x in ret]
  return ret
 
-def dummy_recv_dyn(mid):
- num = 'inSIZE_DYN()'
- ret =  ['\n','byte *buffr'+str(mid)+' = new byte ['+str(num)+'];\n','recv(buffr'+str(mid)+','+str(num)+');\n','\n','//DONT FORGET TO HASH\n','setDH(createDH(buffr'+str(mid)+','+str(num)+'));\n','delete[] buffr'+str(mid)+';//you can delete the buffer in this recv preservation or in the send preservation.. dont forget it \n','\n']
- #indent
- ret = ['\t\t\t'+x for x in ret]
- return ret
-
-
-def dummy_send_dyn(mid):
- ret =  ['\n','send(?DYNAMIC_SIZE?);\n','for(int i = 0 ; i< ?DYNAMIC_SIZE? ;i++) {send(0);}\n','\n','//DONT FORGET TO HASH\n','setDH(0);\n','\n']
- ret = ['\t\t\t'+x for x in ret]
- return ret
-
 print(rules)
 
 for e in recvpreserve:
  if recvpreserve[e] == [""]:
   rule = [x for x in rules if x[0] == e]
-  if rule[0][1] == 255:
-   recvpreserve[e] = dummy_recv_dyn(rule[0][0])
-  else:
-   recvpreserve[e] = dummy_recv(rule[0][0],rule[0][1])
+  recvpreserve[e] = dummy_recv(rule[0][0],rule[0][1])
 
 for e in sendpreserve:
  if sendpreserve[e] == [""]:
   rule = [x for x in rules if x[0] == e]
-  if rule[0][2] == 255:
-   sendpreserve[e] = dummy_send_dyn(rule[0][0])
-  else:
-   sendpreserve[e] = dummy_send(rule[0][0],rule[0][2])
+  sendpreserve[e] = dummy_send(rule[0][0],rule[0][2])
 
 for e in recvpreserve:
  print (e, ":")
@@ -194,11 +179,17 @@ head = """/* IBC_FRAME_GENERATION_TAG_BEGIN */
 /* Generated with Uno_ibcgeneration.py */
 /* Code inside IBC BEGIN/END MID RECV/SEND tags will be preserved */
 
-        handleReqHead();
-     
-        if(!STAT())
-        switch((unsigned byte)inMID())
-        {
+  char sstat = 0x00;
+
+  char mid = recv();
+  char midstat = recv();
+
+  send(sstat);
+
+  char mstat = recv();
+
+  switch ((unsigned byte)mid)
+  {
 
 """
 
@@ -212,18 +203,13 @@ def messagehead(rule):
 
 
 def messagerecvbegin(rule):
- size = str(rule[1])
- s = ""
- if size == '255':
-  size = "inSIZE_DYN()"
-  s = s+"\t\thandleReqDyn();\n"
- s = s + """
-/*   Recv exactly """+size+""" bytes in the following                              */
+ s = """
+/*   Recv exactly """+str(rule[1])+""" bytes in the following                              */
 /*   Also calculate their data hash along the way by                    */
 /*      xoring all bytes together once                                  */
 /*      or use the provided function                                    */
 /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
-/* IBC_PRESERVE_RECV_BEGIN """+str(rule[0])+" "+"v"*40+"""*/
+/* IBC_PRESERVE_RECV_BEGIN """+str(rule[0])+" "+("v"*40)+"""*/
 """
  return s
 
@@ -231,30 +217,22 @@ def messagerecvpreserve(rule):
  return "".join(recvpreserve[rule[0]])
 
 def messagerecvend(rule):
- return """/* IBC_PRESERVE_RECV_END """+str(rule[0])+" "+"^"*40+"""*/"""
+ return """/* IBC_PRESERVE_RECV_END """+str(rule[0])+" "+("^"*40)+"""*/"""
 
 messagemid = """
 
-            if(STAT())break;
-            handleReqFoot();
-            if(STAT())break;
-            handleResHead();
-            if(STAT())break;
+  char datahash = recv();
+  send(sstat);
 """
 
 def messagesendbegin(rule):
- s = ""
- size = str(rule[2])
- if size == '255':
-  size = "your ?DYNAMIC_SIZE? amount of "
- s = s+ """
-/*Send exactly """+size+""" bytes in the following                  */
-/*If you have a dynamic size you have to send this size first!      */
+ s = """
+/*Send exactly """+str(rule[2])+""" bytes in the following                  */
 /*Also calculate their data hash along the way by                   */
 /*  xoring all bytes together once                                  */
 /*  or use the provided function createDH(..)                   */
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
-/* IBC_PRESERVE_SEND_BEGIN """+str(rule[0])+" "+"v"*40+"""*/
+/* IBC_PRESERVE_SEND_BEGIN """+str(rule[0])+" "+("v"*40)+"""*/
 """
  return s
 
@@ -262,7 +240,7 @@ def messagesendpreserve(rule):
  return "".join(sendpreserve[rule[0]])
 
 def messagesendend(rule):
- return """/* IBC_PRESERVE_SEND_END """+str(rule[0])+" "+"^"*40+"""*/
+ return """/* IBC_PRESERVE_SEND_END """+str(rule[0])+" "+("^"*40)+"""*/
         }
         break;
 """
@@ -271,21 +249,8 @@ def messagefoot(rule):
  return """/* IBC_MESSAGE_END """+str(rule[0])+" "+str(rule[1])+ " " + str(rule[2])+""" */"""
 
 foot = """
-        default : 
-            m_STAT = 0x04;
-        break;
-        }
-        if(STAT())
-        {
-            delay(1000);
-            while(Serial.available() > 0)Serial.read(); // empty sent data
-            negativeResponse();
-            m_STAT = 0;
-        }
-        else
-        {
-            handleResFoot();
-        }
+  }
+  send(DH);
 /* IBC_FRAME_GENERATION_TAG_END */
 """
 
