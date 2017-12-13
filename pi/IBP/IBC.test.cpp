@@ -35,13 +35,13 @@ int run ()
 
 	ibc.send(p);
 
-	std::this_thread::sleep_for(std::crhono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	i.fetch();
 
 	if(i.size())
     {
-        std;;cout << i.front() << '\n';
+		std::cout << *i.front() << '\n';
     }
 
 	return 0;
