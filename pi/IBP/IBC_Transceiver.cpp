@@ -139,10 +139,8 @@ void Transceiver::body()
 		//create packet and store it
 		std::shared_ptr<const Packet> p (new Packet(next->id(), rule.answersize(next->id()), res_buffer));
 		store(p);
+		//std::cout << "Stored : " << *p << '\n';
 		tosend.pop();
-	
-		std::cout << "3\n";
-	
 	}
 }
 
@@ -164,7 +162,7 @@ void Transceiver::removereceiver(Inbox& i, uint8_t id)
 
 void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
 {
-	unsigned int mtorecv = torecv;
+//	unsigned int mtorecv = torecv;
 
 	while(torecv > 0)
 	{
@@ -179,19 +177,19 @@ void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
 	}
 
 
-		data -= mtorecv;
-		std::cout << "\nRECV["<<(unsigned int)mtorecv<<"] ";
-		for(int i = 0; i < mtorecv; i++)
-		{
-			std::cout << std::hex << (unsigned int) data[i] << ":";
-		}
-		std::cout << '\n';
+//		data -= mtorecv;
+//		std::cout << "\nRECV["<<(unsigned int)mtorecv<<"] ";
+//		for(int i = 0; i < mtorecv; i++)
+//		{
+//			std::cout << std::hex << (unsigned int) data[i] << ":";
+//		}
+//		std::cout << '\n';
 
 }
 
 void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 {
-		unsigned int mtosend = tosend;
+//		unsigned int mtosend = tosend;
 
 		//send data
 		unsigned int sent = 0;
@@ -207,13 +205,13 @@ void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 			data += sent;
 		}
 
-		data = data-mtosend;
-		std::cout << "\nSENT["<<(unsigned int)mtosend<<"] ";
-		for(int i = 0; i < mtosend; i++)
-		{
-			std::cout << std::hex << (unsigned int) data[i] << ":";
-		}
-		std::cout << '\n';
+//		data = data-mtosend;
+//		std::cout << "\nSENT["<<(unsigned int)mtosend<<"] ";
+//		for(int i = 0; i < mtosend; i++)
+//		{
+//			std::cout << std::hex << (unsigned int) data[i] << ":";
+//		}
+//		std::cout << '\n';
 }
 
 uint8_t Transceiver::datahash(uint8_t * data, uint8_t length, uint8_t in) const

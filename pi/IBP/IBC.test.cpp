@@ -31,22 +31,33 @@ int run ()
 
 	//construction inbox
 	Inbox i1 = ibc.getInbox(254);
+	Inbox i2 = ibc.getInbox(253);
 
 	uint8_t buffer [4] = {'f','u','c','k'};
 
 	Packet p (254, 4, buffer);
+	Packet p2 (253, 16,(uint8_t*) "Willschlafen-.-");
+
+	ibc.send(p2);
 
 	ibc.send(p);
-
+	
+	
+	//this sleep can be discarded and is only for the sole purpose of testing this 
 	std::this_thread::sleep_for(std::chrono::seconds(10));
 
+	//DO NOT FORGET TO FETCH
 	i1.fetch();
+	i2.fetch();
 
 	if(i1.empty())
 	{
 		std::cout << "FOOOL !";
 	}
 	else std::cout << *i1.front();
+
+	if(i2.empty()) std::cout << "HMMMMMMMMM";
+	if(!i2.empty())std::cout << *i2.front();
 
 	return 0;
 }
