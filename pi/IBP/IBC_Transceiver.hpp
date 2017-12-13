@@ -83,17 +83,14 @@ public:
 	void removereceiver(Inbox& i, uint8_t id);
 
 private:
+	bool handlesstat( uint8_t& sstat, uint8_t& mstat, Packet* next, uint8_t& failcount );
+
+	uint8_t datahash(uint8_t *data, uint8_t length, uint8_t in) const;
+
 	void recv_intern(uint8_t*, uint8_t);
 	void send_intern(uint8_t*, uint8_t);
 
-	uint8_t sizehash(uint8_t size) const;
-	uint8_t datahash(uint8_t * data, uint8_t length, uint8_t in = 0) const;
-	uint8_t headhash_request(uint8_t* headerbegin) const;
-	uint8_t headhash_response(uint8_t* headerbegin) const;
-	void padd(uint8_t * begin, uint8_t paddinglength);
-
 	void store (std::shared_ptr<const Packet>&);
-
 	void transfer_sendbuffer();
 };
 

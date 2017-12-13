@@ -62,26 +62,16 @@ void Transceiver::runworker(bool running)
 
 void Transceiver::body()
 {
-	uint8_t req_buffer [256] = {0};
-
-	uint8_t req_size;
-	bool req_dynamic;
-	uint8_t req_contentsize;
-	uint8_t* req_content;
-
-	uint8_t res_buffer [256] = {0};
-
-	uint8_t res_size;
-	bool res_dynamic;
-	uint8_t res_contentsize;
-	uint8_t* res_content;
+	uint8_t& mstat = this->status;
+	uint8_t sstat = 0;
 
 	int failcount = 0;
 
 	while (running)
 	{
 		//reset status
-		this->status = 0;
+		mstat = 0;
+		sstat = 0;
 
 		transfer_sendbuffer();
 
@@ -92,174 +82,65 @@ void Transceiver::body()
 		}
 		Packet* next = tosend.top().get();		//retrieve the next packet to send
 
-		req_size = 0;
-		req_dynamic = false;
-		req_contentsize = 0;
-		req_content = nullptr;
 
-		res_size = 0;
-		res_dynamic = false;
-		res_contentsize = 0;
-		res_content = nullptr;
+		//actual sending and receiving stuff begins here
 
-		req_buffer[0] = next->id();
+		uint8_t message_header[2] = {0};
 
-		req_buffer[1] = 0;
-		req_buffer[1] |= (this->status << 4);
-	
-		req_contentsize = rule.requestsize(next->id());
-		if(req_contentsize == IBC_RULE_SIZE_DYNAMIC)
+		message_header[0] = next->id();
+
+		send_intern(message_header, 2);
+
+		recv_intern(&sstat, 1);
+
+		send_intern(&mstat, 1);
+
+		//determine a possible padding
+		int padding = 0;
+		if(rule.requestsize(next->id()) > next->contentsize())
 		{
-			req_dynamic = true;
-			req_contentsize = next->contentsize();
-			req_size = req_contentsize + 4;
+			//TODO WARNING
+			padding = rule.requestsize(next->id()) - next->contentsize();
 		}
-		else
+		if(rule.requestsize(next->id()) < next->contentsize())
 		{
-			req_dynamic = false;
-			req_size = req_contentsize + 3;
-		}
-		uint8_t paddinglength = 0;
-
-		if(req_contentsize < next->contentsize())
-		{
-			std::cerr << "WARNING [IBC TRANSCEIVER] : Packet larger than specified ! Sending only specified payload ! <" << next->id() << '|' << next->contentsize() + ">\n";
-		}
-		if(req_contentsize > next->contentsize())
-		{
-			std::cerr << "WARNING [IBC TRANSCEIVER] : Packet smaller than specified ! Sending additional padding ! Please rework for efficiency !<" << next->id() << "|" << next->contentsize()+">\n";
-			paddinglength = req_contentsize - next->contentsize();
+			//TODO WARNING !
 		}
 
-		req_buffer[1] = (req_buffer[1] & 0xF0) | (sizehash(req_contentsize) << 2);
-		req_buffer[1] = (req_buffer[1] & 0xFC) | headhash_request(req_buffer);
-	
-		if(req_dynamic)
+		//send data over
+		send_intern(next->content(), next->contentsize());
+		//and the corresponding hash
 		{
-			req_buffer[2] = req_contentsize;
-			req_content = req_buffer + 3;
-		}
-		else
-		{
-			req_content = req_buffer + 2;
-		}
-		std::memcpy(req_content, next->content(), next->contentsize());
-		
-		//padding if neccessary
-		if(!paddinglength)	padd(req_content + next->contentsize() + 1, paddinglength);
+			uint8_t dh = datahash(next->content(), next->contentsize(), 0);
 
-		//footer
-		*(req_content + req_contentsize) = datahash(req_content, req_contentsize);
-
-		send_intern(req_buffer, req_size);
-
-		std::cerr << "DEBUG : " << '\n';
-		for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
-
-		//now recv header first
-		recv_intern(res_buffer, 1); //response header 1 byte long
-
-		//check header hash
-		if(headhash_response(res_buffer) != (res_buffer[0] & 0x03))
-		{
-			failcount++;
-			
-			std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
-			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
-			std::cerr << " | ";
-			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
-			std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
-
-			if(failcount > IBP_FAIL_MAX)
+			//with possible padding
+			if(padding)
 			{
-				failcount = 0;
-				//discard this packet because it failed to often
-				tosend.pop();
-				s.emptyRecvBuffer();
-				continue;
-			}
-		}
-
-		if(rule.answersize(next->id()) == IBC_RULE_SIZE_DYNAMIC)
-		{
-			res_dynamic = true;
-			recv_intern(res_buffer+1, 1);		//recv size
-			//check se size hash
-			if(sizehash(res_buffer[1]) != (res_buffer[0] << 4 >> 6))
-			{
-				failcount++;
-				
-				
-				std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
-				for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
-				std::cerr << "\n";
-				for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
-				std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
-
-				if(failcount > IBP_FAIL_MAX)
+				uint8_t padd = IBP_PADDING;
+				for(int i = 0 ; i < padding; i++)
 				{
-					failcount++;
-					//discard this packet because it failed to often
-					tosend.pop();
-					s.emptyRecvBuffer();
-					continue;	
+					send_intern(&padd, 1);
+					dh = datahash(&padd, 1, dh);
 				}
 			}
-			res_content = res_buffer + 2;
-			res_contentsize = res_buffer[1];
-			res_size = res_contentsize + 3;
-		}
-		else
-		{
-			res_dynamic = false;
-			res_content = res_buffer +1;
-			res_contentsize = rule.answersize(next->id());
-			res_size = res_contentsize + 2;
+
+			send_intern(&dh, 1);
 		}
 
-		recv_intern(res_content, res_contentsize + 1); //recv content and its hash
+		recv_intern(&sstat, 1);
 
-		uint8_t res_datahash = res_buffer[res_size-1];
-		if(datahash(res_content, res_contentsize) != res_datahash)
-		{
-			failcount++;
-			
-			std::cerr << "[IBC TRANSCEIVER] Response Sizehash failed ! ";
-			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)req_buffer[i] << ':';}
-			std::cerr << " | ";
-			for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
-			std::cerr << "(Failcount: " << failcount << ")\n" << std::dec;
+		uint8_t * res_buffer = new uint8_t [rule.answersize(next->id())];
+		recv_intern(res_buffer, rule.answersize(next->id()));
 
-			if(failcount > IBP_FAIL_MAX)
-			{
-				failcount++;
-				//discard this packet because it failed to often
-				tosend.pop();
-				s.emptyRecvBuffer();
-				continue;
-			}
-		}
+		uint8_t datahash;
+		recv_intern(&datahash, 1);
 
-		//construct and store the answer packet
-		std::shared_ptr<const Packet> answer (new Packet (next->id(), res_contentsize, res_content));
 
-		store(answer);
-
-		//this request has been handled, so we erase it from the queue
+		//create packet and store it
+		std::shared_ptr<const Packet> p (new Packet(next->id(), rule.answersize(next->id()), res_buffer));
+		store(p);
+		//std::cout << "Stored : " << *p << '\n';
 		tosend.pop();
-		failcount = 0;
-
-
-		std::cerr << "DEBUGR : " << '\n';
-		for(int i = 0; i < 256; i++){std::cerr << std::hex << (unsigned int)res_buffer[i] << ':';}
-	}
-}
-
-void Transceiver::padd(uint8_t * begin, uint8_t paddinglength)
-{
-	for( ; begin < begin+paddinglength; begin++)
-	{
-		*begin = IBP_PADDING;
 	}
 }
 
@@ -281,6 +162,8 @@ void Transceiver::removereceiver(Inbox& i, uint8_t id)
 
 void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
 {
+//	unsigned int mtorecv = torecv;
+
 	while(torecv > 0)
 	{
 		unsigned int received = 0;
@@ -292,10 +175,22 @@ void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
         torecv -= received;
 		data += received;
 	}
+
+
+//		data -= mtorecv;
+//		std::cout << "\nRECV["<<(unsigned int)mtorecv<<"] ";
+//		for(int i = 0; i < mtorecv; i++)
+//		{
+//			std::cout << std::hex << (unsigned int) data[i] << ":";
+//		}
+//		std::cout << '\n';
+
 }
 
 void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 {
+//		unsigned int mtosend = tosend;
+
 		//send data
 		unsigned int sent = 0;
 		while(tosend  > 0)
@@ -309,21 +204,14 @@ void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 			tosend -= sent;
 			data += sent;
 		}
-}
 
-uint8_t Transceiver::headhash_request(uint8_t* headerbegin) const
-{
-	return	(headerbegin[0] ^ (headerbegin[0] >> 2) ^ (headerbegin[0] >> 4) ^ (headerbegin[0] >> 6) ^ (headerbegin[1] >> 4) ^ (headerbegin[1] >> 6)) & 0x03;
-}
-
-uint8_t Transceiver::headhash_response(uint8_t* headerbegin) const
-{
-	return	((headerbegin[0] >> 4) ^ (headerbegin[0] >> 6)) & 0x03;
-}
-
-uint8_t Transceiver::sizehash(uint8_t size) const
-{
-	return (size ^ (size >> 2) ^ (size >> 4) ^ (size >> 6)) & 0x03;
+//		data = data-mtosend;
+//		std::cout << "\nSENT["<<(unsigned int)mtosend<<"] ";
+//		for(int i = 0; i < mtosend; i++)
+//		{
+//			std::cout << std::hex << (unsigned int) data[i] << ":";
+//		}
+//		std::cout << '\n';
 }
 
 uint8_t Transceiver::datahash(uint8_t * data, uint8_t length, uint8_t in) const
