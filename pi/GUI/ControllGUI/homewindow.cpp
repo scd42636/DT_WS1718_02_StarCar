@@ -183,7 +183,7 @@ void HomeWindow::showAlertWidget(){
 
 void HomeWindow::showStartWidget(){
 
-    startWidget = new StartWidget(nullptr, this->alertThread);
+    startWidget = new StartWidget(nullptr, this->alertThread, this->IBCPointer);
     connect(startWidget,SIGNAL(showOperationMode()),SLOT(showOperationModeWidget()));
     addWidgetToMainStackWidget(startWidget);
 }

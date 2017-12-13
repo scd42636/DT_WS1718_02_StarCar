@@ -19,6 +19,7 @@
 #include "clockcontrolmodewidget.h"
 #include "controllercontrolmodewidget.h"
 #include "sensorvalueswidget.h"
+#include "../../IBP/IBC.hpp"
 
 namespace Ui {
 class HomeWindow;
@@ -78,6 +79,9 @@ private:
 
     // Label
     QLabel          *lblHeadline;
+
+    // IBC
+    IBC             *IBCPointer;
 
 public:
 

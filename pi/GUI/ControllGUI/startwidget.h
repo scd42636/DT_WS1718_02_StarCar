@@ -12,6 +12,7 @@
 #include <QMainWindow>
 #include <alert.h>
 #include <initstarcar.h>
+#include "../../IBP/IBC.hpp"
 
 class StartWidget : public QWidget
 {
@@ -19,7 +20,7 @@ class StartWidget : public QWidget
 
 public:
 
-    explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
+    explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
 
     ~StartWidget();
 
@@ -40,6 +41,10 @@ private:
     // Thread
     Alert           *alertThread;
     InitStarCar     *initStarCar;
+
+    // IBC
+
+    IBC             *IBCPointer;
 
     // Methodes
     void generateLayout();
