@@ -6,29 +6,25 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     this->pButtonGoBackText = pButtonGoBackText;
     this->IBCPointer = IBCPointer;
 
-#ifdef Q_OS_LINUX
-
-    iUltraFront     = IBCPointer->getInbox(200);
-    iUltraBack      = IBCPointer->getInbox(201);
-    iCompass        = IBCPointer->getInbox(202);
-    iAcceleration   = IBCPointer->getInbox(203);
-
-    packetUltrafront    = Packet(200,0);
-    packetUltraback     = Packet(201,0);
-    packetCompass       = Packet(202,0);
-    packetAcceleration  = Packet(203,0);
-
-#endif
-
     generateLayout();
     setupConnects();
     generateStyle();
 
 #ifdef Q_OS_LINUX
 
+    packetUltrafront    = new Packet(180,2);
+    packetUltraback     = new Packet(181,2);
+    packetCompass       = new Packet(182,3);
+    packetAcceleration  = new Packet(183,6);
+
+    iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
+    iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
+    iCompass        = new Inbox(this->IBCPointer->getInbox(182));
+    iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
+
     QuerySensorValuesTimer = new QTimer();
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
-    QuerySensorValuesTimer->start(1000);
+    QuerySensorValuesTimer->start(2000);
 
 #endif
 }
@@ -122,25 +118,26 @@ void SensorValuesWidget::pButtonGoBackPushed(){
     emit removeWindowfromStack();
 }
 
-#ifdef Q_OS_LINUX
+
 
 void SensorValuesWidget::slotQuerySensorValues(){
 
-    iUltraBack.fetch();
-    iUltraFront.fetch();
-    iCompass.fetch();
-    iAcceleration.fetch();
+    #ifdef Q_OS_LINUX
 
-    IBCPointer->send(packetUltrafront);
-    IBCPointer->send(packetUltraback);
-    IBCPointer->send(packetCompass);
-    IBCPointer->send(packetAcceleration);
+    iUltraBack->fetch();
+    iUltraFront->fetch();
+    iCompass->fetch();
+    iAcceleration->fetch();
 
+    IBCPointer->send(*packetUltrafront);
+    IBCPointer->send(*packetUltraback);
+    IBCPointer->send(*packetCompass);
+    IBCPointer->send(*packetAcceleration);
+/*
     lblUltraBackValue->setText(iUltraBack.front());
     lblUltraFrontValue->setText(iUltraFront.front());
     lblcompassValue->setText(iCompass.front());
     lblaccelerationValue->setText(iAcceleration.front());
-
+*/
+    #endif
 }
-
-#endif

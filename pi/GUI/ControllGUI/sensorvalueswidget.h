@@ -26,12 +26,7 @@ public slots:
 private slots:
 
     void pButtonGoBackPushed();
-
-#ifdef Q_OS_LINUX
-
     void slotQuerySensorValues();
-
-#endif
 
 private:
 
@@ -73,15 +68,15 @@ private:
 
 #ifdef Q_OS_LINUX
 
-    Packet          packetUltrafront;
-    Packet          packetUltraback;
-    Packet          packetCompass;
-    Packet          packetAcceleration;
+    Packet          *packetUltrafront;
+    Packet          *packetUltraback;
+    Packet          *packetCompass;
+    Packet          *packetAcceleration;
 
-    Inbox           iUltraFront;
-    Inbox           iUltraBack;
-    Inbox           iCompass;
-    Inbox           iAcceleration;
+    Inbox           *iUltraFront;
+    Inbox           *iUltraBack;
+    Inbox           *iCompass;
+    Inbox           *iAcceleration;
 
 #endif
 
