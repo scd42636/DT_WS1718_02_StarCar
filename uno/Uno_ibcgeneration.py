@@ -39,7 +39,12 @@ rulefile.close()
 
 p = re.compile('^\s*\d{1,3}\s*\d{1,3}\s*\d{1,3}')
 
-rules = [x.strip('\n').split(' ') for x in rules if p.match(x)]
+rules = [x.strip('\n') for x in rules]
+rules = [x.strip('\r') for x in rules]
+rules = [x.rstrip(' ') for x in rules]
+rules = [x.split(' ') for x in rules if p.match(x)]
+
+print(rules)
 rules = [[int(x) for x in l] for l in rules]
 
 print("Rules found :")

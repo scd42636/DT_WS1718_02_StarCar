@@ -2,7 +2,7 @@
 #     define IBC_H
 
 #define IBC_BAUD 57600
-
+#include <EEPROM.h>
 class IBC
 {
     byte DH;
@@ -137,6 +137,172 @@ void IBC::next() {
         }
         break;
 /* IBC_MESSAGE_END 0 0 0 */
+/* IBC_MESSAGE_BEGIN 180 0 2 */
+        case 180:
+        {
+           
+
+/*   Recv exactly 0 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 180 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			//DONT FORGET TO HASH
+			setDH(0);
+
+
+      
+/* IBC_PRESERVE_RECV_END 180 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+  char datahash = recv();
+  send(sstat);
+
+/*Send exactly 2 bytes in the following                  */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 180 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+  int SonicFront =  EEPROM.read(0);
+  byte * bpSF = (byte*)&SonicFront;
+  
+			send(bpSF, sizeof(int));
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(bpSF, 2));
+/* IBC_PRESERVE_SEND_END 180 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
+        break;
+/* IBC_MESSAGE_END 180 0 2 */
+/* IBC_MESSAGE_BEGIN 181 0 2 */
+        case 181:
+        {
+           
+
+/*   Recv exactly 0 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 181 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			byte buffr181[0];
+			recv(buffr181,0);
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buffr181,0));
+			
+/* IBC_PRESERVE_RECV_END 181 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+  char datahash = recv();
+  send(sstat);
+
+/*Send exactly 2 bytes in the following                  */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 181 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			int SonicBack =   EEPROM.read(1);
+      byte * bpSB =(byte*) &SonicBack;
+      
+			for(int i = 0 ; i<2;i++) {send(bpSB[i]);}
+			//DONT FORGET TO HASH
+			setDH(createDH(bpSB, 2));
+			
+/* IBC_PRESERVE_SEND_END 181 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
+        break;
+/* IBC_MESSAGE_END 181 0 2 */
+/* IBC_MESSAGE_BEGIN 182 0 3 */
+        case 182:
+        {
+           
+
+/*   Recv exactly 0 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 182 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			//DONT FORGET TO HASH
+			setDH(0);
+
+     
+/* IBC_PRESERVE_RECV_END 182 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+  char datahash = recv();
+  send(sstat);
+
+/*Send exactly 3 bytes in the following                  */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 182 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+		 byte parityMag = EEPROM.read (3);
+     int Mag = EEPROM.read (4);
+
+     send(parityMag);
+     
+     byte * bpM = (byte*)&Mag;
+     send(bpM, 2);
+			
+			//DONT FORGET TO HASH
+			setDH( createDH(&parityMag,1,createDH(bpM, 2)));
+			
+/* IBC_PRESERVE_SEND_END 182 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
+        break;
+/* IBC_MESSAGE_END 182 0 3 */
+/* IBC_MESSAGE_BEGIN 183 0 6 */
+        case 183:
+        {
+           
+
+/*   Recv exactly 0 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 183 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			//DONT FORGET TO HASH
+		  setDH(0);
+    
+/* IBC_PRESERVE_RECV_END 183 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+  char datahash = recv();
+  send(sstat);
+
+/*Send exactly 6 bytes in the following                  */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 183 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			byte parityXacc = EEPROM.read(5);
+      int Xaccel = EEPROM.read(6);
+      byte parityYacc = EEPROM.read(7);
+      int Yaccel = EEPROM.read(8);
+
+     send(parityXacc);
+     byte * bpXacc = (byte*)&Xaccel;
+     send(bpXacc, 2);
+     send(parityYacc);
+     byte * bpYacc =(byte*) &Yaccel;
+     send(bpYacc, 2);
+			
+			//DONT FORGET TO HASH
+			setDH( createDH(&parityXacc,1,createDH(bpXacc, 2, createDH(parityYacc, 1, createDH(bpYacc, 2)))));
+			
+/* IBC_PRESERVE_SEND_END 183 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
+        break;
+/* IBC_MESSAGE_END 183 0 6 */
 /* IBC_MESSAGE_BEGIN 254 4 8 */
         case 254:
         {
