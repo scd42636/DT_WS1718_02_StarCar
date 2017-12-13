@@ -19,6 +19,19 @@ float ConvertToPositive (float convert){
     return convert; 
 }
 
+int ShiftToInteger(float wert){
+  wert = wert * 100;
+  
+  int shiftwert = (int)wert;
+ 
+ // float shiftwert = wert << 2; 
+  //int neuerWert = shiftwert <<2;
+  Serial.print(shiftwert);
+  Serial.println();
+  Serial.print("Shiftwert");
+  return shiftwert;
+  }
+
 void setup(void) 
 {
   Serial.begin(9600);
@@ -41,8 +54,7 @@ void setup(void)
   Serial.println("");
 }
 
-void loop(void) 
-{
+void getSensorStart(){
   /* Get a new sensor event */ 
   sensors_event_t event; 
   accel.getEvent(&event);
@@ -54,68 +66,22 @@ void loop(void)
   //Write to EEPROM 
   
 float Xaccel = event.acceleration.x;
-Serial.print(Xaccel);
-Serial.println();
 Xaccel = ConvertToPositive(Xaccel);
-
-EEPROM.put(9, Xaccel);
-float test = EEPROM.get(9, Xaccel);
-Serial.print(test);
-Serial.println();
+int newXaccel = ShiftToInteger (Xaccel);´
+EEPROM.put(9, newXaccel);
 delay (1000);
-Serial.print("STOPP");
-
-Serial.println();
-
-Serial.print(Xaccel);
-Serial.println();
-Serial.print("Ende");
-Serial.println();
-//fehler nach Ende
-EEPROM.write(0, c);
-EEPROM.write(1, Xaccel);
-int uw = EEPROM.read (0);
-int xt = EEPROM.read (1);
-Serial.print(uw, DEC);
-Serial.println();
-Serial.print("Positiv oder negativ");
-Serial.println();
-Serial.print(xt, DEC);
-Serial.println();
-Serial.print("Beschleunigung in X");
-Serial.println();
 
 float Yaccel = event.acceleration.y;
-Serial.print(Yaccel);
-Serial.println();
 Yaccel = ConvertToPositive(Yaccel);
+int newYaccel = ShiftToInteger (Yaccel);
+EEPROM.put(10, newYaccel);
 
-EEPROM.put(10, Yaccel);
-float test2 = EEPROM.get(10, Yaccel);
-Serial.print(test2);
-Serial.println();
-delay (1000);
-Serial.print("STOPP");
+  delay(1000);
+  }
 
-Serial.println();
+void loop(void) 
+{
 
-Serial.print(Yaccel);
-Serial.println();
-Serial.print("Ende");
-Serial.println();
-//fehler nach Ende
-EEPROM.write(0, c);
-EEPROM.write(1, Yaccel);
-int u = EEPROM.read (0);
-int xs = EEPROM.read (1);
-Serial.print(u, DEC);
-Serial.println();
-Serial.print("Positiv oder negativ");
-Serial.println();
-Serial.print(xs, DEC);
-Serial.println();
-Serial.print("Beschleunigung in Y");
-Serial.println();
-
-  delay(500);
+  getSensorStart();
+  
 }

@@ -1,6 +1,47 @@
-const int pingL = 7;
-const int pingM = 8;
-const int pingR = 9;
+#include <EEPROM.h>
+const int pingFront = 7;
+const int pingBack = 8;
+
+
+long SecondsToCentimeters (long microseconds) {
+  //calculation in the documentation
+  return microseconds / 29 / 2;
+} 
+
+void GettingSensors(){
+  //establishe variables for duration of the ping
+  long duration, cm;
+  
+  //Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
+  pinMode(pingFront,OUTPUT);
+  digitalWrite(pingFront,LOW);
+  delayMicroseconds(2);
+  digitalWrite(pingFront,HIGH);
+  delayMicroseconds(5);
+  digitalWrite(pingFront,LOW);
+  
+   pinMode(pingBack,OUTPUT);
+  digitalWrite(pingBack,LOW);
+  delayMicroseconds(2);
+  digitalWrite(pingBack,HIGH);
+  delayMicroseconds(5);
+  digitalWrite(pingBack,LOW);
+  
+
+  //Same pin is ued to read and receive
+  pinMode(pingFront,INPUT);
+  duration = pulseIn(pingFront,HIGH);
+  
+  pinMode(pingBack,INPUT);
+  duration = pulseIn(pingBack,HIGH);
+  
+  //convert the time into a distance
+  cm = SecondsToCentimeters(duration);
+
+  EEPROM.write(0, pingFront);
+  EEPROM.write(1, pingBack);
+  delay(100);
+  }
 
 void setup() {
   //initialize serial communication
@@ -8,50 +49,7 @@ void setup() {
 }
 
 void loop(){
-  //establishe variables for duration of the ping
-  long duration, cm;
-  
-  //Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
-  pinMode(pingL,OUTPUT);
-  digitalWrite(pingL,LOW);
-  delayMicroseconds(2);
-  digitalWrite(pingL,HIGH);
-  delayMicroseconds(5);
-  digitalWrite(pingL,LOW);
-  
-   pinMode(pingM,OUTPUT);
-  digitalWrite(pingM,LOW);
-  delayMicroseconds(2);
-  digitalWrite(pingM,HIGH);
-  delayMicroseconds(5);
-  digitalWrite(pingM,LOW);
-  
-   pinMode(pingR,OUTPUT);
-  digitalWrite(pingR,LOW);
-  delayMicroseconds(2);
-  digitalWrite(pingR,HIGH);
-  delayMicroseconds(5);
-  digitalWrite(pingR,LOW);
-  
-  //Same pin is ued to read and receive
-  pinMode(pingL,INPUT);
-  duration = pulseIn(pingL,HIGH);
-  
-  pinMode(pingM,INPUT);
-  duration = pulseIn(pingM,HIGH);
-  
-  pinMode(pingR,INPUT);
-  duration = pulseIn(pingR,HIGH);
-  
-  //convert the time into a distance
-  cm = SecondsToCentimeters(duration);
-  
-  Serial.print(cm);
-  delay(100);
 
-}
+  GettingSensors();
 
-long SecondsToCentimeters (long microseconds) {
-  //calculation in the documentation
-  return microseconds / 29 / 2;
 }

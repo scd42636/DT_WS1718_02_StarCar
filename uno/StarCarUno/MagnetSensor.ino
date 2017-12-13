@@ -133,14 +133,8 @@ Wire.endTransmission();
 void Output(int c, float headingDegrees)
 {
 //Write to EEPROM
-EEPROM.write(0, c);
-EEPROM.write(1, headingDegrees);
-int x = EEPROM.read (0);
-int y = EEPROM.read (1);
-Serial.print(x, DEC);
-Serial.println();
-Serial.print(y, DEC);
-Serial.println();
+EEPROM.write(3, c);
+EEPROM.write(4, headingDegrees);
 
 }
 
