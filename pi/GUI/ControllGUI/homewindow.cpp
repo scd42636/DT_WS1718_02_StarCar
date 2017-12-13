@@ -122,28 +122,28 @@ void HomeWindow::removeActiveWidget(){
 
 void HomeWindow::showSensorValuesWidget(){
 
-    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread);
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl" ,this-> IBCPointer);
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
 void HomeWindow::showSensorValuesWidgetAfterControlMode(){
 
-    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung");
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung",  this->IBCPointer);
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
 void HomeWindow::showClockControlModeWidget(){
 
-    clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread);
+    clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread, this->IBCPointer);
     connect(clockcontrolModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(clockcontrolModeWidget);
 }
 
 void HomeWindow::showControllerControlModeWidget(){
 
-    controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread);
+    controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread, this->IBCPointer);
     connect(controllercontrolModeWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     connect(controllercontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(showSensorValuesWidgetAfterControlMode()));
     addWidgetToMainStackWidget(controllercontrolModeWidget);

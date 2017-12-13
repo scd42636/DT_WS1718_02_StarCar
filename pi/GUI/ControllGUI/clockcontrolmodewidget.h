@@ -8,6 +8,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QTimer>
+#include <../../IBP/IBC.hpp>
+#include <../../IBP/IBC_Packet.hpp>
 
 class ClockControllModeWidget : public QWidget
 {
@@ -15,7 +17,7 @@ class ClockControllModeWidget : public QWidget
 
 public:
 
-    explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
+    explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
     ~ClockControllModeWidget();
 
 signals:
@@ -67,6 +69,9 @@ private:
 
     // QTimer
     QTimer          *blinkTimer;
+
+    // IBC
+    IBC             *IBCPointer;
 
     // Vars
     double fontSize = 10;

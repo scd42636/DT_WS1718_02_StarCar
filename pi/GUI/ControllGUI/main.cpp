@@ -10,12 +10,11 @@ int main(int argc, char *argv[])
 #ifdef WIN32
 
     w.show();
-    qDebug("Windows");
 
 #elif Q_OS_MAC
 
     w.show();
-    qDebug("Mac");
+
 #else
 
     w.showFullScreen();

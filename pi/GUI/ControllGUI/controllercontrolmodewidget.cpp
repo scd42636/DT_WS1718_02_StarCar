@@ -1,8 +1,9 @@
 #include "controllercontrolmodewidget.h"
 
-ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
+ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
+    this->IBCPointer = IBCPointer;
 
     generateLayout();
     setupConnects();

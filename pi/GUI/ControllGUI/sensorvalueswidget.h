@@ -6,6 +6,8 @@
 #include <alert.h>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <../../IBP/IBC.hpp>
+#include <../../IBP/IBC_Packet.hpp>
 
 class SensorValuesWidget : public QWidget
 {
@@ -13,7 +15,7 @@ class SensorValuesWidget : public QWidget
 
 public:
 
-    explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, QString pButtonGoBackText = "Zurück zur Moduswahl");
+    explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, QString pButtonGoBackText = "Zurück zur Moduswahl", IBC *IBCPointer = nullptr);
 
 signals:
 
@@ -24,6 +26,12 @@ public slots:
 private slots:
 
     void pButtonGoBackPushed();
+
+#ifdef Q_OS_LINUX
+
+    void slotQuerySensorValues();
+
+#endif
 
 private:
 
@@ -59,6 +67,26 @@ private:
 
     // QString
     QString         pButtonGoBackText;
+
+    // IBC
+    IBC             *IBCPointer;
+
+#ifdef Q_OS_LINUX
+
+    Packet          packetUltrafront;
+    Packet          packetUltraback;
+    Packet          packetCompass;
+    Packet          packetAcceleration;
+
+    Inbox           iUltraFront;
+    Inbox           iUltraBack;
+    Inbox           iCompass;
+    Inbox           iAcceleration;
+
+#endif
+
+    //QTimer
+    QTimer          *QuerySensorValuesTimer;
 
     // Methode
     void generateLayout();

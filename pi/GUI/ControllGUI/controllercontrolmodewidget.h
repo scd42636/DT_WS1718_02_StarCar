@@ -7,6 +7,8 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <sensorvalueswidget.h>
+#include <../../IBP/IBC.hpp>
+#include <../../IBP/IBC_Packet.hpp>
 
 class ControllerControlModeWidget : public QWidget
 {
@@ -14,7 +16,7 @@ class ControllerControlModeWidget : public QWidget
 
 public:
 
-    explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
+    explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
 
 signals:
 
@@ -69,6 +71,10 @@ private:
 
     // QTimer
     QTimer          *blinkTimer;
+
+    // IBC
+    IBC             *IBCPointer;
+    Packet          *IBCPaket;
 
     // Vars
     double fontSize = 10;

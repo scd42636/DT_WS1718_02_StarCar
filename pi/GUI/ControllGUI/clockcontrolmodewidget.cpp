@@ -1,9 +1,10 @@
 #include "clockcontrolmodewidget.h"
 #include <QImage>
 
-ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
+ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
+    this->IBCPointer = IBCPointer;
 
     generateLayout();
     setupConnects();
