@@ -127,6 +127,13 @@ void HomeWindow::showSensorValuesWidget(){
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
+void HomeWindow::showSensorValuesWidgetAfterControlMode(){
+
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung");
+    connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
+    addWidgetToMainStackWidget(sensorValuesWidget);
+}
+
 void HomeWindow::showClockControlModeWidget(){
 
     clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread);
@@ -138,6 +145,7 @@ void HomeWindow::showControllerControlModeWidget(){
 
     controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread);
     connect(controllercontrolModeWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
+    connect(controllercontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(showSensorValuesWidgetAfterControlMode()));
     addWidgetToMainStackWidget(controllercontrolModeWidget);
 }
 

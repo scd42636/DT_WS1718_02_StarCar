@@ -48,7 +48,7 @@ void ControllerControlModeWidget::generateStyle(){
                             "color: green;"
                             "font-family: TimesNewRoman;"
                             "font-style: normal;"
-                            "font-size: 12pt;"
+                            "font-size: 10pt;"
                             "font-weight: bold;}");
 }
 
@@ -60,15 +60,21 @@ void ControllerControlModeWidget::setupConnects(){
 
 void ControllerControlModeWidget::pButtonNextPushed(){
 
-    lblInfo->setText("StarCar läuft mit der Controllersteuerung!");
+    lblInfo->setText("Controllersteuerung");
     lblInfo->setFixedHeight(20);
 
     QString stylesheetString = "QLabel{color: green;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
     lblInfo->setStyleSheet(stylesheetString);
 
     vBox1->removeWidget(pButtonNext);
+    vBox1->removeWidget(pButtonGoBack);
     delete pButtonNext;
     pButtonNextRemoved = true;
+
+    hboxButtonsBottom = new QHBoxLayout();
+
+    vBox1->addLayout(hboxButtonsBottom);
+    hboxButtonsBottom->addWidget(pButtonGoBack);
 
     blinkTimer->stop();
     delete blinkTimer;
@@ -89,6 +95,7 @@ void ControllerControlModeWidget::createControllAnimation(){
     hBoxArrowsLeft          = new QHBoxLayout();
     hBoxTextsLeft           = new QHBoxLayout();
     vBoxLeftImagesAndTexts  = new QVBoxLayout();
+    pButtonNext             = new QPushButton();
 
     vBox1->insertLayout(1,hBoxImages);
     hBoxImages->setContentsMargins(0,10,0,0);
@@ -145,11 +152,20 @@ void ControllerControlModeWidget::createControllAnimation(){
     hBoxTextsLeft->addWidget(lblTextTurnLeft);
     hBoxTextsLeft->addWidget(lblTextTurnRight);
 
+    hboxButtonsBottom->addWidget(pButtonNext);
+    pButtonNext->setText("Zeige Sensorwerte");
+    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(slotShowSensorValues()));
+
     vBox1->setContentsMargins(8,0,8,0);
 
     blinkTimer                = new QTimer();
     connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkArrows()));
     blinkTimer->start(700);
+}
+
+void ControllerControlModeWidget::slotShowSensorValues(){
+
+    emit showsensorvalueswidget();
 }
 
 void ControllerControlModeWidget::pButtonGoBackPushed(){

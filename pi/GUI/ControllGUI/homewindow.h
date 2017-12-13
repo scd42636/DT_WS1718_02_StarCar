@@ -50,6 +50,7 @@ private slots:
     void showSensorValuesWidget();
     void showStartWidget();
 
+    void showSensorValuesWidgetAfterControlMode();
 private:
 
     // Window

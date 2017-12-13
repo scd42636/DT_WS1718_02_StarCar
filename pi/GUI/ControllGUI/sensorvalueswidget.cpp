@@ -1,8 +1,9 @@
 #include "sensorvalueswidget.h"
 
-SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
+SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText) : QWidget(parent)
 {
     this->alertThread = alertThread;
+    this->pButtonGoBackText = pButtonGoBackText;
 
     generateLayout();
     setupConnects();
@@ -89,7 +90,7 @@ void SensorValuesWidget::generateStyle(){
     lblacceleration->setText("Beschleunigung: ");
     lblUWB->setText("UWB: ");
 
-    pButtonGoBack->setText("Zurück zur Moduswahl");
+    pButtonGoBack->setText(pButtonGoBackText);
 }
 
 

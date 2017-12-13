@@ -6,6 +6,7 @@
 #include "alert.h"
 #include <QVBoxLayout>
 #include <QLabel>
+#include <sensorvalueswidget.h>
 
 class ControllerControlModeWidget : public QWidget
 {
@@ -18,6 +19,7 @@ public:
 signals:
 
     void removeWindowfromStack();
+    void showsensorvalueswidget();
 
 public slots:
 
@@ -28,6 +30,7 @@ public slots:
 private slots:
 
     void blinkArrows();
+    void slotShowSensorValues();
 
 private:
 
@@ -50,6 +53,7 @@ private:
     QHBoxLayout     *hBoxImages;
     QHBoxLayout     *hBoxArrowsLeft;
     QHBoxLayout     *hBoxTextsLeft;
+    QHBoxLayout     *hboxButtonsBottom;
 
     // QLabel
     QLabel          *lblInfo;

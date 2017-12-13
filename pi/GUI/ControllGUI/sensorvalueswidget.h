@@ -13,7 +13,7 @@ class SensorValuesWidget : public QWidget
 
 public:
 
-    explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
+    explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, QString pButtonGoBackText = "Zurück zur Moduswahl");
 
 signals:
 
@@ -56,6 +56,9 @@ private:
 
     // QVector
     QVector<QLabel *> lblValues;
+
+    // QString
+    QString         pButtonGoBackText;
 
     // Methode
     void generateLayout();
