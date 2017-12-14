@@ -1,5 +1,5 @@
 #include "controllercontrolmodewidget.h"
-#include <../../lidar/lidar.h>
+
 
 ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
@@ -13,16 +13,6 @@ ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert 
     blinkTimer = new QTimer(this);
     connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinklblInfo()));
     blinkTimer->start(700);
-
-    // LIDAR HIER
-    // != 0 get mesure fehler
-    // =0 passt alles
-
-    lidar test;
-    int rep = test.get_measurement("testfile.txt");
-    if(rep == 0){
-        qDebug("Lidar läuft");
-    }
 
 }
 
@@ -96,6 +86,25 @@ void ControllerControlModeWidget::pButtonNextPushed(){
 
     PortToArduino = new Serial("/dev/ttyUSB0");
     PortToArduino->send("1",1);
+
+    QThread *thread = new QThread;
+    threadLidar     = new ThreadLidar(alertThread);
+
+    threadLidar->moveToThread(thread);
+
+    connect(thread, SIGNAL(started()), threadLidar, SLOT(startProcess()));
+    connect(threadLidar, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(threadLidar, SIGNAL(finished()), threadLidar, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    thread->start();
+
+    lidarTimer                = new QTimer();
+    connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
+    lidarTimer->start(50000);
+
+    alertThread->fireWarning("Eine Warnung");
+    alertThread->fireError("Ein Error mit Nummer",13);
 }
 
 void ControllerControlModeWidget::createControllAnimation(){

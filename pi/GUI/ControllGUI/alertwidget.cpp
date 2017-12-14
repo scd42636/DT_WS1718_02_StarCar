@@ -85,20 +85,23 @@ void AlertWidget::generateStyle(){
     listView->setFocusPolicy(Qt::NoFocus);
 
     listView->setStyleSheet("QListView{"
-                                "border: 0px;}"
+                                "border: 0px}"
                             "QListView:item{"
                                 "font-style: normal;"
-                                "font-size: 15pt;"
+                                "font-size: 9pt;"
                                 "font-weight: bold;"
                                 "font-family: TimesNewRoman;"
-                                "color: orange;}");
+                                "color: white}");
 
-    this->setStyleSheet("QPushButton{"
+    checkWarErr->setStyleSheet("QPushButton{"
                             "color: green;"
                             "font-family: TimesNewRoman;"
                             "font-style: normal;"
                             "font-size: 10pt;"
                             "font-weight: bold;}");
+    QFont test = QFont("TimesNewRoman",9);
+    test.setBold(true);
+    listView->setFont(test);
 
     checkWarErr->setText("Quittieren");
 }
