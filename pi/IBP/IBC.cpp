@@ -35,10 +35,10 @@ Inbox IBC::getInbox(std::vector<uint8_t> ids)
 
 uint8_t IBC::requestsize(uint8_t id) const
 {
-	rule.requestsize(id);
+    return rule.requestsize(id);
 }
 
 uint8_t IBC::responsesize(uint8_t id) const
 {
-	rule.answersize(id);
+    return rule.answersize(id);
 }
