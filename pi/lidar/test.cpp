@@ -5,8 +5,8 @@
 #include <fstream>
 #include <string>
 
-#include "include/c/urg_sensor.h"
-#include "include/c/urg_utils.h"
+#include "include/urg_sensor.h"
+#include "include/urg_utils.h"
 
 int main()
 {
@@ -51,7 +51,7 @@ int main()
 	long *xVal, *yVal;
 	xVal = (long*)malloc(length_data_size * sizeof(long));
 	yVal = (long*)malloc(length_data_size * sizeof(long));
-
+	
 	std::string xValues = "";
 	std::string yValues = "";	
 
@@ -65,6 +65,8 @@ int main()
 		*(xVal +i) = (long)(length * sin(radian));
 		*(yVal +i) = (long)(length * cos(radian));
 		
+		//printf("%ld, ", *(xVal+i));
+			
 		xValues += std::to_string(*(xVal+i)) + ", ";
 		yValues += std::to_string(*(yVal+i)) + ", ";
 	}
