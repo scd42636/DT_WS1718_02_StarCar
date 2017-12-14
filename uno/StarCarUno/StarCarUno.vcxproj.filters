@@ -36,7 +36,10 @@
     <ClInclude Include="driver\UsbDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="driver\EZ430AccessPoint.h">
+    <ClInclude Include="StarController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="StarCarDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +62,10 @@
     <ClCompile Include="driver\UsbDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="driver\EZ430AccessPoint.cpp">
+    <ClCompile Include="StarController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StarCar.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

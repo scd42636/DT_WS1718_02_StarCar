@@ -13,7 +13,6 @@
 enum StarServoResult
 {
     SR_Success = 0,
-
     SR_Failed = -1,
 };
 
@@ -21,8 +20,9 @@ class StarServo
 {
     // ---------- Private fields ----------
 private:
-    short stepPin = 0;
+    short stepPin;
     Servo servo;
+    int16_t currentMicroseconds;
 
     // ---------- Public constructors ----------
 public:
@@ -31,7 +31,7 @@ public:
     // ---------- Public methods ----------
 public:
     StarServoResult Init();
-    void Task();
+    void Task(StarCar* car);
 
     void Test01();
     void Test02();

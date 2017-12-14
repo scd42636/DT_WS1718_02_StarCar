@@ -5,41 +5,37 @@
 // <author>Dominik Scharnagl</author>
 //--------------------------------------------------------------------------------------------------
 
-#include <Arduino.h>
-#include <SoftwareSerial.h>
-
-#include <SPI.h>
-#include <cdcacm.h>
-#include <XBOXUSB.h>
-
-typedef USB Usb;
-typedef ACM UsbController;
-typedef CDCAsyncOper UsbDriverAbstract;
-
-typedef XBOXUSB XBoxController;
-
-#define TEST 0
-#define _DEBUG 0
-
-#define ENABLE_UHS__DEBUGGING _DEBUG
-#define PIN_DISCONNECTED -1
-
 #pragma once
+#include "StarCarDefines.h"
 
-// Implemented using the code provided on:
-// - https://github.com/laurb9/StepperDriver/blob/master/src/BasicStepperDriver.h
-static inline void delayMicros(unsigned long delay_us, unsigned long start_us = 0)
+
+enum StarCarMode
 {
-    if (delay_us) {
-        if (!start_us) {
-            start_us = micros();
-        }
+    CM_None = 0,
+    CM_Controller = 1,
+    CM_Watch = 2
+};
 
-        if (delay_us > 50 /* MIN_YIELD_MICROS */) {
-            yield();
-        }
+class StarCar
+{
+    // ---------- Private fields ----------
+private:
+    int8_t direction;
+    int8_t speed;
+    StarCarMode mode;
 
-        // See https://www.gammon.com.au/millis
-        while (micros() - start_us < delay_us);
-    }
-}
+    // ---------- Public constructors ----------
+public:
+    StarCar();
+
+    // ---------- Public properties ----------
+public:
+    int8_t getDirection();
+    StarCar* setDirection(int8_t value);
+
+    StarCarMode getMode();
+    StarCar* setMode(StarCarMode mode);
+
+    int8_t getSpeed();
+    StarCar* setSpeed(int8_t value);
+};

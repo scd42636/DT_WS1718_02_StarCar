@@ -10,13 +10,18 @@
 
 #pragma once
 #include "StarCar.h"
-#include ".\driver\EZ430AccessPoint.h"
 
+
+enum StarWatchState
+{
+    WS_AP_Off = 0,
+    WS_AP_Idle = 1,
+    WS_AP_Listening = 2,
+};
 
 enum StarWatchResult
 {
     WR_Success = 0,
-
     WR_Failed = -1,
 };
 
@@ -24,18 +29,25 @@ class StarWatch
 {
     // ---------- Private fields ----------
 private:
-    EZ430AccessPoint* accessPoint;
+    UsbController* controller;
+    StarWatchState state;
+    bool isFirstRun;
 
     // ---------- Public constructors ----------
 public:
     StarWatch(UsbController* controller);
 
-    // ---------- Public destructor ----------
+    // ---------- Public properties ----------
 public:
-    ~StarWatch();
+    StarWatchState getState();
 
     // ---------- Public methods ----------
 public:
     StarWatchResult Init();
-    void Task();
+    void Task(StarCar* car);
+
+    // ---------- Private methods ----------
+private:
+    bool ReceiveFrame(uint8_t* frame, uint16_t* length);
+    bool TransmitFrame(uint8_t* frame, uint16_t length);
 };

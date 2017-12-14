@@ -148,7 +148,7 @@ public:
 
     void Stop();
 
-    void Task();
+    void Task(StarCar* car);
     void Test01();
 
     // ---------- Private methods ----------

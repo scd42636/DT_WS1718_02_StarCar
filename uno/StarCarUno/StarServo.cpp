@@ -6,6 +6,9 @@
 //--------------------------------------------------------------------------------------------------
 
 #include "StarServo.h"
+#define SERVO_LEFT_MS 1100
+#define SERVO_CENTER_MS 1365
+#define SERVO_RIGHT_MS 1600
 
 
 // ---------- Public constructors ----------
@@ -13,6 +16,7 @@
 StarServo::StarServo(short stepPin)
 {
     this->stepPin = stepPin;
+    this->currentMicroseconds = SERVO_CENTER_MS;
 }
 
 // ---------- Public methods ----------
@@ -23,16 +27,43 @@ StarServoResult StarServo::Init()
     this->servo.attach(this->stepPin);
 
     // Move into neutral (= straight) direction.
-    this->servo.writeMicroseconds(1365);
+    this->servo.writeMicroseconds(SERVO_CENTER_MS);
 
     return StarServoResult::SR_Success;
 }
 
-void StarServo::Task()
+void StarServo::Task(StarCar* car)
 {
     #if _DEBUG
     Serial.println("--> StarServo::Task()");
     #endif
+
+    int16_t ms = SERVO_CENTER_MS;
+    int8_t dir = car->getDirection();
+
+    float direction = (float)dir / 100;
+
+    if (direction < 0) {
+        // Results into values between 1100 and 1365 (inclusive). 
+        ms = SERVO_CENTER_MS - (float)(SERVO_CENTER_MS - SERVO_LEFT_MS) * ((-1) * direction);
+    }
+    else {
+        ms = SERVO_CENTER_MS + (float)(SERVO_RIGHT_MS - SERVO_CENTER_MS) * direction;
+    }
+
+    if (this->currentMicroseconds != ms) {
+        #if TEST
+        Serial.print("Servo: dir = ");
+        Serial.println(dir);
+
+        Serial.print("Servo: ms = ");
+        Serial.println(ms);
+        #else
+        this->servo.writeMicroseconds(ms);
+        #endif
+
+        this->currentMicroseconds = ms;
+    }
 }
 
 void StarServo::Test01()
@@ -77,5 +108,4 @@ void StarServo::Test02()
         this->servo.writeMicroseconds(ms);
         delay(50);
     }
-
 }

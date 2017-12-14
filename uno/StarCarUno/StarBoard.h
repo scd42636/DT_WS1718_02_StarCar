@@ -7,7 +7,6 @@
 
 #pragma once
 #include "StarCar.h"
-#include <cdcacm.h>
 
 
 enum StarBoardResult
@@ -25,5 +24,5 @@ public:
     // ---------- Public methods ----------
 public:
     StarBoardResult Init();
-    void Task();
+    void Task(StarCar* car);
 };

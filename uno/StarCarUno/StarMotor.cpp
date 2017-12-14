@@ -173,7 +173,7 @@ void StarMotor::Stop()
     this->ExitSafeStart();
 }
 
-void StarMotor::Task()
+void StarMotor::Task(StarCar* car)
 {
     #if _DEBUG
     Serial.println("--> StarMotor::Task()");
@@ -182,7 +182,18 @@ void StarMotor::Task()
 
 void StarMotor::Test01()
 {
-    this->ChangeSpeed(300);
+    //this->ChangeSpeed(300);
+    int speed = 0;
+
+    for (int index = 0; index < 320; index++) {
+        speed += 10;
+
+        Serial.print("Speed = ");
+        Serial.println(speed);
+
+        this->ChangeSpeed(speed);
+        delay(500);
+    }
 
     int currentSpeed = this->ReadCurrentSpeed();
     int targetSpeed = this->ReadTargetSpeed();

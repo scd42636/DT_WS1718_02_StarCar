@@ -1,36 +1,35 @@
 //--------------------------------------------------------------------------------------------------
-// <copyright file="EZ430AccessPoint.h" company="OTH Regensburg">
+// <copyright file="StarController.h" company="OTH Regensburg">
 //     This file is protected by Team 02 StarCar Copyright (c) 2017.
 // </copyright>
 // <author>Dominik Scharnagl</author>
 //--------------------------------------------------------------------------------------------------
 
 // Implemented using the protocol documented on:
-// - http://www.instructables.com/id/Control-an-Arduino-With-a-Wristwatch-TI-eZ430-Chr/
+// - https://github.com/felis/USB_Host_Shield_2.0/tree/master/examples/Xbox/XBOXUSB/
 
 #pragma once
-#include "../StarCar.h"
-#include "UsbDriver.h"
+#include "StarCar.h"
 
 
-enum EZ430AccessPointResult
+enum StarControllerResult
 {
-    AP_Success = 0,
-
-    AP_Failed = -1,
-    AP_USB_Shield_InitFailed = -2,
+    CR_Success = 0,
+    CR_Failed = -1,
 };
 
-class EZ430AccessPoint
+class StarController
 {
     // ---------- Private fields ----------
 private:
-    UsbController* controller;
+    XBoxController* xboxController;
 
     // ---------- Public constructors ----------
 public:
-    EZ430AccessPoint(UsbController* controller);
+    StarController(XBoxController* xboxController);
 
     // ---------- Public methods ----------
 public:
+    StarControllerResult Init();
+    void Task(StarCar* car);
 };

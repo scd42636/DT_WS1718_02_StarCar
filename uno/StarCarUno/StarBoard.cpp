@@ -24,9 +24,18 @@ StarBoardResult StarBoard::Init()
     return StarBoardResult::BR_Success;
 }
 
-void StarBoard::Task()
+void StarBoard::Task(StarCar* car)
 {
     #if _DEBUG
     Serial.println("--> StarBoard::Task()");
     #endif
+
+    if (Serial.available()) {
+        int value = Serial.read();
+
+        if (value >= 48 && value <= 57) {
+            StarCarMode mode = (StarCarMode)(value - 48);
+            car->setMode(mode);
+        }
+    }
 }
