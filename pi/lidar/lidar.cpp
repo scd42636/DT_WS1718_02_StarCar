@@ -7,6 +7,7 @@
 
 #include "include/urg_sensor.h"
 #include "include/urg_utils.h"
+#include "lidar.h"
 
 // uncomment for debug information
 //#define DEBUG	
