@@ -10,7 +10,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     setupConnects();
     generateStyle();
 
-//#ifdef Q_OS_LINUX
+#ifdef Q_OS_LINUX
 
 /*    testInbox = new Inbox(this->IBCPointer->getInbox());
     delete testInbox;
@@ -36,7 +36,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
     QuerySensorValuesTimer->start(2000);
 
-//#endif
+#endif
 }
 
 void SensorValuesWidget::generateLayout(){
