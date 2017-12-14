@@ -1,4 +1,5 @@
 #include "controllercontrolmodewidget.h"
+#include <../../IBP/Serial.hpp>
 
 ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
@@ -12,6 +13,8 @@ ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert 
     blinkTimer = new QTimer(this);
     connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinklblInfo()));
     blinkTimer->start(700);
+
+    // LIDAR HIER
 }
 
 void ControllerControlModeWidget::generateLayout(){

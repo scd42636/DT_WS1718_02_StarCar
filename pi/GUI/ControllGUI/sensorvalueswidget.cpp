@@ -10,9 +10,19 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     setupConnects();
     generateStyle();
 
-#ifdef Q_OS_LINUX
+//#ifdef Q_OS_LINUX
 
-   /* iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
+/*    testInbox = new Inbox(this->IBCPointer->getInbox());
+    delete testInbox;
+    testInbox = new Inbox(this->IBCPointer->getInbox(180));
+*//*
+    Inbox iUltraFront = this->IBCPointer->getInbox(180);
+    Inbox iUltraBack = this->IBCPointer->getInbox(181);
+    Inbox iCompass = this->IBCPointer->getInbox(182);
+    Inbox iAcceleration = this->IBCPointer->getInbox(183);
+    */
+/*
+    iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
     iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
     iCompass        = new Inbox(this->IBCPointer->getInbox(182));
     iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
@@ -26,7 +36,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
     QuerySensorValuesTimer->start(2000);
 
-#endif
+//#endif
 }
 
 void SensorValuesWidget::generateLayout(){
@@ -129,11 +139,11 @@ void SensorValuesWidget::slotQuerySensorValues(){
     iCompass->fetch();
     iAcceleration->fetch();
 */
-    IBCPointer->send(*packetUltrafront);
+ /*   IBCPointer->send(*packetUltrafront);
     IBCPointer->send(*packetUltraback);
     IBCPointer->send(*packetCompass);
     IBCPointer->send(*packetAcceleration);
-/*
+*//*
     lblUltraBackValue->setText(iUltraBack.front());
     lblUltraFrontValue->setText(iUltraFront.front());
     lblcompassValue->setText(iCompass.front());

@@ -73,11 +73,14 @@ private:
     Packet          *packetCompass;
     Packet          *packetAcceleration;
 
+    Inbox           *testInbox;
+
+/*
     Inbox           *iUltraFront;
     Inbox           *iUltraBack;
     Inbox           *iCompass;
     Inbox           *iAcceleration;
-
+*/
 #endif
 
     //QTimer
