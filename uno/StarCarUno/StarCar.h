@@ -8,6 +8,19 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+#include <SPI.h>
+#include <cdcacm.h>
+#include <XBOXUSB.h>
+
+typedef USB Usb;
+typedef ACM UsbController;
+typedef CDCAsyncOper UsbDriverAbstract;
+
+typedef XBOXUSB XBoxController;
+
+#define TEST 0
+#define _DEBUG 0
+
 #define ENABLE_UHS__DEBUGGING _DEBUG
 #define PIN_DISCONNECTED -1
 
