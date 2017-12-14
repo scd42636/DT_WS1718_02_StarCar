@@ -117,7 +117,8 @@ HEADERS += \
     ../../lidar/include/urg_serial.h \
     ../../lidar/include/urg_serial_utils.h \
     ../../lidar/include/urg_tcpclient.h \
-    ../../lidar/include/urg_utils.h
+    ../../lidar/include/urg_utils.h \
+    ../../lidar/lidar.h
 
 SOURCES += \
     automaticmode.cpp \

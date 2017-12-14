@@ -1,4 +1,5 @@
 #include "controllercontrolmodewidget.h"
+#include <../../lidar/lidar.h>
 
 ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
@@ -16,6 +17,13 @@ ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert 
     // LIDAR HIER
     // != 0 get mesure fehler
     // =0 passt alles
+
+    lidar test;
+    int rep = test.get_measurement("testfile.txt");
+    if(rep == 0){
+        qDebug("Lidar läuft");
+    }
+
 }
 
 void ControllerControlModeWidget::generateLayout(){
