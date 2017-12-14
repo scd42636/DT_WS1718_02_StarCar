@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ControllGUI
 TEMPLATE = app
 CONFIG += c++14
+LIBS+=-lurg_c
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -96,7 +97,29 @@ FORMS    += homewindow.ui
 
 DISTFILES += \
     ../../IBP/dox.cfg \
-    ../../IBP/IBC_config.cfg
+    ../../IBP/IBC_config.cfg \
+    ../../lidar/testex \
+    ../../lidar/LIDAR_data.txt \
+    ../../lidar/README.txt
 
 RESOURCES += \
     paths.qrc
+
+HEADERS += \
+    automaticmode.h \
+    automaticmodewidget.h \
+    ../../lidar/include/urg_connection.h \
+    ../../lidar/include/urg_debug.h \
+    ../../lidar/include/urg_detect_os.h \
+    ../../lidar/include/urg_errno.h \
+    ../../lidar/include/urg_ring_buffer.h \
+    ../../lidar/include/urg_sensor.h \
+    ../../lidar/include/urg_serial.h \
+    ../../lidar/include/urg_serial_utils.h \
+    ../../lidar/include/urg_tcpclient.h \
+    ../../lidar/include/urg_utils.h
+
+SOURCES += \
+    automaticmode.cpp \
+    automaticmodewidget.cpp \
+    ../../lidar/lidar.cpp

@@ -17,7 +17,7 @@
 class lidar
 {
 	public:
-  	int get_measurement();
+    int get_measurement(char *);
 };
 
 //starts measurement once
@@ -50,7 +50,6 @@ int lidar::get_measurement(char *file_name)
 	
 	length_data = (long *)malloc(sizeof(long)* urg_max_data_size(&urg));
 	
-	while
 	ret += urg_start_measurement(&urg, URG_DISTANCE, 1, 0);
 	#ifdef DEBUG
 	printf("LIDAR: urg_start_measurement: %d\n", ret);
