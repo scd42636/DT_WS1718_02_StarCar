@@ -26,4 +26,7 @@ StarBoardResult StarBoard::Init()
 
 void StarBoard::Task()
 {
+    #if _DEBUG
+    Serial.println("--> StarBoard::Task()");
+    #endif
 }
