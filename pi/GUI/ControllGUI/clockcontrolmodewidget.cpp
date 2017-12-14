@@ -107,8 +107,13 @@ void ClockControllModeWidget::pButtonNextPushed(){
 
     createControllAnimation();
 
+#ifdef Q_OS_LINUX
+
     PortToArduino = new Serial("/dev/ttyUSB0");
     PortToArduino->send("2",1);
+
+#endif
+
 }
 
 void ClockControllModeWidget::createControllAnimation(){

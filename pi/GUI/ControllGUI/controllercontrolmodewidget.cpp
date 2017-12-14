@@ -84,6 +84,8 @@ void ControllerControlModeWidget::pButtonNextPushed(){
 
     createControllAnimation();
 
+#ifdef Q_OS_LINUX
+
     PortToArduino = new Serial("/dev/ttyUSB0");
     PortToArduino->send("1",1);
 
@@ -102,6 +104,8 @@ void ControllerControlModeWidget::pButtonNextPushed(){
     lidarTimer                = new QTimer();
     connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
     lidarTimer->start(50000);
+
+#endif
 
     alertThread->fireWarning("Eine Warnung");
     alertThread->fireError("Ein Error mit Nummer",13);
@@ -189,14 +193,16 @@ void ControllerControlModeWidget::createControllAnimation(){
 }
 
 void ControllerControlModeWidget::slotShowSensorValues(){
-
+#ifdef Q_OS_LINUX
     delete PortToArduino;
+#endif
     emit showsensorvalueswidget();
 }
 
 void ControllerControlModeWidget::pButtonGoBackPushed(){
-
+#ifdef Q_OS_LINUX
     delete PortToArduino;
+#endif
     emit removeWindowfromStack();
 }
 
