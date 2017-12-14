@@ -9,6 +9,7 @@
 #include <sensorvalueswidget.h>
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
+#include <../../IBP/Serial.hpp>
 
 class ControllerControlModeWidget : public QWidget
 {
@@ -75,6 +76,7 @@ private:
     // IBC
     IBC             *IBCPointer;
     Packet          *IBCPaket;
+    Serial          *PortToArduino;
 
     // Vars
     double fontSize = 10;

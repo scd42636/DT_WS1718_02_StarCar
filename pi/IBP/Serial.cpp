@@ -55,8 +55,8 @@ void Serial::config()
 
     tcgetattr(fd, &SerialPortSettings);             // Get the current attributes of the Serial port
 
-    cfsetispeed(&SerialPortSettings,B57600);        // Set Read Speed as 57600
-    cfsetospeed(&SerialPortSettings,B57600);        // Set Write Speed as 57600
+    cfsetispeed(&SerialPortSettings,B115200);        // Set Read Speed as 57600
+    cfsetospeed(&SerialPortSettings,B115200);        // Set Write Speed as 57600
 
     SerialPortSettings.c_cflag &= ~PARENB;          // Disables the Parity Enable bit(PARENB),So No Parity
     SerialPortSettings.c_cflag &= ~CSTOPB;          // CSTOPB = 2 Stop bits,here it is cleared so 1 Stop bit

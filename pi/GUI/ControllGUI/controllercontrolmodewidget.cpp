@@ -1,5 +1,4 @@
 #include "controllercontrolmodewidget.h"
-#include <../../IBP/Serial.hpp>
 
 ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
@@ -15,6 +14,8 @@ ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert 
     blinkTimer->start(700);
 
     // LIDAR HIER
+    // != 0 get mesure fehler
+    // =0 passt alles
 }
 
 void ControllerControlModeWidget::generateLayout(){
@@ -84,6 +85,9 @@ void ControllerControlModeWidget::pButtonNextPushed(){
     delete blinkTimer;
 
     createControllAnimation();
+
+    PortToArduino = new Serial("/dev/ttyUSB0");
+    PortToArduino->send("1",1);
 }
 
 void ControllerControlModeWidget::createControllAnimation(){
@@ -169,11 +173,13 @@ void ControllerControlModeWidget::createControllAnimation(){
 
 void ControllerControlModeWidget::slotShowSensorValues(){
 
+    delete PortToArduino;
     emit showsensorvalueswidget();
 }
 
 void ControllerControlModeWidget::pButtonGoBackPushed(){
 
+    delete PortToArduino;
     emit removeWindowfromStack();
 }
 

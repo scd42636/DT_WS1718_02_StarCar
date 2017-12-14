@@ -10,7 +10,7 @@ InitStarCar::InitStarCar(Alert *alertThread, IBC *IBCPointer)
 void InitStarCar::startProcess(){
 
 #ifdef Q_OS_LINUX
-    IBCPointer = new IBC("/dev/ttyUSB0","../../IBC_config.cfg");
+    //IBCPointer = new IBC("/dev/ttyUSB0","../../IBC_config.cfg");
 #endif
 
     for(int i =0; i < 15; i++){

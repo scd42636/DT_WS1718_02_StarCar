@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
+#include <../../IBP/Serial.hpp>
 
 class ClockControllModeWidget : public QWidget
 {
@@ -72,6 +73,7 @@ private:
 
     // IBC
     IBC             *IBCPointer;
+    Serial          *PortToArduino;
 
     // Vars
     double fontSize = 10;

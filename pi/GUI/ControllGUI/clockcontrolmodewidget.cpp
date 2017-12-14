@@ -106,6 +106,9 @@ void ClockControllModeWidget::pButtonNextPushed(){
     delete blinkTimer;
 
     createControllAnimation();
+
+    PortToArduino = new Serial("/dev/ttyUSB0");
+    PortToArduino->send("2",1);
 }
 
 void ClockControllModeWidget::createControllAnimation(){

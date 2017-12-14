@@ -75,12 +75,12 @@ private:
 
     Inbox           *testInbox;
 
-/*
+
     Inbox           *iUltraFront;
     Inbox           *iUltraBack;
     Inbox           *iCompass;
     Inbox           *iAcceleration;
-*/
+
 #endif
 
     //QTimer
