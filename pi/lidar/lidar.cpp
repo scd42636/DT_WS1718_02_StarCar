@@ -16,7 +16,6 @@
 //starts measurement once
 int lidar::get_measurement(char *file_name)
 {
-#ifdef Q_OS_LINUX
 	#ifdef  DEBUGV 
 	printf("LIDAR: Started\n");
 	#endif
@@ -102,5 +101,5 @@ int lidar::get_measurement(char *file_name)
 	printf("LIDAR: End of program\n");
 	#endif		
     return(ret);
-#endif
+
 }
