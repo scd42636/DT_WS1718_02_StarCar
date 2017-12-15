@@ -1,0 +1,47 @@
+
+Kurzes Tutorial zur Benutzung des Protocolls:
+
+1) Überlege dir die Größen von Frage und Antwort deiner Nachricht. (je zwischen 0-250)
+2) Mache einen Eintrag in ./pi/IBC/IBC_config.cfg wie folgt
+		[MessageID] [Fragegröße] [Antwortgröße]
+	Für den Fall das eine der Größen dynamisch sein sollen muss, schreibe 255 als Größe
+	Beispiel:
+		13 32 255
+		Nachricht 13 mit Fragegröße 32 und dynamischer Antwortgröße
+
+3) Speichere das File
+
+4) Plattformspezifisch : 
+
+Auf Pi Seite : 
+
+	a) suche Zugriff auf das IBC Objekt, dass beim Initialisierungsprozzess erzeugt worden sein muss
+
+	b) fordere vom IBC eine Inbox mit deiner Nachrichtennummer an
+		im folgenden werden Antworten auf diese Nachrichtennummer in dieser Inbox landen
+
+	c) um zu senden, konstruiere ein Packet und rufe IBC::send(packet) auf.
+
+	Beispielcode sollte sich in pi/IBC/IBC.test.cpp befinden
+
+Auf Arduiono Seite:
+
+	a) in ./uno liegt ein python script Uno_ibcgeneration.py
+		dieses generiert den meisten Code auf Arduino Seite für euch
+
+	$[uno] ./Uno_ibcgeneration.py ../pi/IBC/IBC_config.cfg ./IBC.ino
+
+	Achtet auf die korrekten Pfade von eurem Current Working Directory ausgehend.
+	
+	das sollte in IBC.ino unter eurer Message ID einen Eintrag generieren
+	zwischen den leicht zu erkenneden IBC_PRESERVE_... tags kann code eingefügt werden, der euren wünschen entspricht
+	Dieser wird auch beim erneuten Ausführen des Skripts erhalten
+	achtet auf die Kommentare !
+
+	b) schreibt code an die vorgesehenen Stellen in IBC.ino
+
+	Eine dummy-Sample-Code befindet sich bereits an den Stellen, die zu bearbeiten sind und dienen als Beispielcode
+
+	NOTE : Das script sollte nach git-merge-Vorgängen ausgeführt werden, sollten also Fehler auftreten wäre das zuerst abzuchecken
+
+mfg. Robert
