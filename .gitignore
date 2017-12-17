@@ -302,3 +302,4 @@ __pycache__/
 dokumentation/grr/doc
 #debug-build output
 pi/GUI/build-ControllGUI-Desktop_Qt_5_9_3_clang_64bit-Debug/*
+pi/GUI/build-ControllGUI-Desktop-Debug/*
