@@ -17,6 +17,8 @@ StarServo::StarServo(short stepPin)
 {
     this->stepPin = stepPin;
     this->currentMicroseconds = SERVO_CENTER_MS;
+
+    this->testStepIndex = 0;
 }
 
 // ---------- Public methods ----------
@@ -109,3 +111,18 @@ void StarServo::Test02()
         delay(50);
     }
 }
+
+void StarServo::Test03()
+{
+    if (this->testStepIndex > 60)
+		this->testStepIndex = 0;
+  
+    int ms = 1100 + (this->testStepIndex++) * 10;
+  
+    Serial.print("ms = ");
+    Serial.println(ms);
+    
+    this->servo.writeMicroseconds(ms);
+    delay(50);
+}
+

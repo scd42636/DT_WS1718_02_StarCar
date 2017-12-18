@@ -7,7 +7,7 @@
 
 #pragma once
 #include "StarCar.h"
-#include <Servo.h>;
+#include <Servo.h>
 
 
 enum StarServoResult
@@ -23,6 +23,7 @@ private:
     short stepPin;
     Servo servo;
     int16_t currentMicroseconds;
+    int testStepIndex;
 
     // ---------- Public constructors ----------
 public:
@@ -35,4 +36,5 @@ public:
 
     void Test01();
     void Test02();
+    void Test03();
 };

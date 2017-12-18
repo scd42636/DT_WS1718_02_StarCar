@@ -14,7 +14,7 @@ StarMotor::StarMotor(
     short receivePin,
     short transmitPin,
     short resetPin,
-    short errorPin = PIN_DISCONNECTED)
+    short errorPin)
 {
     this->receivePin = receivePin;
     this->transmitPin = transmitPin;
@@ -22,6 +22,7 @@ StarMotor::StarMotor(
     this->errorPin = errorPin;
 
     this->serial = SoftwareSerial(this->receivePin, this->transmitPin);
+	this->testStepIndex = 0;
 }
 
 // ---------- Public methods ----------
@@ -204,6 +205,20 @@ void StarMotor::Test01()
     Serial.print("Current Speed: ");
     Serial.println(currentSpeed);
 
+    Serial.println("-----");
+}
+
+void StarMotor::Test02()
+{
+    if (this->testStepIndex > 100)
+		this->testStepIndex = 0;
+  
+    int speed = (this->testStepIndex++) * 10;
+  
+    Serial.print("Speed = ");
+    Serial.println(speed);
+
+    this->ChangeSpeed(speed);
     Serial.println("-----");
 }
 

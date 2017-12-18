@@ -118,10 +118,11 @@ public:
 
     // ---------- Private fields ----------
 private:
-    short errorPin = 0;
-    short receivePin = 0;
-    short resetPin = 0;
-    short transmitPin = 0;
+    short errorPin;
+    short receivePin;
+    short resetPin;
+    short transmitPin;
+    int testStepIndex;
 
     SoftwareSerial serial = SoftwareSerial(0, 0);
 
@@ -150,6 +151,7 @@ public:
 
     void Task(StarCar* car);
     void Test01();
+    void Test02();
 
     // ---------- Private methods ----------
 private:
