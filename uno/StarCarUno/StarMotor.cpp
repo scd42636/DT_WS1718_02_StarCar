@@ -11,17 +11,17 @@
 // ---------- Public constructors ----------
 
 StarMotor::StarMotor(
-    short receivePin,
-    short transmitPin,
-    short resetPin,
-    short errorPin)
+	short receivePin,
+	short transmitPin,
+	short resetPin,
+	short errorPin)
 {
-    this->receivePin = receivePin;
-    this->transmitPin = transmitPin;
-    this->resetPin = resetPin;
-    this->errorPin = errorPin;
+	this->receivePin = receivePin;
+	this->transmitPin = transmitPin;
+	this->resetPin = resetPin;
+	this->errorPin = errorPin;
 
-    this->serial = SoftwareSerial(this->receivePin, this->transmitPin);
+	this->serial = SoftwareSerial(this->receivePin, this->transmitPin);
 	this->testStepIndex = 0;
 }
 
@@ -29,203 +29,203 @@ StarMotor::StarMotor(
 
 StarMotorResult StarMotor::ChangeSpeed(int speed)
 {
-    if (speed < 0)
-        return this->ChangeSpeed(-speed, StarMotorDirection::MD_Backward);
+	if (speed < 0)
+		return this->ChangeSpeed(-speed, StarMotorDirection::MD_Backward);
 
-    return this->ChangeSpeed(speed, StarMotorDirection::MD_Forward);
+	return this->ChangeSpeed(speed, StarMotorDirection::MD_Forward);
 }
 
 StarMotorResult StarMotor::ChangeSpeed(int speed, StarMotorDirection direction)
 {
-    if (direction != StarMotorDirection::MD_Forward && direction != StarMotorDirection::MD_Backward)
-        return StarMotorResult::MR_DirectionIsOutOfRange;
+	if (direction != StarMotorDirection::MD_Forward && direction != StarMotorDirection::MD_Backward)
+		return StarMotorResult::MR_DirectionIsOutOfRange;
 
-    if (speed < MinSpeed || speed > MaxSpeed)
-        return StarMotorResult::MR_SpeedIsOutOfRange;
+	if (speed < MinSpeed || speed > MaxSpeed)
+		return StarMotorResult::MR_SpeedIsOutOfRange;
 
-    this->serial.write(direction);
+	this->serial.write(direction);
 
-    this->serial.write(speed & 0x1F);   // low five bits
-    this->serial.write(speed >> 5);     // high seven bits
+	this->serial.write(speed & 0x1F);   // low five bits
+	this->serial.write(speed >> 5);     // high seven bits
 
-    return StarMotorResult::MR_Success;
+	return StarMotorResult::MR_Success;
 }
 
 StarMotorResult StarMotor::ChangeLimit(StarMotorLimit limit, unsigned int value)
 {
-    this->serial.write(0xA2);
-    this->serial.write(limit);
-    this->serial.write(value & 0x7F);
-    this->serial.write(value >> 7);
+	this->serial.write(0xA2);
+	this->serial.write(limit);
+	this->serial.write(value & 0x7F);
+	this->serial.write(value >> 7);
 
-    char result = 0;
+	char result = 0;
 
-    if (this->serial.readBytes(&result, 1) == 0)
-        return StarMotorResult::MR_TimeoutExpired;
+	if (this->serial.readBytes(&result, 1) == 0)
+		return StarMotorResult::MR_TimeoutExpired;
 
-    if (result == StarMotorLimitResult::MLR_UnableToSetLimit)
-        return StarMotorResult::MR_UnableToSetLimit;
+	if (result == StarMotorLimitResult::MLR_UnableToSetLimit)
+		return StarMotorResult::MR_UnableToSetLimit;
 
-    if (result == StarMotorLimitResult::MLR_UnableToSetForwardLimit)
-        return StarMotorResult::MR_UnableToSetForwardLimit;
+	if (result == StarMotorLimitResult::MLR_UnableToSetForwardLimit)
+		return StarMotorResult::MR_UnableToSetForwardLimit;
 
-    if (result == StarMotorLimitResult::MLR_UnableToSetBackwardLimit)
-        return StarMotorResult::MR_UnableToSetBackwardLimit;
+	if (result == StarMotorLimitResult::MLR_UnableToSetBackwardLimit)
+		return StarMotorResult::MR_UnableToSetBackwardLimit;
 
-    if (result == StarMotorLimitResult::MLR_Success) {
-        this->ExitSafeStart();
-        return StarMotorResult::MR_Success;
-    }
+	if (result == StarMotorLimitResult::MLR_Success) {
+		this->ExitSafeStart();
+		return StarMotorResult::MR_Success;
+	}
 
-    return StarMotorResult::MR_Failed;
+	return StarMotorResult::MR_Failed;
 }
 
 StarMotorResult StarMotor::Init()
 {
-    this->serial.begin(19200);
+	this->serial.begin(19200);
 
-    // Briefly reset SMC when Arduino starts up (optional).
-    pinMode(this->resetPin, OUTPUT);
+	// Briefly reset SMC when Arduino starts up (optional).
+	pinMode(this->resetPin, OUTPUT);
 
-    digitalWrite(this->resetPin, LOW);  // reset SMC
-    delay(1);                           // wait 1 ms
+	digitalWrite(this->resetPin, LOW);  // reset SMC
+	delay(1);                           // wait 1 ms
 
-    pinMode(this->resetPin, INPUT);     // let SMC run again
+	pinMode(this->resetPin, INPUT);     // let SMC run again
 
-                                        // Must wait at least 1 ms after reset before transmitting.
-    delay(5);
+										// Must wait at least 1 ms after reset before transmitting.
+	delay(5);
 
-    if (this->errorPin != PIN_DISCONNECTED) {
-        // This lets us read the state of the SMC ERR pin (optional).
-        pinMode(this->errorPin, INPUT);
-    }
+	if (this->errorPin != PIN_DISCONNECTED) {
+		// This lets us read the state of the SMC ERR pin (optional).
+		pinMode(this->errorPin, INPUT);
+	}
 
-    // Send baud-indicator byte.
-    this->serial.write(0xAA);
+	// Send baud-indicator byte.
+	this->serial.write(0xAA);
 
-    this->ExitSafeStart();
+	this->ExitSafeStart();
 
-    //this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationForward, 1);
-    //this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationBackward, 1);
-    //this->ChangeLimit(StarMotorLimit::ML_MaxDeceleration, 10);
+	//this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationForward, 1);
+	//this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationBackward, 1);
+	//this->ChangeLimit(StarMotorLimit::ML_MaxDeceleration, 10);
 
-    return StarMotorResult::MR_Success;
+	return StarMotorResult::MR_Success;
 }
 
 int StarMotor::ReadCurrentSpeed()
 {
-    unsigned int value = 0;
+	unsigned int value = 0;
 
-    if (this->ReadVariable(StarMotorVariable::MV_Speed, &value) == StarMotorResult::MR_Success)
-        return value;
+	if (this->ReadVariable(StarMotorVariable::MV_Speed, &value) == StarMotorResult::MR_Success)
+		return value;
 
-    return -1;
+	return -1;
 }
 
 int StarMotor::ReadTargetSpeed()
 {
-    unsigned int value = 0;
+	unsigned int value = 0;
 
-    if (this->ReadVariable(StarMotorVariable::MV_TargetSpeed, &value) == StarMotorResult::MR_Success)
-        return value;
+	if (this->ReadVariable(StarMotorVariable::MV_TargetSpeed, &value) == StarMotorResult::MR_Success)
+		return value;
 
-    return -1;
+	return -1;
 }
 
 StarMotorResult StarMotor::ReadVariable(StarMotorVariable variable, unsigned int* value)
 {
-    *value = 0;
+	*value = 0;
 
-    this->serial.write(0xA1);
-    this->serial.write(variable);
+	this->serial.write(0xA1);
+	this->serial.write(variable);
 
-    char lowByte = 0;
+	char lowByte = 0;
 
-    if (this->serial.readBytes(&lowByte, 1) == 0)
-        return StarMotorResult::MR_TimeoutExpired;
+	if (this->serial.readBytes(&lowByte, 1) == 0)
+		return StarMotorResult::MR_TimeoutExpired;
 
-    char highByte = 0;
+	char highByte = 0;
 
-    if (this->serial.readBytes(&highByte, 1) == 0)
-        return StarMotorResult::MR_TimeoutExpired;
+	if (this->serial.readBytes(&highByte, 1) == 0)
+		return StarMotorResult::MR_TimeoutExpired;
 
-    *value = lowByte + 256 * highByte;
+	*value = lowByte + 256 * highByte;
 
-    // See https://www.pololu.com/docs/0J44/6.2.1, Section: Get Variable (any input mode)
-    // If the variable type is signed and the above result is greater than 32767, you will need to
-    // subtract 65536 from the result to obtain the correct, signed value. Alternatively, if it is
-    // supported by the language you are using, you can cast the result to a signed 16-bit
-    // data type.
-    if (*value > 32767
-        && variable == StarMotorVariable::MV_RC1ScaledValue
-        || variable == StarMotorVariable::MV_RC2ScaledValue
-        || variable == StarMotorVariable::MV_AN1ScaledValue
-        || variable == StarMotorVariable::MV_AN2ScaledValue
-        || variable == StarMotorVariable::MV_TargetSpeed
-        || variable == StarMotorVariable::MV_Speed) {
-        *value -= 65536;
-    }
+	// See https://www.pololu.com/docs/0J44/6.2.1, Section: Get Variable (any input mode)
+	// If the variable type is signed and the above result is greater than 32767, you will need to
+	// subtract 65536 from the result to obtain the correct, signed value. Alternatively, if it is
+	// supported by the language you are using, you can cast the result to a signed 16-bit
+	// data type.
+	if (*value > 32767
+		&& variable == StarMotorVariable::MV_RC1ScaledValue
+		|| variable == StarMotorVariable::MV_RC2ScaledValue
+		|| variable == StarMotorVariable::MV_AN1ScaledValue
+		|| variable == StarMotorVariable::MV_AN2ScaledValue
+		|| variable == StarMotorVariable::MV_TargetSpeed
+		|| variable == StarMotorVariable::MV_Speed) {
+		*value -= 65536;
+	}
 
-    return StarMotorResult::MR_Success;
+	return StarMotorResult::MR_Success;
 }
 
 void StarMotor::Stop()
 {
-    this->ExitSafeStart();
+	this->ExitSafeStart();
 }
 
 void StarMotor::Task(StarCar* car)
 {
-    #if _DEBUG
-    Serial.println("--> StarMotor::Task()");
-    #endif
+#if _DEBUG
+	Serial.println("--> StarMotor::Task()");
+#endif
 }
 
 void StarMotor::Test01()
 {
-    //this->ChangeSpeed(300);
-    int speed = 0;
+	//this->ChangeSpeed(300);
+	int speed = 0;
 
-    for (int index = 0; index < 320; index++) {
-        speed += 10;
+	for (int index = 0; index < 320; index++) {
+		speed += 10;
 
-        Serial.print("Speed = ");
-        Serial.println(speed);
+		Serial.print("Speed = ");
+		Serial.println(speed);
 
-        this->ChangeSpeed(speed);
-        delay(500);
-    }
+		this->ChangeSpeed(speed);
+		delay(500);
+	}
 
-    int currentSpeed = this->ReadCurrentSpeed();
-    int targetSpeed = this->ReadTargetSpeed();
+	int currentSpeed = this->ReadCurrentSpeed();
+	int targetSpeed = this->ReadTargetSpeed();
 
-    Serial.print("Target Speed: ");
-    Serial.println(targetSpeed);
+	Serial.print("Target Speed: ");
+	Serial.println(targetSpeed);
 
-    Serial.print("Current Speed: ");
-    Serial.println(currentSpeed);
+	Serial.print("Current Speed: ");
+	Serial.println(currentSpeed);
 
-    Serial.println("-----");
+	Serial.println("-----");
 }
 
 void StarMotor::Test02()
 {
-    if (this->testStepIndex > 100)
+	if (this->testStepIndex > 100)
 		this->testStepIndex = 0;
-  
-    int speed = (this->testStepIndex++) * 10;
-  
-    Serial.print("Speed = ");
-    Serial.println(speed);
 
-    this->ChangeSpeed(speed);
-    Serial.println("-----");
+	int speed = (this->testStepIndex++) * 10;
+
+	Serial.print("Speed = ");
+	Serial.println(speed);
+
+	this->ChangeSpeed(speed);
+	Serial.println("-----");
 }
 
 // ---------- Private methods ----------
 
 void StarMotor::ExitSafeStart()
 {
-    // Clear the safe-start violation.
-    this->serial.write(0x83);
+	// Clear the safe-start violation.
+	this->serial.write(0x83);
 }

@@ -36,8 +36,8 @@ StarCar* StarCar::setMode(StarCarMode value)
 {
     this->mode = value;
 
-    ////Serial.print("Mode Change = ");
-    ////Serial.println(this->mode);
+    Serial.print("Mode Change = ");
+    Serial.println(this->mode);
 
     return this;
 }
