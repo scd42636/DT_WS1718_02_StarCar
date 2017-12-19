@@ -20,6 +20,7 @@ class StarCar
 {
     // ---------- Private fields ----------
 private:
+    int8_t acceleration;
     int8_t direction;
     int8_t speed;
     StarCarMode mode;
@@ -30,6 +31,9 @@ public:
 
     // ---------- Public properties ----------
 public:
+    int8_t getAcceleration();
+    StarCar* setAcceleration(int8_t value);
+
     int8_t getDirection();
     StarCar* setDirection(int8_t value);
 

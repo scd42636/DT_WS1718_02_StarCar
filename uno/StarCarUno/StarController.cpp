@@ -31,13 +31,24 @@ void StarController::Task(StarCar* car)
     if (this->xboxController->Xbox360Connected) {
         if (car->getMode() == StarCarMode::CM_Controller) {
             this->xboxController->setLedMode(ALTERNATING);
+
+            
             int16_t leftX = this->xboxController->getAnalogHat(LeftHatX);
 
             if (leftX < -7500 || leftX > 7500) {
-                ////Serial.print("Controller: Direction = ");
-                ////Serial.println((float)leftX / 32768);
+                //Serial.print("Controller: Direction = ");
+                //Serial.println((float)leftX / 32768);
 
                 car->setDirection(((float)leftX / 32768) * 100);
+            }
+
+            int16_t rightY = this->xboxController->getAnalogHat(RightHatY);
+
+            if (rightY < -7500 || rightY > 7500) {
+                //Serial.print("Controller: Acceleration = ");
+                Serial.println((float)rightY / 32768);
+
+                car->setSpeed(((float)rightY / 32768) * 100);
             }
         }
         else {
