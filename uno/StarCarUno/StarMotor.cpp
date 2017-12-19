@@ -22,6 +22,8 @@ StarMotor::StarMotor(
 	this->errorPin = errorPin;
 
 	this->serial = SoftwareSerial(this->receivePin, this->transmitPin);
+
+	this->currentSpeed = 0;
 	this->testStepIndex = 0;
 }
 
@@ -179,6 +181,23 @@ void StarMotor::Task(StarCar* car)
 #if _DEBUG
 	Serial.println("--> StarMotor::Task()");
 #endif
+
+	int8_t acceleration = car->getAcceleration();
+	int16_t speed = (float)3200 * ((float)acceleration / 100);
+
+	if (this->currentSpeed != speed) {
+#if TEST
+		Serial.print("Motor: accel = ");
+		Serial.println(acceleration);
+
+		Serial.print("Motor: speed = ");
+		Serial.println(speed);
+#else
+		this->ChangeSpeed(speed);
+#endif
+
+		this->currentSpeed = speed;
+	}
 }
 
 void StarMotor::Test01()

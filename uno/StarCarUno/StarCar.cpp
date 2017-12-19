@@ -12,11 +12,22 @@
 
 StarCar::StarCar()
 {
+    this->acceleration = 0;
     this->direction = 0;
     this->mode = StarCarMode::CM_None;
 }
 
 // ---------- Public properties ----------
+
+int8_t StarCar::getAcceleration()
+{
+    return this->acceleration;
+}
+StarCar* StarCar::setAcceleration(int8_t value)
+{
+    this->acceleration = value;
+    return this;
+}
 
 int8_t StarCar::getDirection()
 {
