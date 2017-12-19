@@ -118,7 +118,7 @@ public:
 
     // ---------- Private fields ----------
 private:
-	int16_t currentSpeed;
+    int16_t currentSpeed;
     short errorPin;
     short receivePin;
     short resetPin;

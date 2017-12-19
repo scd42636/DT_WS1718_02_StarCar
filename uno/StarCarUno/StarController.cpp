@@ -32,7 +32,7 @@ void StarController::Task(StarCar* car)
         if (car->getMode() == StarCarMode::CM_Controller) {
             this->xboxController->setLedMode(ALTERNATING);
 
-            
+
             int16_t leftX = this->xboxController->getAnalogHat(LeftHatX);
 
             if (leftX < -7500 || leftX > 7500) {
