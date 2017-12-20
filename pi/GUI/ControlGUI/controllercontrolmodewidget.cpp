@@ -106,9 +106,6 @@ void ControllerControlModeWidget::pButtonNextPushed(){
     lidarTimer->start(50000);
 
 #endif
-
-    alertThread->fireWarning("Eine Warnung");
-    alertThread->fireError("Ein Error mit Nummer",13);
 }
 
 void ControllerControlModeWidget::createControllAnimation(){
