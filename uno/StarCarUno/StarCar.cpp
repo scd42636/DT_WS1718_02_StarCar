@@ -15,6 +15,7 @@ StarCar::StarCar()
     this->acceleration = 0;
     this->direction = 0;
     this->mode = StarCarMode::CM_None;
+    this->engineMode = StarCarEngineMode::CEM_Off;
 }
 
 // ---------- Public properties ----------
@@ -53,12 +54,11 @@ StarCar* StarCar::setMode(StarCarMode value)
     return this;
 }
 
-int8_t StarCar::getSpeed()
+StarCarEngineMode StarCar::getEngineMode()
 {
-    return this->speed;
+    return this->engineMode;
 }
-StarCar* StarCar::setSpeed(int8_t value)
+StarCar* StarCar::setEngineMode(StarCarEngineMode value)
 {
-    this->speed = value;
-    return this;
+    this->engineMode = value;
 }

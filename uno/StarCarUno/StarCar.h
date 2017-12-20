@@ -16,12 +16,19 @@ enum StarCarMode
     CM_Watch = 2
 };
 
+enum StarCarEngineMode
+{
+    CEM_Off = 0,
+    CEM_On = 1
+};
+
 class StarCar
 {
     // ---------- Private fields ----------
 private:
     int8_t acceleration;
     int8_t direction;
+    StarCarEngineMode engineMode;
     int8_t speed;
     StarCarMode mode;
 
@@ -38,8 +45,8 @@ public:
     StarCar* setDirection(int8_t value);
 
     StarCarMode getMode();
-    StarCar* setMode(StarCarMode mode);
+    StarCar* setMode(StarCarMode value);
 
-    int8_t getSpeed();
-    StarCar* setSpeed(int8_t value);
+    StarCarEngineMode getEngineMode();
+    StarCar* setEngineMode(StarCarEngineMode value);
 };
