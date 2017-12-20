@@ -3,6 +3,7 @@
 //     This file is protected by Team 02 StarCar Copyright (c) 2017.
 // </copyright>
 // <author>Dominik Scharnagl</author>
+// <author>Mehmet Billor</author>
 //--------------------------------------------------------------------------------------------------
 
 #include "StarCar.h"
@@ -10,6 +11,7 @@
 #include "StarController.h"
 #include "StarMotor.h"
 #include "StarServo.h"
+#include "StarSonic.h"
 #include "StarWatch.h"
 
 // REASONs WHY THE FIRMWARE COULD STOP WORKING:
@@ -17,24 +19,36 @@
 // - Serial.print / Serial.println: If used to extensive an internal overflow will occur.
 // - Using the PIN #10 did not work for the servo control class.
 
-static Usb usb;
-static UsbDriver usbDriver;
-static UsbController usbController(&usb, &usbDriver);
-static XBoxController xboxController(&usb);
+// USING THE USB SHIELD THE FOLLOWING PIN BEHAIVOUR APPLIES TO THE BOARD:
+// - Working PINs: 2, 3, 4, 5, 6, 7, 10, 12, 13
+// - Strange working PINs: 8
+// - Not working PINs: 0, 1, 9, 11
 
-static StarCar car;
+Usb usb;
+UsbDriver usbDriver;
+UsbController usbController(&usb, &usbDriver);
+XBoxController xboxController(&usb);
 
-static StarBoard board;
-static StarController controller(&xboxController);
-static StarWatch watch(&usbController);
+StarCar car;
 
-#define Motor_RxPin         11
-#define Motor_TxPin         12
-#define Motor_ResetPin      13
-static StarMotor motor(Motor_RxPin, Motor_TxPin, Motor_ResetPin);
+#define Board_ForwardLedPin         6
+#define Board_BackwardLedPin        7
+#define Board_LeftFlashLedPin       PIN_DISCONNECTED
+#define Board_RightFlashLedPin      PIN_DISCONNECTED
+StarBoard board(Board_ForwardLedPin, Board_BackwardLedPin, Board_LeftFlashLedPin, Board_RightFlashLedPin);
 
-#define Servo_StepPin       5
-static StarServo servo(Servo_StepPin);
+StarController controller(&xboxController);
+StarWatch watch(&usbController);
+
+#define Motor_RxPin                 2
+#define Motor_TxPin                 3
+#define Motor_ResetPin              4
+StarMotor motor(Motor_RxPin, Motor_TxPin, Motor_ResetPin);
+
+#define Servo_StepPin               5
+StarServo servo(Servo_StepPin);
+
+StarSonic sonic;
 
 void setup()
 {
@@ -59,6 +73,22 @@ void setup()
     #endif
 
     if (board.Init() == StarBoardResult::BR_Success) {
+        #if _DEBUG
+        Serial.println("success!");
+        #endif
+    }
+    else {
+        #if _DEBUG
+        Serial.println("FAILED!");
+        #endif
+    }
+
+    #if _DEBUG
+    delay(100);
+    Serial.print("--> Initializing Sonic...\t\t");
+    #endif
+
+    if (sonic.Init() == StarSonicResult::SCR_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -137,7 +167,7 @@ void setup()
     Serial.println("----------");
     #endif
 
-    //car.setMode(StarCarMode::CM_Controller);
+    car.setMode(StarCarMode::CM_Controller);
 }
 
 void loop()
@@ -150,12 +180,9 @@ void loop()
     usb.Task();
     board.Task(&car);
     controller.Task(&car);
-    watch.Task(&car);
+    //watch.Task(&car);
     motor.Task(&car);
     servo.Task(&car);
-
-    //motor.Test01();
-    //servo.Test02();
 
     #if _DEBUG
     Serial.println("----------");
