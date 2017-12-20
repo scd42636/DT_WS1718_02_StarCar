@@ -33,5 +33,5 @@ void ThreadLidar::finishLidar(){
 ThreadLidar::~ThreadLidar(){
 
     delete Lidar;
-    qDebug("deleted Lidar");
+    this->alertThread->fireWarning("Lidar finished");
 }
