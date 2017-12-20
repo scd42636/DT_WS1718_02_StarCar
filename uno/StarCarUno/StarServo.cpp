@@ -41,16 +41,24 @@ void StarServo::Task(StarCar* car)
     #endif
 
     int16_t ms = SERVO_CENTER_MS;
-    int8_t dir = car->getDirection();
 
-    float direction = (float)dir / 100;
+    if (car->getMode() == StarCarMode::CM_None) {
+        int8_t dir = car->getDirection();
+        float direction = (float)dir / 100;
 
-    if (direction < 0) {
-        // Results into values between 1100 and 1365 (inclusive). 
-        ms = SERVO_CENTER_MS - (float)(SERVO_CENTER_MS - SERVO_LEFT_MS) * ((-1) * direction);
-    }
-    else {
-        ms = SERVO_CENTER_MS + (float)(SERVO_RIGHT_MS - SERVO_CENTER_MS) * direction;
+        if (direction < 0) {
+            // Results into values between 1100 and 1365 (inclusive).
+            ms = SERVO_CENTER_MS - (float)(SERVO_CENTER_MS - SERVO_LEFT_MS) * ((-1) * direction);
+
+            //if (ms > SERVO_CENTER_MS - 20)
+            //    ms = SERVO_CENTER_MS;
+        }
+        else {
+            ms = SERVO_CENTER_MS + (float)(SERVO_RIGHT_MS - SERVO_CENTER_MS) * direction;
+
+            //if (ms < SERVO_CENTER_MS + 20)
+            //    ms = SERVO_CENTER_MS;
+        }
     }
 
     if (this->currentMicroseconds != ms) {
@@ -65,6 +73,7 @@ void StarServo::Task(StarCar* car)
         #endif
 
         this->currentMicroseconds = ms;
+        Serial.print("x");
     }
 }
 
