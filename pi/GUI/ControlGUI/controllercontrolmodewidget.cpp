@@ -86,8 +86,8 @@ void ControllerControlModeWidget::pButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    PortToArduino = new Serial("/dev/ttyUSB0");
-    PortToArduino->send("1",1);
+    //PortToArduino = new Serial("/dev/ttyUSB0");
+    //PortToArduino->send("1",1);
 
     QThread *thread = new QThread;
     threadLidar     = new ThreadLidar(alertThread);
