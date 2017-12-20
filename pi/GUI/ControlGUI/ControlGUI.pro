@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = ControllGUI
+TARGET = ControlGUI
 TEMPLATE = app
 CONFIG += c++14
 !win32{
@@ -42,7 +42,7 @@ SOURCES += main.cpp\
     controllercontrolmodewidget.cpp \
     sensorvalueswidget.cpp \
 
-HEADERS  += homewindow.h \
+HEADERS += homewindow.h \
     startwidget.h \
     alert.h \
     alertwidget.h \
@@ -69,14 +69,16 @@ SOURCES += main.cpp\
     clockcontrollmode.cpp \
     controllercontrolmodewidget.cpp \
     sensorvalueswidget.cpp \
+    threadlidar.cpp \
     ../../IBP/IBC.cpp \
     ../../IBP/IBC_Inbox.cpp \
     ../../IBP/IBC_Packet.cpp \
     ../../IBP/IBC_Rule.cpp \
     ../../IBP/IBC_Transceiver.cpp \
-    ../../IBP/Serial.cpp
+    ../../IBP/Serial.cpp \
+    ../../lidar/lidar.cpp
 
-HEADERS  += homewindow.h \
+HEADERS += homewindow.h \
     startwidget.h \
     alert.h \
     alertwidget.h \
@@ -87,29 +89,14 @@ HEADERS  += homewindow.h \
     clockcontrolmode.h \
     controllercontrolmodewidget.h \
     sensorvalueswidget.h \
+    threadlidar.h \
     ../../IBP/IBC.hpp \
     ../../IBP/IBC_Inbox.hpp \
     ../../IBP/IBC_Packet.hpp \
     ../../IBP/IBC_Rule.hpp \
     ../../IBP/IBC_Transceiver.hpp \
-    ../../IBP/Serial.hpp
-}
-
-FORMS    += homewindow.ui
-
-DISTFILES += \
-    ../../IBP/dox.cfg \
-    ../../IBP/IBC_config.cfg \
-    ../../lidar/testex \
-    ../../lidar/LIDAR_data.txt \
-    ../../lidar/README.txt
-
-RESOURCES += \
-    paths.qrc
-
-HEADERS += \
-    automaticmode.h \
-    automaticmodewidget.h \
+    ../../IBP/Serial.hpp \
+    ../../lidar/lidar.h \
     ../../lidar/include/urg_connection.h \
     ../../lidar/include/urg_debug.h \
     ../../lidar/include/urg_detect_os.h \
@@ -119,12 +106,13 @@ HEADERS += \
     ../../lidar/include/urg_serial.h \
     ../../lidar/include/urg_serial_utils.h \
     ../../lidar/include/urg_tcpclient.h \
-    ../../lidar/include/urg_utils.h \
-    ../../lidar/lidar.h \
-    threadlidar.h
+    ../../lidar/include/urg_utils.h
+}
 
-SOURCES += \
-    automaticmode.cpp \
-    automaticmodewidget.cpp \
-    ../../lidar/lidar.cpp \
-    threadlidar.cpp
+FORMS += homewindow.ui
+
+DISTFILES += \
+    ../../IBP/IBC_config.cfg \
+
+RESOURCES += \
+    paths.qrc
