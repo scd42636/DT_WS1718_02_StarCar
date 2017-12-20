@@ -17,12 +17,36 @@ enum StarBoardResult
 
 class StarBoard
 {
+    // ---------- Private fields ----------
+public:
+    bool backwardLedIsOn;
+    short backwardLedPin;
+
+    bool forwardLedIsOn;
+    short forwardLedPin;
+
+    bool leftFlashLedOn;
+    short leftFlashLedPin;
+
+    bool rightFlashLedOn;
+    short rightFlashLedPin;
+
+    StarCarEngineMode previousEngineMode;
+
     // ---------- Public constructors ----------
 public:
-    StarBoard();
+    StarBoard(
+        short forwardLedPin = PIN_DISCONNECTED,
+        short backwardLedPin = PIN_DISCONNECTED,
+        short leftFlashLedPin = PIN_DISCONNECTED,
+        short rightFlashLedPin = PIN_DISCONNECTED);
 
     // ---------- Public methods ----------
 public:
     StarBoardResult Init();
     void Task(StarCar* car);
+
+    // ---------- Private methods ----------
+private:
+    void SwitchLed(bool* current, bool target, short pin);
 };
