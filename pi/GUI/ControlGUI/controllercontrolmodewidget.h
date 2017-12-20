@@ -18,7 +18,7 @@ class ControllerControlModeWidget : public QWidget
 
 public:
 
-    explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr, Serial *SerialPortArduino = nullptr);
+    explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
     ~ControllerControlModeWidget();
 
 signals:

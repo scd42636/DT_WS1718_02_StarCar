@@ -1,27 +1,16 @@
 #include "sensorvalueswidget.h"
 
-SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
+SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->pButtonGoBackText = pButtonGoBackText;
     this->IBCPointer = IBCPointer;
-    this->SerialPortArduino = SerialPortArduino;
 
     generateLayout();
     setupConnects();
     generateStyle();
 
 #ifdef Q_OS_LINUX
-/*
-    testInbox = new Inbox(this->IBCPointer->getInbox());
-    delete testInbox;
-    testInbox = new Inbox(this->IBCPointer->getInbox(180));
-
-    Inbox iUltraFront = this->IBCPointer->getInbox(180);
-    Inbox iUltraBack = this->IBCPointer->getInbox(181);
-    Inbox iCompass = this->IBCPointer->getInbox(182);
-    Inbox iAcceleration = this->IBCPointer->getInbox(183);
-*/
 
     iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
     iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));

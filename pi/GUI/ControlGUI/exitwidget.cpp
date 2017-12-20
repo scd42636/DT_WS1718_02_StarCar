@@ -4,9 +4,11 @@
 
 #define DEBUG
 
-ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
+ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
+    this->IBCPointer = IBCPointer;
+
     generateLayout();
     setupConnect();
     generateStyle();
@@ -65,6 +67,12 @@ void ExitWidget::slotGoBack(){
 
 void ExitWidget::slotRestartApplication(){
 
+#ifdef Q_OS_LINUX
+
+    delete IBCPointer;
+
+#endif
+
     qApp->quit();
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 
@@ -73,6 +81,12 @@ void ExitWidget::slotRestartApplication(){
 void ExitWidget::slotShutdownPi(){
 
 #ifdef DEBUG
+
+    #ifdef Q_OS_LINUX
+
+        delete IBCPointer;
+
+    #endif
 
     this->parentWidget()->parentWidget()->parentWidget()->close();
 

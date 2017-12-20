@@ -5,13 +5,14 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <alert.h>
+#include <../../IBP/IBC.hpp>
 
 class ExitWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr);
+    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
 
     ~ExitWidget(){
     }
@@ -19,20 +20,28 @@ public:
 private:
 
     // QVBoxLayout
-    QVBoxLayout *vBox1;
+
+    QVBoxLayout     *vBox1;
 
     // QPushButton
-    QPushButton *pButtonBack;
-    QPushButton *pButtonRestart;
-    QPushButton *pButtonShutdown;
+
+    QPushButton     *pButtonBack;
+    QPushButton     *pButtonRestart;
+    QPushButton     *pButtonShutdown;
 
     // Method
+
     void generateLayout();
     void setupConnect();
     void generateStyle();
 
     //Thread
+
     Alert *alertThread;
+
+    //IBC
+
+    IBC             *IBCPointer;
 
 signals:
 

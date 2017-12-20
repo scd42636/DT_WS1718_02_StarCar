@@ -20,8 +20,7 @@ class StartWidget : public QWidget
 
 public:
 
-    explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
-                         IBC **IBCPointer = nullptr, Serial **SerialPortArduino = nullptr);
+    explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr);
 
     ~StartWidget();
 

@@ -19,7 +19,7 @@ class ClockControllModeWidget : public QWidget
 public:
 
     explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
-                                     IBC *IBCPointer = nullptr, Serial *SerialPortArduino = nullptr);
+                                     IBC *IBCPointer = nullptr);
     ~ClockControllModeWidget();
 
 signals:

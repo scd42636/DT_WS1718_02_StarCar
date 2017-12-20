@@ -122,21 +122,21 @@ void HomeWindow::removeActiveWidget(){
 
 void HomeWindow::slotShowSensorValuesWidget(){
 
-    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl" ,this-> IBCPointer, this->SerialPortArduino);
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl" ,this-> IBCPointer);
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
 void HomeWindow::slotShowSensorValuesWidgetAfterControlMode(){
 
-    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung",  this->IBCPointer, this->SerialPortArduino);
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung",  this->IBCPointer);
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
 void HomeWindow::slotShowClockControlModeWidget(){
 
-    clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread, this->IBCPointer, this->SerialPortArduino);
+    clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread, this->IBCPointer);
     connect(clockcontrolModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     connect(clockcontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(slotShowSensorValuesWidgetAfterControlMode()));
     addWidgetToMainStackWidget(clockcontrolModeWidget);
@@ -144,7 +144,7 @@ void HomeWindow::slotShowClockControlModeWidget(){
 
 void HomeWindow::slotShowControllerControlModeWidget(){
 
-    controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread, this->IBCPointer, this->SerialPortArduino);
+    controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread, this->IBCPointer);
     connect(controllercontrolModeWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     connect(controllercontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(slotShowSensorValuesWidgetAfterControlMode()));
     addWidgetToMainStackWidget(controllercontrolModeWidget);
@@ -162,7 +162,7 @@ void HomeWindow::slotShowOperationModeWidget(){
 
 void HomeWindow::slotShowExitWidget(){
 
-    exitWidget = new ExitWidget(this, this->alertThread);
+    exitWidget = new ExitWidget(this, this->alertThread, this->IBCPointer);
     connect(exitWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(exitWidget);
 }
@@ -184,7 +184,7 @@ void HomeWindow::slotShowAlertWidget(){
 
 void HomeWindow::slotShowStartWidget(){
 
-    startWidget = new StartWidget(nullptr, this->alertThread, &this->IBCPointer, &this->SerialPortArduino);
+    startWidget = new StartWidget(nullptr, this->alertThread, &this->IBCPointer);
     connect(startWidget,SIGNAL(showOperationMode()),SLOT(slotShowOperationModeWidget()));
     addWidgetToMainStackWidget(startWidget);
 }

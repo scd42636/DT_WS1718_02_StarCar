@@ -2,11 +2,10 @@
 
 //#define IBCNOTWORKING
 
-ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
+ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
-    this->SerialPortArduino = SerialPortArduino;
 
     setupWidget();
 }

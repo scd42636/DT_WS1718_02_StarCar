@@ -17,7 +17,7 @@ public:
 
     explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
                                 QString pButtonGoBackText = "Zurück zur Moduswahl",
-                                IBC *IBCPointer = nullptr, Serial *SerialPortArduino = nullptr);
+                                IBC *IBCPointer = nullptr);
 
 signals:
 

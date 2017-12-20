@@ -3,11 +3,10 @@
 
 //#define IBCNOTWORKING
 
-ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
+ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
-    this->SerialPortArduino = SerialPortArduino;
 
     setupWidget();
 }
