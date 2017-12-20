@@ -6,7 +6,7 @@
 bool progressfull = false;
 bool progressBarTimerisNOTRunning = true;
 
-StartWidget::StartWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
+StartWidget::StartWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
 {
     generateLayout();
     setupProgressBar();
@@ -15,6 +15,7 @@ StartWidget::StartWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) :
 
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
+    this->SerialPortArduino = SerialPortArduino;
 }
 
 void StartWidget::generateLayout(){
@@ -78,7 +79,7 @@ void StartWidget::initializeStarCar(){
     pButtonStart->setEnabled(false);
 
     QThread *thread = new QThread;
-    initStarCar     = new InitStarCar(alertThread, IBCPointer);
+    initStarCar     = new InitStarCar(alertThread, IBCPointer, SerialPortArduino);
     initStarCar->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), initStarCar, SLOT(startProcess()));

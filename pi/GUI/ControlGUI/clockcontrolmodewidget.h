@@ -18,7 +18,8 @@ class ClockControllModeWidget : public QWidget
 
 public:
 
-    explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+    explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                                     IBC *IBCPointer = nullptr, Serial *SerialPortArduino = nullptr);
     ~ClockControllModeWidget();
 
 signals:
@@ -73,7 +74,7 @@ private:
 
     // IBC
     IBC             *IBCPointer;
-    Serial          *PortToArduino;
+    Serial          *SerialPortArduino;
 
     // Vars
     double fontSize = 10;

@@ -84,6 +84,7 @@ private:
 
     // IBC
     IBC             *IBCPointer;
+    Serial          *SerialPortArduino;
 
 private:
 

@@ -1,10 +1,12 @@
 #include "controllercontrolmodewidget.h"
 
+#define IBCNOTWORKING
 
-ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
+ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
+    this->SerialPortArduino = SerialPortArduino;
 
     setupWidget();
 }
@@ -205,8 +207,11 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    PortToArduino = new Serial("/dev/ttyUSB0");
-    PortToArduino->send("1",1);
+    #ifdef IBCNOTWORKING
+
+        PortToArduino->send("1",1);
+
+    #endif
 
     QThread *thread = new QThread;
     threadLidar     = new ThreadLidar(alertThread);
@@ -228,16 +233,12 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
 }
 
 void ControllerControlModeWidget::slotShowSensorValues(){
-#ifdef Q_OS_LINUX
-    delete PortToArduino;
-#endif
+
     emit showsensorvalueswidget();
 }
 
 void ControllerControlModeWidget::slotpButtonGoBackPushed(){
-#ifdef Q_OS_LINUX
-    delete PortToArduino;
-#endif
+
     emit removeWindowfromStack();
 }
 

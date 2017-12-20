@@ -15,7 +15,9 @@ class SensorValuesWidget : public QWidget
 
 public:
 
-    explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, QString pButtonGoBackText = "Zurück zur Moduswahl", IBC *IBCPointer = nullptr);
+    explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                                QString pButtonGoBackText = "Zurück zur Moduswahl",
+                                IBC *IBCPointer = nullptr, Serial *SerialPortArduino = nullptr);
 
 signals:
 
@@ -67,6 +69,7 @@ private:
 
     // IBC
     IBC             *IBCPointer;
+    Serial          *SerialPortArduino;
 
 #ifdef Q_OS_LINUX
 

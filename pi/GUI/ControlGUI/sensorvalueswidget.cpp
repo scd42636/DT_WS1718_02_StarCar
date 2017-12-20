@@ -1,10 +1,11 @@
 #include "sensorvalueswidget.h"
 
-SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
+SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->pButtonGoBackText = pButtonGoBackText;
     this->IBCPointer = IBCPointer;
+    this->SerialPortArduino = SerialPortArduino;
 
     generateLayout();
     setupConnects();

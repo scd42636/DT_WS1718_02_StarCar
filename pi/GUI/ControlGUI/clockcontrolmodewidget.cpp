@@ -1,10 +1,13 @@
 #include "clockcontrolmodewidget.h"
 #include <QImage>
 
-ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
+#define IBCNOTWORKING
+
+ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
+    this->SerialPortArduino = SerialPortArduino;
 
     setupWidget();
 }
@@ -193,8 +196,10 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    PortToArduino = new Serial("/dev/ttyUSB0");
-    PortToArduino->send("2",1);
+    #ifdef IBCNOTWORKING
+
+        PortToArduino->send("2",1);
+    #endif
 
 #endif
 
@@ -202,19 +207,11 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
 void ClockControllModeWidget::slotpButtonGoBackPushed(){
 
-#ifdef Q_OS_LINUX
-
-    delete PortToArduino;
-
-#endif
-
     emit removeWindowformStack();
 }
 
 void ClockControllModeWidget::slotShowSensorValues(){
-#ifdef Q_OS_LINUX
-    delete PortToArduino;
-#endif
+
     emit showsensorvalueswidget();
 }
 

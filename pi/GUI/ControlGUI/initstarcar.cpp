@@ -1,16 +1,28 @@
 #include "initstarcar.h"
-#include "../../IBP/IBC.hpp"
 
-InitStarCar::InitStarCar(Alert *alertThread, IBC *IBCPointer)
+#define IBCNOTWORKING
+
+InitStarCar::InitStarCar(Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
+    this->SerialPortArduino = SerialPortArduino;
 }
 
 void InitStarCar::startProcess(){
 
 #ifdef Q_OS_LINUX
-    //IBCPointer = new IBC("/dev/ttyUSB0","../../IBC_config.cfg");
+
+#ifdef IBCNOTWORKING
+
+    SerialPortArduino = new Serial("/dev/ttyUSB0");
+
+#elif
+    SerialPortArduino = nullptr;
+    IBCPointer = new IBC("/dev/ttyUSB0","../../IBC_config.cfg");
+
+#endif
+
 #endif
 
     for(int i =0; i < 15; i++){
