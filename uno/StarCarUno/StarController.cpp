@@ -32,23 +32,41 @@ void StarController::Task(StarCar* car)
         if (car->getMode() == StarCarMode::CM_Controller) {
             this->xboxController->setLedMode(ALTERNATING);
 
-
             int16_t leftX = this->xboxController->getAnalogHat(LeftHatX);
+            car->setDirection(((float)leftX / 32768) * 100);
 
-            if (leftX < -7500 || leftX > 7500) {
-                //Serial.print("Controller: Direction = ");
-                //Serial.println((float)leftX / 32768);
-
-                car->setDirection(((float)leftX / 32768) * 100);
-            }
+            //Serial.print("Controller: Direction = ");
+            //Serial.println((float)leftX / 32768);
 
             int16_t rightY = this->xboxController->getAnalogHat(RightHatY);
+            car->setAcceleration(((float)rightY / 32768) * 100);
 
-            if (rightY < -7500 || rightY > 7500) {
-                //Serial.print("Controller: Acceleration = ");
-                Serial.println((float)rightY / 32768);
+            //Serial.print("Controller: Acceleration = ");
+            //Serial.println((float)rightY / 32768);
 
-                car->setSpeed(((float)rightY / 32768) * 100);
+            if (this->xboxController->getButtonClick(X)) {
+                Serial.println("X");
+                StarCarEngineMode engineMode = car->getEngineMode();
+
+                if (engineMode == StarCarEngineMode::CEM_Off) {
+                    this->xboxController->setRumbleOn(100, 100);
+                    delay(1000);
+                    this->xboxController->setRumbleOn(0, 0);
+
+                    car->setEngineMode(StarCarEngineMode::CEM_On);
+                }
+                else {
+                    this->xboxController->setRumbleOn(50, 50);
+                    delay(500);
+                    this->xboxController->setRumbleOn(0, 0);
+
+                    car->setEngineMode(StarCarEngineMode::CEM_Off);
+                }
+            }
+
+            if (this->xboxController->getButtonClick(B)) {
+                car->setEngineMode(StarCarEngineMode::CEM_Off);
+                Serial.println("B");
             }
         }
         else {
