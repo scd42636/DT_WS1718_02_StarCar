@@ -184,7 +184,7 @@ void HomeWindow::slotShowAlertWidget(){
 
 void HomeWindow::slotShowStartWidget(){
 
-    startWidget = new StartWidget(nullptr, this->alertThread, this->IBCPointer, &this->SerialPortArduino);
+    startWidget = new StartWidget(nullptr, this->alertThread, &this->IBCPointer, &this->SerialPortArduino);
     connect(startWidget,SIGNAL(showOperationMode()),SLOT(slotShowOperationModeWidget()));
     addWidgetToMainStackWidget(startWidget);
 }

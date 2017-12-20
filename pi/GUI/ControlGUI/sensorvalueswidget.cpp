@@ -21,7 +21,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     Inbox iUltraBack = this->IBCPointer->getInbox(181);
     Inbox iCompass = this->IBCPointer->getInbox(182);
     Inbox iAcceleration = this->IBCPointer->getInbox(183);
-
+*/
 
     iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
     iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
@@ -32,7 +32,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     packetUltraback     = new Packet(181,2);
     packetCompass       = new Packet(182,3);
     packetAcceleration  = new Packet(183,6);
-*/
+
     QuerySensorValuesTimer = new QTimer();
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
     QuerySensorValuesTimer->start(2000);
@@ -135,7 +135,7 @@ void SensorValuesWidget::slotpButtonGoBackPushed(){
 }
 
 void SensorValuesWidget::slotQuerySensorValues(){
-/*
+
     #ifdef Q_OS_LINUX
 
     iUltraBack->fetch();
@@ -147,12 +147,12 @@ void SensorValuesWidget::slotQuerySensorValues(){
     IBCPointer->send(*packetUltraback);
     IBCPointer->send(*packetCompass);
     IBCPointer->send(*packetAcceleration);
-
+/*
     lblUltraBackValue->setText(iUltraBack.front());
     lblUltraFrontValue->setText(iUltraFront.front());
     lblcompassValue->setText(iCompass.front());
     lblaccelerationValue->setText(iAcceleration.front());
-
-    #endif
 */
+    #endif
+
 }

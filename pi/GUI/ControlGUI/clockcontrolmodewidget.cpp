@@ -1,7 +1,7 @@
 #include "clockcontrolmodewidget.h"
 #include <QImage>
 
-#define IBCNOTWORKING
+//#define IBCNOTWORKING
 
 ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
 {

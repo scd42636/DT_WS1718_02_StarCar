@@ -1,8 +1,8 @@
 #include "initstarcar.h"
 
-#define IBCNOTWORKING
+//#define IBCNOTWORKING
 
-InitStarCar::InitStarCar(Alert *alertThread, IBC *IBCPointer, Serial **SerialPortArduino)
+InitStarCar::InitStarCar(Alert *alertThread, IBC **IBCPointer, Serial **SerialPortArduino)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
@@ -17,9 +17,9 @@ void InitStarCar::startProcess(){
 
     *SerialPortArduino = new Serial("/dev/ttyUSB0");
 
-#elif
-    SerialPortArduino = nullptr;
-    IBCPointer = new IBC("/dev/ttyUSB0","../../IBC_config.cfg");
+#else
+    *SerialPortArduino = nullptr;
+    *IBCPointer = new IBC("/dev/ttyUSB0","../../IBC_config.cfg");
 
 #endif
 

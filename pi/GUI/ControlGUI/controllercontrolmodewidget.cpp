@@ -1,6 +1,6 @@
 #include "controllercontrolmodewidget.h"
 
-#define IBCNOTWORKING
+//#define IBCNOTWORKING
 
 ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
 {
