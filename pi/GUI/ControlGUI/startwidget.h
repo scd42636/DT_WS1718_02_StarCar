@@ -21,7 +21,7 @@ class StartWidget : public QWidget
 public:
 
     explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
-                         IBC *IBCPointer = nullptr, Serial *SerialPortArduino = nullptr);
+                         IBC *IBCPointer = nullptr, Serial **SerialPortArduino = nullptr);
 
     ~StartWidget();
 
@@ -46,7 +46,7 @@ private:
     // IBC
 
     IBC             *IBCPointer;
-    Serial          *SerialPortArduino;
+    Serial          **SerialPortArduino;
 
     // Methods
     void generateLayout();

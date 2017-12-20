@@ -6,7 +6,7 @@
 bool progressfull = false;
 bool progressBarTimerisNOTRunning = true;
 
-StartWidget::StartWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino) : QWidget(parent)
+StartWidget::StartWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer, Serial **SerialPortArduino) : QWidget(parent)
 {
     generateLayout();
     setupProgressBar();

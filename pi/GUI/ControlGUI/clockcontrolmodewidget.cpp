@@ -198,7 +198,7 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
     #ifdef IBCNOTWORKING
 
-        PortToArduino->send("2",1);
+        SerialPortArduino->send("2",1);
     #endif
 
 #endif

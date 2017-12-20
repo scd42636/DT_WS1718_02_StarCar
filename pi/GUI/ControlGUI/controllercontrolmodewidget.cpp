@@ -209,7 +209,7 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
 
     #ifdef IBCNOTWORKING
 
-        PortToArduino->send("1",1);
+        SerialPortArduino->send("1",1);
 
     #endif
 

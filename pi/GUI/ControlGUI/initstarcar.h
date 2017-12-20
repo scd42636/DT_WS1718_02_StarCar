@@ -12,7 +12,7 @@ class InitStarCar : public QObject {
 
 public:
 
-    InitStarCar(Alert *alertThread, IBC *IBCPointer, Serial *SerialPortArduino);
+    InitStarCar(Alert *alertThread, IBC *IBCPointer, Serial **SerialPortArduino);
     ~InitStarCar();
 
 public slots:
@@ -33,7 +33,7 @@ private:
     // IBC
 
     IBC         *IBCPointer;
-    Serial      *SerialPortArduino;
+    Serial      **SerialPortArduino;
 };
 
 #endif // INITSTARCAR_H
