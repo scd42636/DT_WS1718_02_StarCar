@@ -19,22 +19,20 @@ class ControllerControlModeWidget : public QWidget
 public:
 
     explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+    ~ControllerControlModeWidget();
 
 signals:
 
     void removeWindowfromStack();
     void showsensorvalueswidget();
 
-public slots:
-
-    void pButtonGoBackPushed();
-    void blinklblInfo();
-    void pButtonNextPushed();
-
 private slots:
 
-    void blinkArrows();
+    void slotpButtonGoBackPushed();
+    void slotpButtonNextPushed();
+    void slotBlinkArrows();
     void slotShowSensorValues();
+    void slotBlinklblInfo();
 
 private:
 
@@ -48,16 +46,17 @@ private:
 
     // QVBoxLayout
     QVBoxLayout     *vBox1;
-    QVBoxLayout     *vBoxRightTexts;
-    QVBoxLayout     *vBoxLeftTexts;
-    QVBoxLayout     *vBoxRightImagesArrow;
-    QVBoxLayout     *vBoxLeftImagesArrow;
-    QVBoxLayout     *vBoxLeftImagesAndTexts;
+    QVBoxLayout     *vBoxLeftControl;
+    QVBoxLayout     *vBoxRightControl;
 
     // QHBoxLayout
+
     QHBoxLayout     *hBoxImages;
-    QHBoxLayout     *hBoxArrowsLeft;
-    QHBoxLayout     *hBoxTextsLeft;
+    QHBoxLayout     *hBoxLeftArrows;
+    QHBoxLayout     *hBoxLeftTexts;
+    QHBoxLayout     *hBoxRightArrowsAndTexts;
+    QHBoxLayout     *hBoxController;
+
     QHBoxLayout     *hboxButtonsBottom;
 
     // QLabel
@@ -67,7 +66,7 @@ private:
     QLabel          *lblTextBreak;
     QLabel          *lblTextTurnLeft;
     QLabel          *lblTextTurnRight;
-    QLabel          *lblArrowUp;
+    QLabel          *lblArrowDown2;
     QLabel          *lblArrowDown;
     QLabel          *lblArrowLeft;
     QLabel          *lblArrowRight;
@@ -86,9 +85,7 @@ private:
     bool   pButtonNextRemoved = false;
 
     // Method
-    void generateLayout();
-    void generateStyle();
-    void setupConnects();
+    void setupWidget();
     void createControllAnimation();
     void setStyletoLabel(QLabel *lbl, Qt::Alignment align);
     void setArrowPicsToLabel(QLabel *lbl, QString path, int height, int width);

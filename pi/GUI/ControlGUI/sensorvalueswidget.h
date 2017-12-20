@@ -25,7 +25,7 @@ public slots:
 
 private slots:
 
-    void pButtonGoBackPushed();
+    void slotpButtonGoBackPushed();
     void slotQuerySensorValues();
 
 private:
@@ -50,12 +50,14 @@ private:
     QLabel          *lblcompass;
     QLabel          *lblacceleration;
     QLabel          *lblUWB;
+    QLabel          *lblLidar;
 
     QLabel          *lblUltraFrontValue;
     QLabel          *lblUltraBackValue;
     QLabel          *lblcompassValue;
     QLabel          *lblaccelerationValue;
     QLabel          *lblUWBValue;
+    QLabel          *lblLidarValue;
 
     // QVector
     QVector<QLabel *> lblValues;
@@ -86,7 +88,7 @@ private:
     //QTimer
     QTimer          *QuerySensorValuesTimer;
 
-    // Methode
+    // Method
     void generateLayout();
     void setupConnects();
     void generateStyle();

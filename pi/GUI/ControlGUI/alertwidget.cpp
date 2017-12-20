@@ -51,7 +51,7 @@ void AlertWidget::generateLayout(){
 
     }
 
-    if(errIsEmpty == false){
+    if(warIsEmpty == false){
 
         data << "Warnungen:\n";
 

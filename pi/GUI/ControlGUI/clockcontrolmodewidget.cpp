@@ -6,29 +6,34 @@ ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertTh
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
 
-    generateLayout();
-    setupConnects();
-    generateStyle();
-
-    blinkTimer = new QTimer(this);
-    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinklblInfo()));
-    blinkTimer->start(700);
+    setupWidget();
 }
 
-void ClockControllModeWidget::generateLayout(){
+ClockControllModeWidget::~ClockControllModeWidget(){
+
+}
+
+/********************************************************************
+ *                         Private Methodes                         *
+ *******************************************************************/
+
+void ClockControllModeWidget::setupWidget(){
+
+    // Generate all needed UI-Elements
 
     vBox1           = new QVBoxLayout(this);
     pButtonGoBack   = new QPushButton();
     pButtonNext     = new QPushButton();
     lblInfo         = new QLabel();
 
+    // Add UI-Elements to Vertical Box Layout
+
     vBox1->addWidget(lblInfo);
     vBox1->addSpacing(20);
     vBox1->addWidget(pButtonNext);
     vBox1->addWidget(pButtonGoBack);
-}
 
-void ClockControllModeWidget::generateStyle(){
+    // Set Style-Properties to the UI-Elements
 
     vBox1->setContentsMargins(0,0,0,0);
     vBox1->setAlignment(Qt::AlignBottom);
@@ -49,71 +54,19 @@ void ClockControllModeWidget::generateStyle(){
                             "color: green;"
                             "font-family: TimesNewRoman;"
                             "font-style: normal;"
-                            "font-size: 12pt;"
+                            "font-size: 10pt;"
                             "font-weight: bold;}");
-}
 
-void ClockControllModeWidget::blinklblInfo(){
+    // Connect actions like button pushed with the slot which will execute after
 
-    QString stylesheetString;
-    QString fontColor;
+    connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(slotpButtonGoBackPushed()));
+    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(slotpButtonNextPushed()));
 
-    if(pButtonNextRemoved){
+    // Setup a timer with period 700ms and connect the timeout action to slotBlinklblInfo
 
-        fontColor = "green";
-
-    }else{
-
-        fontColor = "orange";
-    }
-
-    if(fontSize == 10){
-
-        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 10pt;}";
-        fontSize = 11;
-    }else{
-
-        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 11pt;}";
-        fontSize = 10;
-    }
-
-   lblInfo->setStyleSheet(stylesheetString);
-}
-
-void ClockControllModeWidget::setupConnects(){
-
-    connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(pButtonGoBackPushed()));
-    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(pButtonNextPushed()));
-}
-
-void ClockControllModeWidget::pButtonGoBackPushed(){
-
-    emit removeWindowformStack();
-}
-
-void ClockControllModeWidget::pButtonNextPushed(){
-
-    lblInfo->setText("StarCar läuft mit der Uhrsteuerung!");
-    lblInfo->setFixedHeight(20);
-
-    QString stylesheetString = "QLabel{color: green;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
-    lblInfo->setStyleSheet(stylesheetString);
-    vBox1->removeWidget(pButtonNext);
-    delete pButtonNext;
-    pButtonNextRemoved = true;
-
-    blinkTimer->stop();
-    delete blinkTimer;
-
-    createControllAnimation();
-
-#ifdef Q_OS_LINUX
-
-    PortToArduino = new Serial("/dev/ttyUSB0");
-    PortToArduino->send("2",1);
-
-#endif
-
+    blinkTimer = new QTimer(this);
+    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(slotBlinklblInfo()));
+    blinkTimer->start(700);
 }
 
 void ClockControllModeWidget::createControllAnimation(){
@@ -186,29 +139,8 @@ void ClockControllModeWidget::createControllAnimation(){
     vBox1->setContentsMargins(8,0,8,0);
 
     blinkTimer              = new QTimer();
-    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkArrows()));
+    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(slotBlinkArrows()));
     blinkTimer->start(700);
-}
-
-void ClockControllModeWidget::blinkArrows(){
-
-    if(lblArrowUpLeft->isHidden()){
-
-        lblArrowUpLeft->show();
-        lblArrowDownLeft->show();
-        lblArrowUpRight->show();
-        lblArrowDownRight->show();
-        blinkTimer->setInterval(1500);
-
-
-    }else{
-
-        lblArrowDownLeft->hide();
-        lblArrowUpLeft->hide();
-        lblArrowDownRight->hide();
-        lblArrowUpRight->hide();
-        blinkTimer->setInterval(200);
-    }
 }
 
 void ClockControllModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
@@ -228,6 +160,108 @@ void ClockControllModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
     lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 9pt;font-weight: bold;}");
 }
 
-ClockControllModeWidget::~ClockControllModeWidget(){
+/********************************************************************
+ *                         Private SLOTS                            *
+ *******************************************************************/
 
+void ClockControllModeWidget::slotpButtonNextPushed(){
+
+    lblInfo->setText("StarCar läuft mit der Uhrsteuerung!");
+    lblInfo->setFixedHeight(20);
+
+    QString stylesheetString = "QLabel{color: green;font-family: TimesNewRoman;font-style: normal;font-size: 12pt;}";
+    lblInfo->setStyleSheet(stylesheetString);
+    vBox1->removeWidget(pButtonNext);
+    vBox1->removeWidget(pButtonGoBack);
+
+    delete pButtonNext;
+    pButtonNextRemoved = true;
+
+    hBoxButtonsBottom = new QHBoxLayout();
+    vBox1->addLayout(hBoxButtonsBottom);
+    hBoxButtonsBottom->addWidget(pButtonGoBack);
+
+    pButtonNext             = new QPushButton();
+    hBoxButtonsBottom->addWidget(pButtonNext);
+    pButtonNext->setText("Zeige Sensorwerte");
+    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(slotShowSensorValues()));
+
+    blinkTimer->stop();
+    delete blinkTimer;
+
+    createControllAnimation();
+
+#ifdef Q_OS_LINUX
+
+    PortToArduino = new Serial("/dev/ttyUSB0");
+    PortToArduino->send("2",1);
+
+#endif
+
+}
+
+void ClockControllModeWidget::slotpButtonGoBackPushed(){
+
+#ifdef Q_OS_LINUX
+
+    delete PortToArduino;
+
+#endif
+
+    emit removeWindowformStack();
+}
+
+void ClockControllModeWidget::slotShowSensorValues(){
+#ifdef Q_OS_LINUX
+    delete PortToArduino;
+#endif
+    emit showsensorvalueswidget();
+}
+
+void ClockControllModeWidget::slotBlinklblInfo(){
+
+    QString stylesheetString;
+    QString fontColor;
+
+    if(pButtonNextRemoved){
+
+        fontColor = "green";
+
+    }else{
+
+        fontColor = "orange";
+    }
+
+    if(fontSize == 10){
+
+        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 10pt;}";
+        fontSize = 11;
+    }else{
+
+        stylesheetString = "QLabel{color: " + fontColor + ";font-family: TimesNewRoman;font-style: normal;font-size: 11pt;}";
+        fontSize = 10;
+    }
+
+   lblInfo->setStyleSheet(stylesheetString);
+}
+
+void ClockControllModeWidget::slotBlinkArrows(){
+
+    if(lblArrowUpLeft->isHidden()){
+
+        lblArrowUpLeft->show();
+        lblArrowDownLeft->show();
+        lblArrowUpRight->show();
+        lblArrowDownRight->show();
+        blinkTimer->setInterval(1500);
+
+
+    }else{
+
+        lblArrowDownLeft->hide();
+        lblArrowUpLeft->hide();
+        lblArrowDownRight->hide();
+        lblArrowUpRight->hide();
+        blinkTimer->setInterval(200);
+    }
 }

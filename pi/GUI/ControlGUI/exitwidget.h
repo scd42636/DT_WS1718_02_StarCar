@@ -26,7 +26,7 @@ private:
     QPushButton *pButtonRestart;
     QPushButton *pButtonShutdown;
 
-    // Methode
+    // Method
     void generateLayout();
     void setupConnect();
     void generateStyle();
@@ -38,12 +38,10 @@ signals:
 
     void removeWindowformStack();
 
-public slots:
-
 private slots:
-    void goBack();
-    void restartApplication();
-    void shutdownPi();
+    void slotGoBack();
+    void slotRestartApplication();
+    void slotShutdownPi();
 
 
 };

@@ -6,22 +6,12 @@
 // uncomment for vebose debug information
 //#define DEBUGV
 
-
-/*class lidar
-{
-	public:
-    int get_measurement(char *);
-};
-*/
 //starts measurement once
-int lidar::get_measurement(char *file_name)
+int lidar::get_measurement(const char *file_name)
 {
 	#ifdef  DEBUGV 
 	printf("LIDAR: Started\n");
 	#endif
-	
-	//file name for data
-	//char file_name[] = "LIDAR_data.txt";
 
 	urg_t urg;
 	int ret;

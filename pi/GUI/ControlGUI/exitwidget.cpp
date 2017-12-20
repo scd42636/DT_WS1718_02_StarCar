@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <QProcess>
 
+#define DEBUG
+
 ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread) : QWidget(parent)
 {
     this->alertThread = alertThread;
@@ -51,24 +53,28 @@ void ExitWidget::generateStyle(){
 
 void ExitWidget::setupConnect(){
 
-    connect(pButtonBack,     SIGNAL(clicked(bool)), this, SLOT(goBack()));
-    connect(pButtonRestart,  SIGNAL(clicked(bool)), this, SLOT(restartApplication()));
-    connect(pButtonShutdown, SIGNAL(clicked(bool)), this, SLOT(shutdownPi()));
+    connect(pButtonBack,     SIGNAL(clicked(bool)), this, SLOT(slotGoBack()));
+    connect(pButtonRestart,  SIGNAL(clicked(bool)), this, SLOT(slotRestartApplication()));
+    connect(pButtonShutdown, SIGNAL(clicked(bool)), this, SLOT(slotShutdownPi()));
 }
 
-void ExitWidget::goBack(){
+void ExitWidget::slotGoBack(){
 
     emit removeWindowformStack();
 }
 
-void ExitWidget::restartApplication(){
+void ExitWidget::slotRestartApplication(){
 
     qApp->quit();
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
 
 }
 
-void ExitWidget::shutdownPi(){
+void ExitWidget::slotShutdownPi(){
+
+#ifdef DEBUG
 
     this->parentWidget()->parentWidget()->parentWidget()->close();
+
+#endif
 }

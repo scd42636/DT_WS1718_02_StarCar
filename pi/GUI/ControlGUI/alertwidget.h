@@ -22,8 +22,6 @@ signals:
 
     void removeWindowformStack();
 
-public slots:
-
 private:
 
     // QPushButton
@@ -41,7 +39,7 @@ private:
     // QVBoxLayout
     QVBoxLayout         *vBox1;
 
-    // Methode
+    // Method
     void generateLayout();
     void generateStyle();
     void setupConnects();

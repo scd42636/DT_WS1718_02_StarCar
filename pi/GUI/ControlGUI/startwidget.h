@@ -46,7 +46,7 @@ private:
 
     IBC             *IBCPointer;
 
-    // Methodes
+    // Methods
     void generateLayout();
     void setupProgressBar();
     void setupConnects();

@@ -52,12 +52,14 @@ void SensorValuesWidget::generateLayout(){
     lblcompass              = new QLabel();
     lblacceleration         = new QLabel();
     lblUWB                  = new QLabel();
+    lblLidar                = new QLabel();
 
     lblUltraFrontValue      = new QLabel();
     lblUltraBackValue       = new QLabel();
     lblcompassValue         = new QLabel();
     lblaccelerationValue    = new QLabel();
     lblUWBValue             = new QLabel();
+    lblLidarValue           = new QLabel();
 
     pButtonGoBack           = new QPushButton();
 
@@ -71,12 +73,14 @@ void SensorValuesWidget::generateLayout(){
     vBoxLabelDescription->addWidget(lblcompass);
     vBoxLabelDescription->addWidget(lblacceleration);
     vBoxLabelDescription->addWidget(lblUWB);
+    vBoxLabelDescription->addWidget(lblLidar);
 
     vBoxLabelValues->addWidget(lblUltraFrontValue);
     vBoxLabelValues->addWidget(lblUltraBackValue);
     vBoxLabelValues->addWidget(lblcompassValue);
     vBoxLabelValues->addWidget(lblaccelerationValue);
     vBoxLabelValues->addWidget(lblUWBValue);
+    vBoxLabelValues->addWidget(lblLidarValue);
 
     vBox1->addWidget(pButtonGoBack);
 
@@ -85,6 +89,7 @@ void SensorValuesWidget::generateLayout(){
     lblValues.append(lblcompassValue);
     lblValues.append(lblaccelerationValue);
     lblValues.append(lblUWBValue);
+    lblValues.append(lblLidarValue);
 
     for (QLabel *lables : lblValues){
         lables->setText("--");
@@ -93,7 +98,7 @@ void SensorValuesWidget::generateLayout(){
 
 void SensorValuesWidget::setupConnects(){
 
-    connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(pButtonGoBackPushed()));
+    connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(slotpButtonGoBackPushed()));
 }
 
 void SensorValuesWidget::generateStyle(){
@@ -102,33 +107,31 @@ void SensorValuesWidget::generateStyle(){
                             "color: white;"
                             "font-family: TimesNewRoman;"
                             "font-style: normal;"
-                            "font-size: 10pt;"
+                            "font-size: 8pt;"
                             "font-weight: bold;}"
                         "QPushButton{"
                             "color: green;"
                             "font-family: TimesNewRoman;"
                             "font-style: normal;"
-                            "font-size: 12pt;"
+                            "font-size: 10pt;"
                             "font-weight: bold;}");
 
     vBox1->setContentsMargins(8,0,8,0);
 
-    lblUltraFront->setText("Ultraschall Vorne: ");
-    lblUltraBack->setText("Ultraschall Hinten: ");
-    lblcompass->setText("Kompass: ");
-    lblacceleration->setText("Beschleunigung: ");
-    lblUWB->setText("UWB: ");
+    lblUltraFront->     setText("Ultraschall Vorne: ");
+    lblUltraBack->      setText("Ultraschall Hinten: ");
+    lblcompass->        setText("Kompass: ");
+    lblacceleration->   setText("Beschleunigung: ");
+    lblUWB->            setText("UWB: ");
+    lblLidar->          setText("Lidar");
 
     pButtonGoBack->setText(pButtonGoBackText);
 }
 
-
-void SensorValuesWidget::pButtonGoBackPushed(){
+void SensorValuesWidget::slotpButtonGoBackPushed(){
 
     emit removeWindowfromStack();
 }
-
-
 
 void SensorValuesWidget::slotQuerySensorValues(){
 /*

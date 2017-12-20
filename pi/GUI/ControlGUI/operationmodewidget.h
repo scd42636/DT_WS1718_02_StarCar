@@ -51,7 +51,7 @@ private:
     // QLabel
     QLabel          *lblHeadline;
 
-    // Methode
+    // Method
     void generateLayout();
     void generateStyle();
     void setupConnects();

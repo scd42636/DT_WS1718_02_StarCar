@@ -24,21 +24,20 @@ public:
 signals:
 
     void removeWindowformStack();
-
-public slots:
-
-    void pButtonGoBackPushed();
-    void pButtonNextPushed();
+    void showsensorvalueswidget();
 
 private slots:
 
-    void blinklblInfo();
-    void blinkArrows();
+    void slotpButtonGoBackPushed();
+    void slotpButtonNextPushed();
+    void slotBlinklblInfo();
+    void slotBlinkArrows();
+    void slotShowSensorValues();
 
 private:
 
     // Thread
-    Alert       *alertThread;
+    Alert             *alertThread;
     ClockControlMode  *manualMode;
 
     // QPushButton
@@ -53,6 +52,7 @@ private:
     QVBoxLayout     *vBoxRightImagesArrow;
 
     // QHBoxLayout
+    QHBoxLayout     *hBoxButtonsBottom;
     QHBoxLayout     *hBoxImages;
 
     // QLabel
@@ -80,9 +80,7 @@ private:
     bool   pButtonNextRemoved = false;
 
     // Method
-    void generateLayout();
-    void generateStyle();
-    void setupConnects();
+    void setupWidget();
     void createControllAnimation();
 
     void setArrowPicsToLabel(QLabel *lbl, QString path);

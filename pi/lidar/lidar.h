@@ -15,7 +15,7 @@
 class lidar {
 
 public:
-    int get_measurement(char *);
+    int get_measurement(const char *);
 };
 
 

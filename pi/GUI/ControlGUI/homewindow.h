@@ -33,25 +33,27 @@ public:
     explicit HomeWindow(QWidget *parent = 0);
     ~HomeWindow();
 
+    // Thread
+    Alert           *alertThread;
+
+    // Timer
+    QTimer          *alertTimer;
+
 public slots:
 
     void removeActiveWidget();
 
-protected:
-
-    void addWidgetToMainStackWidget(QWidget *widget);
-
 private slots:
 
-    void showExitWidget();
-    void showAlertWidget();
-    void showOperationModeWidget();
-    void showClockControlModeWidget();
-    void showControllerControlModeWidget();
-    void showSensorValuesWidget();
-    void showStartWidget();
+    void slotShowExitWidget();
+    void slotShowAlertWidget();
+    void slotShowOperationModeWidget();
+    void slotShowClockControlModeWidget();
+    void slotShowControllerControlModeWidget();
+    void slotShowSensorValuesWidget();
+    void slotShowStartWidget();
+    void slotShowSensorValuesWidgetAfterControlMode();
 
-    void showSensorValuesWidgetAfterControlMode();
 private:
 
     // Window
@@ -83,21 +85,14 @@ private:
     // IBC
     IBC             *IBCPointer;
 
-public:
-
-    // Thread
-    Alert           *alertThread;
-
-    // Timer
-    QTimer          *alertTimer;
-
 private:
 
-    // Methods
+    // Method
     void generateLayout();
     void generateStyle();
     void setupConnects();
     void createAlertThread();
+    void addWidgetToMainStackWidget(QWidget *widget);
 };
 
 #endif // HOMEWINDOW_H

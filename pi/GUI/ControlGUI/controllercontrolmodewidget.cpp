@@ -6,32 +6,36 @@ ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert 
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
 
-    generateLayout();
-    setupConnects();
-    generateStyle();
+    setupWidget();
+}
 
-    blinkTimer = new QTimer(this);
-    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinklblInfo()));
-    blinkTimer->start(700);
+ControllerControlModeWidget::~ControllerControlModeWidget(){
 
 }
 
-void ControllerControlModeWidget::generateLayout(){
+/********************************************************************
+ *                         Private Methodes                         *
+ *******************************************************************/
+
+void ControllerControlModeWidget::setupWidget(){
+
+    // Generate all needed UI-Elements
 
     vBox1           = new QVBoxLayout(this);
     pButtonGoBack   = new QPushButton();
     pButtonNext     = new QPushButton();
     lblInfo         = new QLabel();
 
+    // Add UI-Elements to Vertical Box Layout
+
     vBox1->addWidget(lblInfo);
     vBox1->addSpacing(20);
     vBox1->addWidget(pButtonNext);
     vBox1->addWidget(pButtonGoBack);
-}
 
-void ControllerControlModeWidget::generateStyle(){
+    // Set Style-Properties to the UI-Elements
 
-    vBox1->setContentsMargins(0,0,0,0);
+    vBox1->setContentsMargins(8,0,8,0);
     vBox1->setAlignment(Qt::AlignBottom);
     lblInfo->setAlignment(Qt::AlignHCenter);
 
@@ -53,15 +57,129 @@ void ControllerControlModeWidget::generateStyle(){
                             "font-style: normal;"
                             "font-size: 10pt;"
                             "font-weight: bold;}");
+
+    // Connect actions like button pushed with the slot which will execute after
+
+    connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(slotpButtonGoBackPushed()));
+    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(slotpButtonNextPushed()));
+
+    // Setup a timer with period 700ms and connect the timeout action to slotBlinklblInfo
+
+    blinkTimer = new QTimer(this);
+    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(slotBlinklblInfo()));
+    blinkTimer->start(700);
 }
 
-void ControllerControlModeWidget::setupConnects(){
+void ControllerControlModeWidget::createControllAnimation(){
 
-    connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(pButtonGoBackPushed()));
-    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(pButtonNextPushed()));
+    // Generate all needed UI-Elements
+
+    hBoxImages              = new QHBoxLayout();
+    vBoxLeftControl         = new QVBoxLayout();
+    vBoxRightControl        = new QVBoxLayout();
+
+    hBoxLeftArrows          = new QHBoxLayout();
+    hBoxLeftTexts           = new QHBoxLayout();
+    hBoxRightArrowsAndTexts = new QHBoxLayout();
+    hBoxController          = new QHBoxLayout();
+
+    vBox1->insertLayout(1,hBoxImages);
+    vBox1->removeWidget(lblInfo);
+    delete lblInfo;
+
+    hBoxImages->addLayout(vBoxLeftControl);
+    hBoxImages->addLayout(vBoxRightControl);
+
+    lblInfo                 = new QLabel();
+    lblInfo->setText("Controllersteuerung");
+
+    QString stylesheetString = "QLabel{color: green;font-family: TimesNewRoman;font-style: bold;font-size: 11pt;}";
+    lblInfo->setStyleSheet(stylesheetString);
+
+    vBoxLeftControl->addWidget(lblInfo);
+    vBoxLeftControl->addLayout(hBoxLeftArrows);
+    vBoxLeftControl->addLayout(hBoxLeftTexts);
+
+    lblTextTurnLeft         = new QLabel("Links");
+    setStyletoLabel(lblTextTurnLeft, Qt::AlignHCenter);
+
+    lblTextTurnRight        = new QLabel("Rechts");
+    setStyletoLabel(lblTextTurnRight, Qt::AlignHCenter);
+
+    lblArrowLeft             = new QLabel();
+    setArrowPicsToLabel(lblArrowLeft, "arrowLeft", 40, 50);
+
+    lblArrowRight            = new QLabel();
+    setArrowPicsToLabel(lblArrowRight, "arrowRight", 40, 50);
+
+    hBoxLeftArrows->addWidget(lblArrowLeft);
+    hBoxLeftArrows->addWidget(lblArrowRight);
+
+    hBoxLeftTexts->addWidget(lblTextTurnLeft);
+    hBoxLeftTexts->addWidget(lblTextTurnRight);
+
+    vBoxRightControl->addLayout(hBoxRightArrowsAndTexts);
+
+    QPixmap controller = QPixmap("://Pics/controller.png");
+
+    lblImageViewController  = new QLabel();
+    lblImageViewController->setPixmap(controller);
+    lblImageViewController->setScaledContents(true);
+    lblImageViewController->setFixedSize(100,50);
+
+    vBoxRightControl->addLayout(hBoxController);
+    hBoxController->addWidget(lblImageViewController);
+
+    lblTextSpeedUp          = new QLabel("Gas");
+    setStyletoLabel(lblTextSpeedUp, Qt::AlignLeft);
+
+    lblTextBreak            = new QLabel("Bremse");
+    setStyletoLabel(lblTextBreak, Qt::AlignRight);
+
+    lblArrowDown            = new QLabel();
+    setArrowPicsToLabel(lblArrowDown, "arrowDown", 25, 50);
+
+    lblArrowDown2           = new QLabel();
+    setArrowPicsToLabel(lblArrowDown2, "arrowDown", 25, 50);
+
+    hBoxRightArrowsAndTexts->addSpacing(5);
+    hBoxRightArrowsAndTexts->addWidget(lblTextSpeedUp);
+    hBoxRightArrowsAndTexts->addWidget(lblArrowDown);
+    hBoxRightArrowsAndTexts->addWidget(lblArrowDown2);
+    hBoxRightArrowsAndTexts->addWidget(lblTextBreak);
+
+    pButtonNext               = new QPushButton();
+    hboxButtonsBottom->addWidget(pButtonNext);
+    pButtonNext->setText("Zeige Sensorwerte");
+    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(slotShowSensorValues()));
+
+    blinkTimer                = new QTimer();
+    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(slotBlinkArrows()));
+    blinkTimer->start(700);
 }
 
-void ControllerControlModeWidget::pButtonNextPushed(){
+void ControllerControlModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path, int height, int width){
+
+    lbl->setPixmap(QPixmap("://Pics/" + path +".png"));
+    lbl->setFixedHeight(height);//25
+    lbl->setFixedWidth(width);//50
+    lbl->setScaledContents(true);
+    QSizePolicy sp_retain = lbl->sizePolicy();
+    sp_retain.setRetainSizeWhenHidden(true);
+    lbl->setSizePolicy(sp_retain);
+}
+
+void ControllerControlModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
+
+    lbl->setAlignment(align);
+    lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 9pt;font-weight: bold;}");
+}
+
+/********************************************************************
+ *                         Private SLOTS                            *
+ *******************************************************************/
+
+void ControllerControlModeWidget::slotpButtonNextPushed(){
 
     lblInfo->setText("Controllersteuerung");
     lblInfo->setFixedHeight(20);
@@ -71,6 +189,7 @@ void ControllerControlModeWidget::pButtonNextPushed(){
 
     vBox1->removeWidget(pButtonNext);
     vBox1->removeWidget(pButtonGoBack);
+
     delete pButtonNext;
     pButtonNextRemoved = true;
 
@@ -86,8 +205,8 @@ void ControllerControlModeWidget::pButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    //PortToArduino = new Serial("/dev/ttyUSB0");
-    //PortToArduino->send("1",1);
+    PortToArduino = new Serial("/dev/ttyUSB0");
+    PortToArduino->send("1",1);
 
     QThread *thread = new QThread;
     threadLidar     = new ThreadLidar(alertThread);
@@ -108,87 +227,6 @@ void ControllerControlModeWidget::pButtonNextPushed(){
 #endif
 }
 
-void ControllerControlModeWidget::createControllAnimation(){
-
-    hBoxImages              = new QHBoxLayout();
-    hBoxImages->setAlignment(Qt::AlignHCenter);
-
-    vBoxRightTexts          = new QVBoxLayout();
-    vBoxLeftTexts           = new QVBoxLayout();
-    vBoxRightImagesArrow    = new QVBoxLayout();
-    vBoxLeftImagesArrow     = new QVBoxLayout();
-
-    hBoxArrowsLeft          = new QHBoxLayout();
-    hBoxTextsLeft           = new QHBoxLayout();
-    vBoxLeftImagesAndTexts  = new QVBoxLayout();
-    pButtonNext             = new QPushButton();
-
-    vBox1->insertLayout(1,hBoxImages);
-    hBoxImages->setContentsMargins(0,10,0,0);
-
-    lblTextBreak            = new QLabel("Bremse");
-    setStyletoLabel(lblTextBreak, Qt::AlignLeft);
-
-    lblTextSpeedUp          = new QLabel("Gas");
-    setStyletoLabel(lblTextSpeedUp, Qt::AlignLeft);
-
-    lblTextTurnLeft         = new QLabel("Links");
-    setStyletoLabel(lblTextTurnLeft, Qt::AlignHCenter);
-
-    lblTextTurnRight        = new QLabel("Rechts");
-    setStyletoLabel(lblTextTurnRight, Qt::AlignHCenter);
-
-    QPixmap controller = QPixmap("://Pics/controller.png");
-
-    lblImageViewController  = new QLabel();
-    lblImageViewController->setPixmap(controller);
-    lblImageViewController->setScaledContents(true);
-
-
-    hBoxImages->addLayout(vBoxLeftImagesAndTexts);
-    vBoxLeftImagesAndTexts->addLayout(hBoxArrowsLeft);
-    vBoxLeftImagesAndTexts->addLayout(hBoxTextsLeft);
-
-    hBoxImages->addWidget(lblImageViewController);
-
-    hBoxImages->addLayout(vBoxRightImagesArrow);
-    hBoxImages->addLayout(vBoxRightTexts);
-
-    lblArrowUp               = new QLabel();
-    setArrowPicsToLabel(lblArrowUp, "arrowUp", 25, 50);
-
-    lblArrowDown             = new QLabel();
-    setArrowPicsToLabel(lblArrowDown, "arrowDown", 25, 50);
-
-    lblArrowLeft             = new QLabel();
-    setArrowPicsToLabel(lblArrowLeft, "arrowLeft", 40, 50);
-
-    lblArrowRight            = new QLabel();
-    setArrowPicsToLabel(lblArrowRight, "arrowRight", 40, 50);
-
-    hBoxArrowsLeft->addWidget(lblArrowLeft);
-    hBoxArrowsLeft->addWidget(lblArrowRight);
-
-    vBoxRightImagesArrow->addWidget(lblArrowUp);
-    vBoxRightImagesArrow->addWidget(lblArrowDown);
-
-    vBoxRightTexts->addWidget(lblTextSpeedUp);
-    vBoxRightTexts->addWidget(lblTextBreak);
-
-    hBoxTextsLeft->addWidget(lblTextTurnLeft);
-    hBoxTextsLeft->addWidget(lblTextTurnRight);
-
-    hboxButtonsBottom->addWidget(pButtonNext);
-    pButtonNext->setText("Zeige Sensorwerte");
-    connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(slotShowSensorValues()));
-
-    vBox1->setContentsMargins(8,0,8,0);
-
-    blinkTimer                = new QTimer();
-    connect(blinkTimer, SIGNAL(timeout()), this, SLOT(blinkArrows()));
-    blinkTimer->start(700);
-}
-
 void ControllerControlModeWidget::slotShowSensorValues(){
 #ifdef Q_OS_LINUX
     delete PortToArduino;
@@ -196,14 +234,14 @@ void ControllerControlModeWidget::slotShowSensorValues(){
     emit showsensorvalueswidget();
 }
 
-void ControllerControlModeWidget::pButtonGoBackPushed(){
+void ControllerControlModeWidget::slotpButtonGoBackPushed(){
 #ifdef Q_OS_LINUX
     delete PortToArduino;
 #endif
     emit removeWindowfromStack();
 }
 
-void ControllerControlModeWidget::blinklblInfo(){
+void ControllerControlModeWidget::slotBlinklblInfo(){
 
     QString stylesheetString;
     QString fontColor;
@@ -230,11 +268,11 @@ void ControllerControlModeWidget::blinklblInfo(){
    lblInfo->setStyleSheet(stylesheetString);
 }
 
-void ControllerControlModeWidget::blinkArrows(){
+void ControllerControlModeWidget::slotBlinkArrows(){
 
     if(lblArrowLeft->isHidden()){
 
-        lblArrowUp->show();
+        lblArrowDown2->show();
         lblArrowDown->show();
         lblArrowRight->show();
         lblArrowLeft->show();
@@ -244,27 +282,10 @@ void ControllerControlModeWidget::blinkArrows(){
     }else{
 
         lblArrowLeft->hide();
-        lblArrowUp->hide();
+        lblArrowDown2->hide();
         lblArrowDown->hide();
         lblArrowRight->hide();
         blinkTimer->setInterval(200);
     }
 
-}
-
-void ControllerControlModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path, int height, int width){
-
-    lbl->setPixmap(QPixmap("://Pics/" + path +".png"));
-    lbl->setFixedHeight(height);//25
-    lbl->setFixedWidth(width);//50
-    lbl->setScaledContents(true);
-    QSizePolicy sp_retain = lbl->sizePolicy();
-    sp_retain.setRetainSizeWhenHidden(true);
-    lbl->setSizePolicy(sp_retain);
-}
-
-void ControllerControlModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
-
-    lbl->setAlignment(align);
-    lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 9pt;font-weight: bold;}");
 }

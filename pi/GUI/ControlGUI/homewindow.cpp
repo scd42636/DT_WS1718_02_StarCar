@@ -8,7 +8,7 @@ HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWi
     generateStyle();
     setupConnects();
     createAlertThread();
-    showStartWidget();
+    slotShowStartWidget();
 }
 
 void HomeWindow::generateLayout(){
@@ -38,8 +38,8 @@ void HomeWindow::generateLayout(){
 
 void HomeWindow::setupConnects(){
 
-    connect(pButtonExit, SIGNAL(clicked(bool)), this, SLOT(showExitWidget()));
-    connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(showAlertWidget()));
+    connect(pButtonExit, SIGNAL(clicked(bool)), this, SLOT(slotShowExitWidget()));
+    connect(pButtonAlert, SIGNAL(clicked(bool)), this , SLOT(slotShowAlertWidget()));
 }
 
 void HomeWindow::createAlertThread(){
@@ -120,53 +120,54 @@ void HomeWindow::removeActiveWidget(){
     mainStackedWidget->removeWidget(mainStackedWidget->currentWidget());
 }
 
-void HomeWindow::showSensorValuesWidget(){
+void HomeWindow::slotShowSensorValuesWidget(){
 
     sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl" ,this-> IBCPointer);
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
-void HomeWindow::showSensorValuesWidgetAfterControlMode(){
+void HomeWindow::slotShowSensorValuesWidgetAfterControlMode(){
 
     sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung",  this->IBCPointer);
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
-void HomeWindow::showClockControlModeWidget(){
+void HomeWindow::slotShowClockControlModeWidget(){
 
     clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread, this->IBCPointer);
     connect(clockcontrolModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
+    connect(clockcontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(slotShowSensorValuesWidgetAfterControlMode()));
     addWidgetToMainStackWidget(clockcontrolModeWidget);
 }
 
-void HomeWindow::showControllerControlModeWidget(){
+void HomeWindow::slotShowControllerControlModeWidget(){
 
     controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread, this->IBCPointer);
     connect(controllercontrolModeWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
-    connect(controllercontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(showSensorValuesWidgetAfterControlMode()));
+    connect(controllercontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(slotShowSensorValuesWidgetAfterControlMode()));
     addWidgetToMainStackWidget(controllercontrolModeWidget);
 }
 
-void HomeWindow::showOperationModeWidget(){
+void HomeWindow::slotShowOperationModeWidget(){
 
     operationModeWidget = new OperationModeWidget(this, this->alertThread);
     connect(operationModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
-    connect(operationModeWidget, SIGNAL(showclockcontrollmodewidget()), this, SLOT(showClockControlModeWidget()));
-    connect(operationModeWidget, SIGNAL(showcontrollercontrolmodewidget()), this, SLOT(showControllerControlModeWidget()));
-    connect(operationModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(showSensorValuesWidget()));
+    connect(operationModeWidget, SIGNAL(showclockcontrollmodewidget()), this, SLOT(slotShowClockControlModeWidget()));
+    connect(operationModeWidget, SIGNAL(showcontrollercontrolmodewidget()), this, SLOT(slotShowControllerControlModeWidget()));
+    connect(operationModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(slotShowSensorValuesWidget()));
     addWidgetToMainStackWidget(operationModeWidget);
 }
 
-void HomeWindow::showExitWidget(){
+void HomeWindow::slotShowExitWidget(){
 
     exitWidget = new ExitWidget(this, this->alertThread);
     connect(exitWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(exitWidget);
 }
 
-void HomeWindow::showAlertWidget(){
+void HomeWindow::slotShowAlertWidget(){
 
     if(alertWidget == nullptr){
 
@@ -181,10 +182,10 @@ void HomeWindow::showAlertWidget(){
     }
 }
 
-void HomeWindow::showStartWidget(){
+void HomeWindow::slotShowStartWidget(){
 
     startWidget = new StartWidget(nullptr, this->alertThread, this->IBCPointer);
-    connect(startWidget,SIGNAL(showOperationMode()),SLOT(showOperationModeWidget()));
+    connect(startWidget,SIGNAL(showOperationMode()),SLOT(slotShowOperationModeWidget()));
     addWidgetToMainStackWidget(startWidget);
 }
 
