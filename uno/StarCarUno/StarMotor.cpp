@@ -90,12 +90,12 @@ StarMotorResult StarMotor::Init()
     pinMode(this->resetPin, OUTPUT);
 
     digitalWrite(this->resetPin, LOW);  // reset SMC
-    delay(1);                           // wait 1 ms
+    delay(1); // 10                           // wait 1 ms
 
-    pinMode(this->resetPin, INPUT);     // let SMC run again
+    //pinMode(this->resetPin, INPUT);     // let SMC run again
 
                                         // Must wait at least 1 ms after reset before transmitting.
-    delay(5);
+    delay(5); // 50
 
     if (this->errorPin != PIN_DISCONNECTED) {
         // This lets us read the state of the SMC ERR pin (optional).
@@ -105,12 +105,11 @@ StarMotorResult StarMotor::Init()
     // Send baud-indicator byte.
     this->serial.write(0xAA);
 
+    this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationForward, 1);
+    this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationBackward, 1);
+    this->ChangeLimit(StarMotorLimit::ML_MaxDeceleration, 10);
+
     this->ExitSafeStart();
-
-    //this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationForward, 1);
-    //this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationBackward, 1);
-    //this->ChangeLimit(StarMotorLimit::ML_MaxDeceleration, 10);
-
     return StarMotorResult::MR_Success;
 }
 
@@ -182,21 +181,27 @@ void StarMotor::Task(StarCar* car)
     Serial.println("--> StarMotor::Task()");
     #endif
 
-    int8_t acceleration = car->getAcceleration();
-    int16_t speed = (float)3200 * ((float)acceleration / 100);
+    if (car->getEngineMode() == StarCarEngineMode::CEM_On) {
+        int8_t acceleration = car->getAcceleration();
+        int16_t speed = (-1) * ((float)1000 * ((float)acceleration / 100));
 
-    if (this->currentSpeed != speed) {
-        #if TEST
-        Serial.print("Motor: accel = ");
-        Serial.println(acceleration);
+        if (this->currentSpeed != speed) {
+            #if TEST
+            Serial.print("Motor: accel = ");
+            Serial.println(acceleration);
 
-        Serial.print("Motor: speed = ");
-        Serial.println(speed);
-        #else
-        this->ChangeSpeed(speed);
-        #endif
+            Serial.print("Motor: speed = ");
+            Serial.println(speed);
+            #else
+            this->ChangeSpeed(speed);
+            #endif
 
-        this->currentSpeed = speed;
+            this->currentSpeed = speed;
+        }
+    }
+    else if (car->getEngineMode() == StarCarEngineMode::CEM_Off) {
+        this->Stop();
+        this->currentSpeed = 0;
     }
 }
 
