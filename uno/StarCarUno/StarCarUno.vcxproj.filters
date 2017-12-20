@@ -42,6 +42,9 @@
     <ClInclude Include="StarCarDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="StarSonic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="StarCarUno.ino" />
@@ -66,6 +69,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StarCar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StarSonic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

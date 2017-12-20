@@ -94,6 +94,7 @@
     <ClInclude Include="StarBoard.h" />
     <ClInclude Include="StarCar.h" />
     <ClInclude Include="StarServo.h" />
+    <ClInclude Include="StarSonic.h" />
     <ClInclude Include="StarWatch.h" />
     <ClInclude Include="__vm\.StarCarUno.vsarduino.h" />
   </ItemGroup>
@@ -104,6 +105,7 @@
     <ClCompile Include="StarMotor.cpp" />
     <ClCompile Include="StarBoard.cpp" />
     <ClCompile Include="StarServo.cpp" />
+    <ClCompile Include="StarSonic.cpp" />
     <ClCompile Include="StarWatch.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
