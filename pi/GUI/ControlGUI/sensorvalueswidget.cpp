@@ -1,4 +1,7 @@
 #include "sensorvalueswidget.h"
+#include <iostream>
+#include <string>
+#include "stdio.h"
 
 //#define NOTPI
 
@@ -50,7 +53,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
 
     QuerySensorValuesTimer = new QTimer();
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
-    QuerySensorValuesTimer->start(2000);
+    QuerySensorValuesTimer->start(1000);
 
 #endif
 
@@ -142,6 +145,7 @@ void SensorValuesWidget::generateStyle(){
 void SensorValuesWidget::slotpButtonGoBackPushed(){
 
     //threadLidar->finishLidar();
+    QuerySensorValuesTimer->stop();
     emit removeWindowfromStack();
 }
 
@@ -154,31 +158,70 @@ void SensorValuesWidget::slotQuerySensorValues(){
     iCompass->fetch();
     iAcceleration->fetch();
     test->fetch();
-
+/*
     IBCPointer->send(*packetUltrafront);
     IBCPointer->send(*packetUltraback);
     IBCPointer->send(*packetCompass);
-    IBCPointer->send(*packetAcceleration);
+    IBCPointer->send(*packetAcceleration);*/
     IBCPointer->send(*packetTest);
-
-    /*lblUltraBackValue->setText(iUltraBack->front());
-    lblUltraFrontValue->setText(iUltraFront->front());
-    lblcompassValue->setText(iCompass->front());
-    lblaccelerationValue->setText(iAcceleration->front());
+/*
+    lblUltraBackValue->setText(iUltraBack->back());
+    lblUltraFrontValue->setText(iUltraFront->back());
+    lblcompassValue->setText(iCompass->back());
+    lblaccelerationValue->setText(iAcceleration->back());
 */
 
     if(test->empty()) std::cout << "empty\n";
     else
     {
+        /*Packet testPacket = *test->back();
+        uint8_t *content = testPacket.content();
+        char *testchar = (char*)content;
+        testchar[8] = '\0';
+
+        QString testqstring;
+
+        for (int i = 0; i < 8; i++){
+
+            testqstring += QString::number(testchar[i]);
+            printf("%d",testchar[i]);
+        }
+        */
+       lblUltraFrontValue->setText(getMesureValue(test));
+
         std::stringstream ss;
-        ss << *(test->front());
+        ss << *(test->back());
         std::string s = ss.str();
-        lblUltraBackValue->setText(s.c_str());
+        //lblUltraBackValue->setText(s.c_str());
+        std::cout << s.c_str() << std::endl;
         test->pop_front();
+
     }
     //*test->front()
     //lblUltraBackValue->setText();
 
     #endif
-
 }
+
+
+QString SensorValuesWidget::getMesureValue(Inbox *inbox){
+
+    Packet tempPacket = *inbox->back();
+    uint8_t *packetContent = tempPacket.content();
+    char *packetContentChar = (char *)packetContent;
+    packetContentChar[(int)tempPacket.contentsize()] = '\0';
+
+    QString resultValue;
+
+    for (int i = 0; i < (int)tempPacket.contentsize(); i++){
+
+        resultValue += QString::number(packetContentChar[i]);
+    }
+
+    return resultValue;
+}
+
+
+
+
+

@@ -97,6 +97,7 @@ private:
     void setupConnects();
     void generateStyle();
 
+    QString getMesureValue(Inbox *inbox);
 };
 
 #endif // SENSORVALUESWIDGET_H

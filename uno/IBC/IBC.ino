@@ -3,6 +3,9 @@
 
 #define IBC_BAUD 115200
 #include <EEPROM.h>
+
+int count = 0;
+
 class IBC
 {
     byte DH;
@@ -408,12 +411,18 @@ void IBC::next() {
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
-        byte buff254[8] = {1,2,3,4,5,6,7,8};
+        byte buff254[8] = {1,2,3,4,5,6,7,count};
 
         send (buff254, 8);
 
         //DONT FORGET TO HASH
         setDH(8);
+        
+        if(count < 9){
+          count++;
+        }else{
+          count = 0;
+        }
 
 /* IBC_PRESERVE_SEND_END 254 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
