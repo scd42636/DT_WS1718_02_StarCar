@@ -129,6 +129,7 @@ void ControllerControlModeWidget::createControllAnimation(){
     lblImageViewController->setFixedSize(100,50);
 
     vBoxRightControl->addLayout(hBoxController);
+    hBoxController->addSpacing(40);
     hBoxController->addWidget(lblImageViewController);
 
     lblTextSpeedUp          = new QLabel("Gas");
@@ -144,10 +145,10 @@ void ControllerControlModeWidget::createControllAnimation(){
     setArrowPicsToLabel(lblArrowDown2, "arrowDown", 25, 50);
 
     hBoxRightArrowsAndTexts->addSpacing(5);
-    hBoxRightArrowsAndTexts->addWidget(lblTextSpeedUp);
+    hBoxRightArrowsAndTexts->addWidget(lblTextBreak);
     hBoxRightArrowsAndTexts->addWidget(lblArrowDown);
     hBoxRightArrowsAndTexts->addWidget(lblArrowDown2);
-    hBoxRightArrowsAndTexts->addWidget(lblTextBreak);
+    hBoxRightArrowsAndTexts->addWidget(lblTextSpeedUp);
 
     pButtonNext               = new QPushButton();
     hboxButtonsBottom->addWidget(pButtonNext);
@@ -203,32 +204,6 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
     delete blinkTimer;
 
     createControllAnimation();
-
-#ifdef Q_OS_LINUX
-
-    #ifdef IBCNOTWORKING
-
-        SerialPortArduino->send("1",1);
-
-    #endif
-
-    QThread *thread = new QThread;
-    threadLidar     = new ThreadLidar(alertThread);
-
-    threadLidar->moveToThread(thread);
-
-    connect(thread, SIGNAL(started()), threadLidar, SLOT(startProcess()));
-    connect(threadLidar, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(threadLidar, SIGNAL(finished()), threadLidar, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-
-    thread->start();
-
-    lidarTimer                = new QTimer();
-    connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
-    lidarTimer->start(50000);
-
-#endif
 }
 
 void ControllerControlModeWidget::slotShowSensorValues(){
@@ -276,7 +251,17 @@ void ControllerControlModeWidget::slotBlinkArrows(){
         lblArrowDown->show();
         lblArrowRight->show();
         lblArrowLeft->show();
-        blinkTimer->setInterval(1500);
+
+        if(lastTimeWasShort){
+
+            blinkTimer->setInterval(1500);
+            lastTimeWasShort = false;
+
+        }else{
+
+            blinkTimer->setInterval(200);
+            lastTimeWasShort = true;
+        }
 
 
     }else{

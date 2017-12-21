@@ -7,7 +7,6 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <sensorvalueswidget.h>
-#include <threadlidar.h>
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
 #include <../../IBP/Serial.hpp>
@@ -38,7 +37,6 @@ private:
 
     // Thread
     Alert       *alertThread;
-    ThreadLidar *threadLidar;
 
     // QPushButton
     QPushButton     *pButtonGoBack;
@@ -73,15 +71,14 @@ private:
 
     // QTimer
     QTimer          *blinkTimer;
-    QTimer          *lidarTimer;
 
     // IBC
     IBC             *IBCPointer;
-    Serial          *SerialPortArduino;
 
     // Vars
     double fontSize = 10;
     bool   pButtonNextRemoved = false;
+    bool   lastTimeWasShort = false;
 
     // Method
     void setupWidget();

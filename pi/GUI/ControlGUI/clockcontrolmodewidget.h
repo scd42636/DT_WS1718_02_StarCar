@@ -79,6 +79,7 @@ private:
     // Vars
     double fontSize = 10;
     bool   pButtonNextRemoved = false;
+    bool   lastTimeWasShort = false;
 
     // Method
     void setupWidget();

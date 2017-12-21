@@ -22,11 +22,28 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     packetCompass       = new Packet(182,3);
     packetAcceleration  = new Packet(183,6);
 
+    QThread *thread = new QThread;
+    threadLidar     = new ThreadLidar(alertThread);
+
+    threadLidar->moveToThread(thread);
+
+    connect(thread, SIGNAL(started()), threadLidar, SLOT(startProcess()));
+    connect(threadLidar, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(threadLidar, SIGNAL(finished()), threadLidar, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    thread->start();
+
+    lidarTimer                = new QTimer();
+    connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
+    lidarTimer->start(50000);
+
     QuerySensorValuesTimer = new QTimer();
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
     QuerySensorValuesTimer->start(2000);
 
 #endif
+
 }
 
 void SensorValuesWidget::generateLayout(){
@@ -42,14 +59,12 @@ void SensorValuesWidget::generateLayout(){
     lblcompass              = new QLabel();
     lblacceleration         = new QLabel();
     lblUWB                  = new QLabel();
-    lblLidar                = new QLabel();
 
     lblUltraFrontValue      = new QLabel();
     lblUltraBackValue       = new QLabel();
     lblcompassValue         = new QLabel();
     lblaccelerationValue    = new QLabel();
     lblUWBValue             = new QLabel();
-    lblLidarValue           = new QLabel();
 
     pButtonGoBack           = new QPushButton();
 
@@ -63,14 +78,12 @@ void SensorValuesWidget::generateLayout(){
     vBoxLabelDescription->addWidget(lblcompass);
     vBoxLabelDescription->addWidget(lblacceleration);
     vBoxLabelDescription->addWidget(lblUWB);
-    vBoxLabelDescription->addWidget(lblLidar);
 
     vBoxLabelValues->addWidget(lblUltraFrontValue);
     vBoxLabelValues->addWidget(lblUltraBackValue);
     vBoxLabelValues->addWidget(lblcompassValue);
     vBoxLabelValues->addWidget(lblaccelerationValue);
     vBoxLabelValues->addWidget(lblUWBValue);
-    vBoxLabelValues->addWidget(lblLidarValue);
 
     vBox1->addWidget(pButtonGoBack);
 
@@ -79,7 +92,6 @@ void SensorValuesWidget::generateLayout(){
     lblValues.append(lblcompassValue);
     lblValues.append(lblaccelerationValue);
     lblValues.append(lblUWBValue);
-    lblValues.append(lblLidarValue);
 
     for (QLabel *lables : lblValues){
         lables->setText("--");
@@ -97,7 +109,7 @@ void SensorValuesWidget::generateStyle(){
                             "color: white;"
                             "font-family: TimesNewRoman;"
                             "font-style: normal;"
-                            "font-size: 8pt;"
+                            "font-size: 10pt;"
                             "font-weight: bold;}"
                         "QPushButton{"
                             "color: green;"
@@ -113,7 +125,6 @@ void SensorValuesWidget::generateStyle(){
     lblcompass->        setText("Kompass: ");
     lblacceleration->   setText("Beschleunigung: ");
     lblUWB->            setText("UWB: ");
-    lblLidar->          setText("Lidar");
 
     pButtonGoBack->setText(pButtonGoBackText);
 }

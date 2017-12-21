@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
+#include <threadlidar.h>
 
 class SensorValuesWidget : public QWidget
 {
@@ -52,14 +53,12 @@ private:
     QLabel          *lblcompass;
     QLabel          *lblacceleration;
     QLabel          *lblUWB;
-    QLabel          *lblLidar;
 
     QLabel          *lblUltraFrontValue;
     QLabel          *lblUltraBackValue;
     QLabel          *lblcompassValue;
     QLabel          *lblaccelerationValue;
     QLabel          *lblUWBValue;
-    QLabel          *lblLidarValue;
 
     // QVector
     QVector<QLabel *> lblValues;
@@ -69,7 +68,9 @@ private:
 
     // IBC
     IBC             *IBCPointer;
-    Serial          *SerialPortArduino;
+
+    // QTimer
+    QTimer          *lidarTimer;
 
 #ifdef Q_OS_LINUX
 
@@ -77,9 +78,6 @@ private:
     Packet          *packetUltraback;
     Packet          *packetCompass;
     Packet          *packetAcceleration;
-
-    Inbox           *testInbox;
-
 
     Inbox           *iUltraFront;
     Inbox           *iUltraBack;

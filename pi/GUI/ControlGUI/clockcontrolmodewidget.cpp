@@ -249,7 +249,17 @@ void ClockControllModeWidget::slotBlinkArrows(){
         lblArrowDownLeft->show();
         lblArrowUpRight->show();
         lblArrowDownRight->show();
-        blinkTimer->setInterval(1500);
+
+        if(lastTimeWasShort){
+
+            blinkTimer->setInterval(1500);
+            lastTimeWasShort = false;
+
+        }else{
+
+            blinkTimer->setInterval(200);
+            lastTimeWasShort = true;
+        }
 
 
     }else{
