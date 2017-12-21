@@ -79,11 +79,13 @@ private:
     Packet          *packetUltraback;
     Packet          *packetCompass;
     Packet          *packetAcceleration;
+    Packet          *packetTest;
 
     Inbox           *iUltraFront;
     Inbox           *iUltraBack;
     Inbox           *iCompass;
     Inbox           *iAcceleration;
+    Inbox           *test;
 
 #endif
 

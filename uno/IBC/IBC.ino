@@ -1,7 +1,7 @@
 #ifndef IBC_H
 #     define IBC_H
 
-#define IBC_BAUD 57600
+#define IBC_BAUD 115200
 #include <EEPROM.h>
 class IBC
 {
@@ -297,7 +297,7 @@ void IBC::next() {
      send(bpYacc, 2);
 			
 			//DONT FORGET TO HASH
-			setDH( createDH(&parityXacc,1,createDH(bpXacc, 2, createDH(parityYacc, 1, createDH(bpYacc, 2)))));
+			setDH( createDH(&parityXacc,1,createDH(bpXacc, 2, createDH(&parityYacc, 1, createDH(bpYacc, 2)))));
 			
 /* IBC_PRESERVE_SEND_END 183 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
@@ -334,9 +334,7 @@ void IBC::next() {
 /* IBC_PRESERVE_SEND_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
         byte buff254[8] = {1,2,3,4,5,6,7,8};
-        for (int i = 0 ; i < 8; i++) {
-          send(buff254[i]);
-        }
+        send (buff254, 8);
 
         //DONT FORGET TO HASH
         setDH(8);

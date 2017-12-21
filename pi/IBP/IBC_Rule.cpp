@@ -9,6 +9,13 @@ Rule::Rule(std::string configfile)
 {
 	for(int i = 0; i < 255; i++)
 	{
+        if(i == 254)
+        {
+;
+
+      ;
+
+        }
 		properties[i].reqsize = 0;
 		properties[i].anssize = 0;
 	}

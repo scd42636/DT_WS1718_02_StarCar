@@ -1,5 +1,7 @@
 #include "sensorvalueswidget.h"
 
+//#define NOTPI
+
 SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
@@ -12,16 +14,21 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
 
 #ifdef Q_OS_LINUX
 
-    iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
+ /*   iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
     iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
     iCompass        = new Inbox(this->IBCPointer->getInbox(182));
     iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
+    */
+    test            = new Inbox(this->IBCPointer->getInbox(254));
 
-    packetUltrafront    = new Packet(180,2);
+  /*  packetUltrafront    = new Packet(180,2);
     packetUltraback     = new Packet(181,2);
     packetCompass       = new Packet(182,3);
-    packetAcceleration  = new Packet(183,6);
+    packetAcceleration  = new Packet(183,6);*/
+    char buff[4] = "ddd";
+    packetTest          = new Packet(254,4,(uint8_t * )buff);
 
+#ifdef NOTPI
     QThread *thread = new QThread;
     threadLidar     = new ThreadLidar(alertThread);
 
@@ -37,6 +44,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     lidarTimer                = new QTimer();
     connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
     lidarTimer->start(50000);
+#endif
 
     QuerySensorValuesTimer = new QTimer();
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
@@ -131,7 +139,7 @@ void SensorValuesWidget::generateStyle(){
 
 void SensorValuesWidget::slotpButtonGoBackPushed(){
 
-    threadLidar->finishLidar();
+    //threadLidar->finishLidar();
     emit removeWindowfromStack();
 }
 
@@ -139,21 +147,35 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
     #ifdef Q_OS_LINUX
 
-    iUltraBack->fetch();
+  /*  iUltraBack->fetch();
     iUltraFront->fetch();
     iCompass->fetch();
-    iAcceleration->fetch();
+    iAcceleration->fetch();*/
+    test->fetch();
 
-    IBCPointer->send(*packetUltrafront);
+    /*IBCPointer->send(*packetUltrafront);
     IBCPointer->send(*packetUltraback);
     IBCPointer->send(*packetCompass);
-    IBCPointer->send(*packetAcceleration);
+    IBCPointer->send(*packetAcceleration);*/
+    IBCPointer->send(*packetTest);
 /*
     lblUltraBackValue->setText(iUltraBack.front());
     lblUltraFrontValue->setText(iUltraFront.front());
     lblcompassValue->setText(iCompass.front());
     lblaccelerationValue->setText(iAcceleration.front());
 */
+
+    if(test->empty()) std::cout << "empty\n";
+    else
+    {
+        std::stringstream ss;
+        ss << *(test->front());
+        std::string s = ss.str();
+        lblUltraBackValue->setText(s.c_str());
+    }
+    //*test->front()
+    //lblUltraBackValue->setText();
+
     #endif
 
 }
