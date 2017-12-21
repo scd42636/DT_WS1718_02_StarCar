@@ -1,9 +1,7 @@
 #include "sensorvalueswidget.h"
-#include <iostream>
-#include <string>
-#include "stdio.h"
 
-//#define NOTPI
+#define PI
+#define IBCTEST
 
 SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
 {
@@ -15,23 +13,37 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     setupConnects();
     generateStyle();
 
+    QDir SensorOutputFolder("/home/pi/SensorOutput");
+    SensorOutputFolder.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+    foreach (QString SensorOutputItem, SensorOutputFolder.entryList()){
+        SensorOutputFolder.remove(SensorOutputItem);
+    }
+
 #ifdef Q_OS_LINUX
 
-    iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
-    iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
-    iCompass        = new Inbox(this->IBCPointer->getInbox(182));
-    iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
-    test            = new Inbox(this->IBCPointer->getInbox(254));
+    #ifdef IBCTEST
+        test            = new Inbox(this->IBCPointer->getInbox(254));
+        char buff[4] = "ddd";
+        packetTest          = new Packet(254,4,(uint8_t * )buff);
 
-    packetUltrafront    = new Packet(180,2);
-    packetUltraback     = new Packet(181,2);
-    packetCompass       = new Packet(182,3);
-    packetAcceleration  = new Packet(183,6);
+    #else
 
-    char buff[4] = "ddd";
-    packetTest          = new Packet(254,4,(uint8_t * )buff);
+        iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
+        iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
+        iCompass        = new Inbox(this->IBCPointer->getInbox(182));
+        iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
+        iUWB            = new Inbox(this->IBCPointer->getInbox(184));
 
-#ifdef NOTPI
+
+        packetUltrafront    = new Packet(180,2);
+        packetUltraback     = new Packet(181,2);
+        packetCompass       = new Packet(182,3);
+        packetAcceleration  = new Packet(183,6);
+        packetUWB           = new Packet(184,6);
+    #endif
+
+
+#ifdef PI
 
     QThread *thread = new QThread;
     threadLidar     = new ThreadLidar(alertThread);
@@ -144,63 +156,39 @@ void SensorValuesWidget::generateStyle(){
 
 void SensorValuesWidget::slotpButtonGoBackPushed(){
 
-    //threadLidar->finishLidar();
+    threadLidar->finishLidar();
     QuerySensorValuesTimer->stop();
     emit removeWindowfromStack();
 }
 
 void SensorValuesWidget::slotQuerySensorValues(){
 
-    #ifdef Q_OS_LINUX
+#ifdef Q_OS_LINUX
 
-    iUltraBack->fetch();
-    iUltraFront->fetch();
-    iCompass->fetch();
-    iAcceleration->fetch();
-    test->fetch();
-/*
-    IBCPointer->send(*packetUltrafront);
-    IBCPointer->send(*packetUltraback);
-    IBCPointer->send(*packetCompass);
-    IBCPointer->send(*packetAcceleration);*/
-    IBCPointer->send(*packetTest);
-/*
-    lblUltraBackValue->setText(iUltraBack->back());
-    lblUltraFrontValue->setText(iUltraFront->back());
-    lblcompassValue->setText(iCompass->back());
-    lblaccelerationValue->setText(iAcceleration->back());
-*/
+    #ifdef IBCTEST
+        test->fetch();
+        IBCPointer->send(*packetTest);
+        test->empty()          ? alertThread->fireWarning("Test kein Wert!") : lblUltraFrontValue->setText(getMesureValue(test));
+    #else
+        iUltraBack->fetch();
+        iUltraFront->fetch();
+        iCompass->fetch();
+        iAcceleration->fetch();
 
-    if(test->empty()) std::cout << "empty\n";
-    else
-    {
-        /*Packet testPacket = *test->back();
-        uint8_t *content = testPacket.content();
-        char *testchar = (char*)content;
-        testchar[8] = '\0';
+        IBCPointer->send(*packetUltrafront);
+        IBCPointer->send(*packetUltraback);
+        IBCPointer->send(*packetCompass);
+        IBCPointer->send(*packetAcceleration);
 
-        QString testqstring;
-
-        for (int i = 0; i < 8; i++){
-
-            testqstring += QString::number(testchar[i]);
-            printf("%d",testchar[i]);
-        }
-        */
-       lblUltraFrontValue->setText(getMesureValue(test));
-
-        std::stringstream ss;
-        ss << *(test->back());
-        std::string s = ss.str();
-        //lblUltraBackValue->setText(s.c_str());
-        std::cout << s.c_str() << std::endl;
-        test->pop_front();
-
-    }
-    //*test->front()
-    //lblUltraBackValue->setText();
+        iUltraFront->empty()   ? alertThread->fireWarning("Ultraschall vorne kein Wert!") : lblUltraFrontValue->setText(getMesureValue(iUltraFront));
+        iUltraBack->empty()    ? alertThread->fireWarning("Ultraschall hinten kein Wert!") : lblUltraBackValue->setText(getMesureValue(iUltraBack));
+        iCompass->empty()      ? alertThread->fireWarning("Kompass kein Wert!") : lblcompassValue->setText(getMesureValue(iCompass));
+        iAcceleration->empty() ? alertThread->fireWarning("Beschleunigung kein Wert!") : lblaccelerationValue->setText(getMesureValue(iAcceleration));
+        iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
 
     #endif
+
+#endif
 }
 
 
@@ -208,6 +196,7 @@ QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 
     Packet tempPacket = *inbox->back();
     uint8_t *packetContent = tempPacket.content();
+    int ID = (int)tempPacket.id();
     char *packetContentChar = (char *)packetContent;
     packetContentChar[(int)tempPacket.contentsize()] = '\0';
 
@@ -216,6 +205,66 @@ QString SensorValuesWidget::getMesureValue(Inbox *inbox){
     for (int i = 0; i < (int)tempPacket.contentsize(); i++){
 
         resultValue += QString::number(packetContentChar[i]);
+    }
+
+    QString filePath;
+
+    switch (ID){
+
+        case 180:
+        {
+            filePath = "/home/pi/SensorOutput/UltraVorne.txt";
+            break;
+        }
+
+        case 181:
+        {
+            filePath = "/home/pi/SensorOutput/UltraHinten.txt";
+            break;
+        }
+
+        case 182:
+        {
+            filePath = "/home/pi/SensorOutput/Compass.txt";
+            break;
+        }
+
+        case 183:
+        {
+            filePath = "/home/pi/SensorOutput/Beschleunigung.txt";
+            break;
+        }
+
+        case 184:
+        {
+            filePath = "/home/pi/SensorOutput/UWB.txt";
+            break;
+        }
+
+        case 254:
+        {
+            filePath = "/home/pi/SensorOutput/test.txt";
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+
+    }
+
+    QFile file(filePath);
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Append)){
+
+        QTextStream stream (&file);
+        stream << resultValue << endl;
+        file.close();
+
+    }else{
+
+        alertThread->fireError("Could not open File" + filePath);
     }
 
     return resultValue;

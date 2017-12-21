@@ -6,9 +6,12 @@
 #include <alert.h>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QFile>
+#include <QTextStream>
+#include <QDir>
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
-//#include <threadlidar.h>
+#include <threadlidar.h>
 
 class SensorValuesWidget : public QWidget
 {
@@ -35,7 +38,7 @@ private:
 
     // Thread
     Alert           *alertThread;
-  //  ThreadLidar     *threadLidar;
+    ThreadLidar     *threadLidar;
 
     // QVBoxLayout
     QVBoxLayout     *vBox1;
@@ -79,12 +82,14 @@ private:
     Packet          *packetUltraback;
     Packet          *packetCompass;
     Packet          *packetAcceleration;
+    Packet          *packetUWB;
     Packet          *packetTest;
 
     Inbox           *iUltraFront;
     Inbox           *iUltraBack;
     Inbox           *iCompass;
     Inbox           *iAcceleration;
+    Inbox           *iUWB;
     Inbox           *test;
 
 #endif
