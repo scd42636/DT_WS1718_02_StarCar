@@ -10,7 +10,7 @@ void InitStarCar::startProcess(){
 
 #ifdef Q_OS_LINUX
 
-    *IBCPointer = new IBC("/dev/ttyUSB0","../../IBC_config.cfg");
+    *IBCPointer = new IBC("/dev/ttyUSB0","/home/pi/DT_WS1718_02_StarCar/pi/IBP/IBC_config.cfg");
 
 #endif
 

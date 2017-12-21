@@ -1,7 +1,7 @@
 #ifndef IBC_H
 #     define IBC_H
 
-#define IBC_BAUD 57600
+#define IBC_BAUD 115200
 #include <EEPROM.h>
 class IBC
 {
@@ -137,6 +137,81 @@ void IBC::next() {
         }
         break;
 /* IBC_MESSAGE_END 0 0 0 */
+/* IBC_MESSAGE_BEGIN 100 0 0 */
+        case 100:
+        {
+           
+
+/*   Recv exactly 0 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 100 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			//DONT FORGET TO HASH
+			setDH(0);
+			
+/* IBC_PRESERVE_RECV_END 100 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+  char datahash = recv();
+  send(sstat);
+
+/*Send exactly 0 bytes in the following                  */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 100 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			for(int i = 0 ; i<0;i++) {send(0);}
+			
+			//DONT FORGET TO HASH
+			setDH(0);
+			
+/* IBC_PRESERVE_SEND_END 100 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
+        break;
+/* IBC_MESSAGE_END 100 0 0 */
+/* IBC_MESSAGE_BEGIN 101 0 0 */
+        case 101:
+        {
+           
+
+/*   Recv exactly 0 bytes in the following                              */
+/*   Also calculate their data hash along the way by                    */
+/*      xoring all bytes together once                                  */
+/*      or use the provided function                                    */
+/*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
+/* IBC_PRESERVE_RECV_BEGIN 101 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			byte buffr101[0];
+			recv(buffr101,0);
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buffr101,0));
+			
+/* IBC_PRESERVE_RECV_END 101 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+  char datahash = recv();
+  send(sstat);
+
+/*Send exactly 0 bytes in the following                  */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 101 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			for(int i = 0 ; i<0;i++) {send(0);}
+			
+			//DONT FORGET TO HASH
+			setDH(0);
+			
+/* IBC_PRESERVE_SEND_END 101 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+        }
+        break;
+/* IBC_MESSAGE_END 101 0 0 */
 /* IBC_MESSAGE_BEGIN 180 0 2 */
         case 180:
         {
@@ -297,7 +372,7 @@ void IBC::next() {
      send(bpYacc, 2);
 			
 			//DONT FORGET TO HASH
-			setDH( createDH(&parityXacc,1,createDH(bpXacc, 2, createDH(parityYacc, 1, createDH(bpYacc, 2)))));
+			setDH( createDH(&parityXacc,1,createDH(bpXacc, 2, createDH(&parityYacc, 1, createDH(bpYacc, 2)))));
 			
 /* IBC_PRESERVE_SEND_END 183 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
@@ -333,10 +408,8 @@ void IBC::next() {
 /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
 /* IBC_PRESERVE_SEND_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
-        byte buff254[8] = {1,2,3,4,5,6,7,8};
-        for (int i = 0 ; i < 8; i++) {
-          send(buff254[i]);
-        }
+        byte buff254[8R] = {1,2,3,4,5,6,7,8};
+        send (buff254, 8);
 
         //DONT FORGET TO HASH
         setDH(8);

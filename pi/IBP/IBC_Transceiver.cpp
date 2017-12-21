@@ -32,8 +32,7 @@ Transceiver::~Transceiver()
 		{
 			//invalidate the pointer inside of all referenced Inboxes
 			ptr->t = nullptr;
-			// also trigger a mute on the inbox
-			ptr->mute(i);
+			// also trigger a mute on the inbox 
 		}
 	}
 }
