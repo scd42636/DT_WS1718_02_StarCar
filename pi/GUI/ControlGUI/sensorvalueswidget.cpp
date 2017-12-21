@@ -131,6 +131,7 @@ void SensorValuesWidget::generateStyle(){
 
 void SensorValuesWidget::slotpButtonGoBackPushed(){
 
+    threadLidar->finishLidar();
     emit removeWindowfromStack();
 }
 
