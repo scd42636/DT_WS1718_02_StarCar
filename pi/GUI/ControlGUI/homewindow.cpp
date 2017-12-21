@@ -162,7 +162,7 @@ void HomeWindow::slotShowOperationModeWidget(){
 
 void HomeWindow::slotShowExitWidget(){
 
-    exitWidget = new ExitWidget(this, this->alertThread, this->IBCPointer);
+    exitWidget = new ExitWidget(this, this->alertThread, &this->IBCPointer);
     connect(exitWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(exitWidget);
 }

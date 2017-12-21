@@ -35,6 +35,7 @@ private:
 
     // Thread
     Alert           *alertThread;
+    ThreadLidar     *threadLidar;
 
     // QVBoxLayout
     QVBoxLayout     *vBox1;

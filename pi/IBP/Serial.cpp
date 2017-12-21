@@ -72,7 +72,7 @@ void Serial::config()
 
     }else{
 
-        std::cout << "SerialPort is ready! BaudRate = 57600" << std::endl;
+        std::cout << "SerialPort is ready! BaudRate = 115200" << std::endl;
     }
 
         sleep(3);   // Wait until Arduino restarts !!

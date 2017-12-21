@@ -4,7 +4,7 @@
 
 #define DEBUG
 
-ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
+ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, IBC **IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
@@ -69,7 +69,7 @@ void ExitWidget::slotRestartApplication(){
 
 #ifdef Q_OS_LINUX
 
-    delete IBCPointer;
+    delete *IBCPointer;
 
 #endif
 
@@ -84,7 +84,7 @@ void ExitWidget::slotShutdownPi(){
 
     #ifdef Q_OS_LINUX
 
-        delete IBCPointer;
+        delete *IBCPointer;
 
     #endif
 

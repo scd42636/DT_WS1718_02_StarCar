@@ -12,7 +12,7 @@ class ExitWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr);
 
     ~ExitWidget(){
     }
@@ -41,7 +41,7 @@ private:
 
     //IBC
 
-    IBC             *IBCPointer;
+    IBC             **IBCPointer;
 
 signals:
 

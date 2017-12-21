@@ -45,7 +45,6 @@ private:
     // IBC
 
     IBC             **IBCPointer;
-    Serial          **SerialPortArduino;
 
     // Methods
     void generateLayout();
