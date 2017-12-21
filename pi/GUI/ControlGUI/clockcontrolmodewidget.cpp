@@ -1,8 +1,6 @@
 #include "clockcontrolmodewidget.h"
 #include <QImage>
 
-//#define IBCNOTWORKING
-
 ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
@@ -191,16 +189,10 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
     blinkTimer->stop();
     delete blinkTimer;
 
+    Packet ClockPacket(101,0);
+    IBCPointer->send(ClockPacket);
+
     createControllAnimation();
-
-#ifdef Q_OS_LINUX
-
-    #ifdef IBCNOTWORKING
-
-        SerialPortArduino->send("2",1);
-    #endif
-
-#endif
 
 }
 

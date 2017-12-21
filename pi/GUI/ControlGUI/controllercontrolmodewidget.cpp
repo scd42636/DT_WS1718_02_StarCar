@@ -203,6 +203,9 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
     blinkTimer->stop();
     delete blinkTimer;
 
+    Packet ControllerPacket(100,0);
+    IBCPointer->send(ControllerPacket);
+
     createControllAnimation();
 }
 
