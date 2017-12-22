@@ -6,9 +6,15 @@
 //--------------------------------------------------------------------------------------------------
 
 #include "StarServo.h"
-#define SERVO_LEFT_MS 1100
-#define SERVO_CENTER_MS 1365
-#define SERVO_RIGHT_MS 1600
+
+// 0
+#define SERVO_LEFT 1100
+
+// 90
+#define SERVO_CENTER 1365
+
+// 180
+#define SERVO_RIGHT 1600
 
 
 // ---------- Public constructors ----------
@@ -16,7 +22,7 @@
 StarServo::StarServo(Pin stepPin)
 {
     this->stepPin = stepPin;
-    this->currentMicroseconds = SERVO_CENTER_MS;
+    this->currentMicroseconds = SERVO_CENTER;
 
     this->testStepIndex = 0;
 }
@@ -29,7 +35,8 @@ StarServoResult StarServo::Init()
     this->servo.attach(this->stepPin);
 
     // Move into neutral (= straight) direction.
-    this->servo.writeMicroseconds(SERVO_CENTER_MS);
+    this->servo.writeMicroseconds(SERVO_CENTER);
+    //this->servo.write(SERVO_CENTER);
 
     return StarServoResult::SR_Success;
 }
@@ -40,21 +47,26 @@ void StarServo::Task(StarCar* car)
     Serial.println("--> StarServo::Task()");
     #endif
 
-    int16_t ms = SERVO_CENTER_MS;
+    int16_t ms = SERVO_CENTER;
 
-    if (car->getMode() == StarCarMode::CM_None) {
+    if (car->getMode() != StarCarMode::CM_None) {
         int8_t dir = car->getDirection();
         float direction = (float)dir / 100;
 
+        //if (direction < 0)
+        //    ms = direction * 90;
+        //else
+        //    ms = 90 + direction * 90;
+
         if (direction < 0) {
             // Results into values between 1100 and 1365 (inclusive).
-            ms = SERVO_CENTER_MS - (float)(SERVO_CENTER_MS - SERVO_LEFT_MS) * ((-1) * direction);
+            ms = SERVO_CENTER - (float)(SERVO_CENTER - SERVO_LEFT) * ((-1) * direction);
 
             //if (ms > SERVO_CENTER_MS - 20)
             //    ms = SERVO_CENTER_MS;
         }
         else {
-            ms = SERVO_CENTER_MS + (float)(SERVO_RIGHT_MS - SERVO_CENTER_MS) * direction;
+            ms = SERVO_CENTER + (float)(SERVO_RIGHT - SERVO_CENTER) * direction;
 
             //if (ms < SERVO_CENTER_MS + 20)
             //    ms = SERVO_CENTER_MS;
@@ -70,10 +82,11 @@ void StarServo::Task(StarCar* car)
         Serial.println(ms);
         #else
         this->servo.writeMicroseconds(ms);
+        //this->servo.write(ms);
+        //delay(15);
         #endif
 
         this->currentMicroseconds = ms;
-        Serial.print("x");
     }
 }
 
