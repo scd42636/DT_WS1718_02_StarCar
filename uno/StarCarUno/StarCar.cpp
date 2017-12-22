@@ -14,8 +14,11 @@ StarCar::StarCar()
 {
     this->acceleration = 0;
     this->direction = 0;
+    this->distanceBack = 0;
+    this->distanceFront = 0;
     this->mode = StarCarMode::CM_None;
     this->engineMode = StarCarEngineMode::CEM_Off;
+    this->request = StarCarSensorRequest::CSR_None;
 }
 
 // ---------- Public properties ----------
@@ -40,6 +43,26 @@ StarCar* StarCar::setDirection(int8_t value)
     return this;
 }
 
+int8_t StarCar::getDistanceBack()
+{
+    return this->distanceBack;
+}
+StarCar* StarCar::setDistanceBack(int8_t value)
+{
+    this->distanceBack = value;
+    return this;
+}
+
+int8_t StarCar::getDistanceFront()
+{
+    return this->distanceFront;
+}
+StarCar* StarCar::setDistanceFront(int8_t value)
+{
+    this->distanceFront = value;
+    return this;
+}
+
 StarCarMode StarCar::getMode()
 {
     return this->mode;
@@ -61,4 +84,22 @@ StarCarEngineMode StarCar::getEngineMode()
 StarCar* StarCar::setEngineMode(StarCarEngineMode value)
 {
     this->engineMode = value;
+    return this;
+}
+
+StarCarSensorRequest StarCar::getRequest()
+{
+    return this->request;
+}
+StarCar* StarCar::setRequest(StarCarSensorRequest value)
+{
+    this->request = value;
+    return this;
+}
+
+// ---------- Public methods ----------
+
+bool StarCar::IsRequested(StarCarSensorRequest request)
+{
+    return (this->request & request) == request;
 }
