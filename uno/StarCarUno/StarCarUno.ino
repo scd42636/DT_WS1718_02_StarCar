@@ -31,11 +31,11 @@ XBoxController xboxController(&usb);
 
 StarCar car;
 
-#define Board_ForwardLedPin         6
-#define Board_BackwardLedPin        7
+#define Board_FrontLedPin           6
+#define Board_BackLedPin            7
 #define Board_LeftFlashLedPin       PIN_DISCONNECTED
 #define Board_RightFlashLedPin      PIN_DISCONNECTED
-StarBoard board(Board_ForwardLedPin, Board_BackwardLedPin, Board_LeftFlashLedPin, Board_RightFlashLedPin);
+StarBoard board(Board_FrontLedPin, Board_BackLedPin, Board_LeftFlashLedPin, Board_RightFlashLedPin);
 
 StarController controller(&xboxController);
 StarWatch watch(&usbController);
@@ -48,7 +48,12 @@ StarMotor motor(Motor_RxPin, Motor_TxPin, Motor_ResetPin);
 #define Servo_StepPin               5
 StarServo servo(Servo_StepPin);
 
-StarSonic sonic;
+#define SonicFront_Pin              12
+StarSonic sonicFront(SonicFront_Pin, StarSonicLocation::SCL_Front);
+
+#define SonicBack_Pin               13
+StarSonic sonicBack(SonicBack_Pin, StarSonicLocation::SCL_Back);
+
 
 void setup()
 {
@@ -85,10 +90,26 @@ void setup()
 
     #if _DEBUG
     delay(100);
-    Serial.print("--> Initializing Sonic...\t\t");
+    Serial.print("--> Initializing Sonic (back)...\t\t");
     #endif
 
-    if (sonic.Init() == StarSonicResult::SCR_Success) {
+    if (sonicBack.Init() == StarSonicResult::SCR_Success) {
+        #if _DEBUG
+        Serial.println("success!");
+        #endif
+    }
+    else {
+        #if _DEBUG
+        Serial.println("FAILED!");
+        #endif
+    }
+
+    #if _DEBUG
+    delay(100);
+    Serial.print("--> Initializing Sonic (front)...\t\t");
+    #endif
+
+    if (sonicFront.Init() == StarSonicResult::SCR_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -168,6 +189,7 @@ void setup()
     #endif
 
     car.setMode(StarCarMode::CM_Controller);
+    //car.setRequest(StarCarSensorRequest::CSR_Sonic);
 }
 
 void loop()
@@ -179,14 +201,17 @@ void loop()
 
     usb.Task();
     board.Task(&car);
+
+    //sonicFront.Task(&car);
+    //sonicBack.Task(&car);
+
     controller.Task(&car);
-    //watch.Task(&car);
+    // watch.Task(&car);
+    
     motor.Task(&car);
     servo.Task(&car);
 
     #if _DEBUG
     Serial.println("----------");
     #endif
-
-    delay(1);
 }
