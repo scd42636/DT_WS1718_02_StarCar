@@ -2,6 +2,7 @@
 // <copyright file="StarSonic.h" company="OTH Regensburg">
 //     This file is protected by Team 02 StarCar Copyright (c) 2017.
 // </copyright>
+// <author>Simone Huber</author>
 // <author>Dominik Scharnagl</author>
 //--------------------------------------------------------------------------------------------------
 
@@ -15,11 +16,26 @@ enum StarSonicResult
     SCR_Failed = -1,
 };
 
+enum StarSonicLocation
+{
+    SCL_Front = 0,
+    SCL_Back = 1
+};
+
 class StarSonic
 {
+    // ---------- Private fields ----------
+private:
+    StarSonicLocation location;
+    Pin signalPin;
+
     // ---------- Public constructors ----------
 public:
-    StarSonic();
+    StarSonic(Pin signalPin, StarSonicLocation location);
+
+    // ---------- Public properties ----------
+public:
+    StarSonicLocation getLocation();
 
     // ---------- Public methods ----------
 public:
