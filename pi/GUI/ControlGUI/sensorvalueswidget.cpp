@@ -1,7 +1,7 @@
 #include "sensorvalueswidget.h"
 
 #define PI
-#define IBCTEST
+//#define IBCTEST
 
 SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
 {
@@ -267,6 +267,7 @@ QString SensorValuesWidget::getMesureValue(Inbox *inbox){
         alertThread->fireError("Could not open File" + filePath);
     }
 
+    inbox->pop_front();
     return resultValue;
 }
 
