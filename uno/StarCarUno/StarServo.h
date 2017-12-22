@@ -21,13 +21,13 @@ class StarServo
     // ---------- Private fields ----------
 private:
     int16_t currentMicroseconds;
-    short stepPin;
+    Pin stepPin;
     Servo servo;
     int testStepIndex;
 
     // ---------- Public constructors ----------
 public:
-    StarServo(short stepPin);
+    StarServo(Pin stepPin);
 
     // ---------- Public methods ----------
 public:

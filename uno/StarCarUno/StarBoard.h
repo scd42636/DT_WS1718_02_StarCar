@@ -19,27 +19,27 @@ class StarBoard
 {
     // ---------- Private fields ----------
 public:
-    bool backwardLedIsOn;
-    short backwardLedPin;
+    bool backLedIsOn;
+    Pin backLedPin;
 
-    bool forwardLedIsOn;
-    short forwardLedPin;
+    bool frontLedIsOn;
+    Pin frontLedPin;
 
-    bool leftFlashLedOn;
-    short leftFlashLedPin;
+    bool leftLedOn;
+    Pin leftLedPin;
 
-    bool rightFlashLedOn;
-    short rightFlashLedPin;
+    bool rightLedOn;
+    Pin rightLedPin;
 
     StarCarEngineMode previousEngineMode;
 
     // ---------- Public constructors ----------
 public:
     StarBoard(
-        short forwardLedPin = PIN_DISCONNECTED,
-        short backwardLedPin = PIN_DISCONNECTED,
-        short leftFlashLedPin = PIN_DISCONNECTED,
-        short rightFlashLedPin = PIN_DISCONNECTED);
+        Pin forwardLedPin = PIN_DISCONNECTED,
+        Pin backwardLedPin = PIN_DISCONNECTED,
+        Pin leftFlashLedPin = PIN_DISCONNECTED,
+        Pin rightFlashLedPin = PIN_DISCONNECTED);
 
     // ---------- Public methods ----------
 public:

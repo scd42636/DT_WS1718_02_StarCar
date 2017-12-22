@@ -11,10 +11,10 @@
 // ---------- Public constructors ----------
 
 StarMotor::StarMotor(
-    short receivePin,
-    short transmitPin,
-    short resetPin,
-    short errorPin)
+    Pin receivePin,
+    Pin transmitPin,
+    Pin resetPin,
+    Pin errorPin)
 {
     this->receivePin = receivePin;
     this->transmitPin = transmitPin;

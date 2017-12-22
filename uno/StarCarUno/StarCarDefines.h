@@ -9,6 +9,8 @@
 #include <Arduino.h>
 #include <SoftwareSerial.h>
 
+typedef uint8_t Pin;
+
 #include <SPI.h>
 #include <cdcacm.h>
 #include <XBOXUSB.h>

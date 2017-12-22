@@ -119,10 +119,10 @@ public:
     // ---------- Private fields ----------
 private:
     int16_t currentSpeed;
-    short errorPin;
-    short receivePin;
-    short resetPin;
-    short transmitPin;
+    Pin errorPin;
+    Pin receivePin;
+    Pin resetPin;
+    Pin transmitPin;
     int testStepIndex;
 
     SoftwareSerial serial = SoftwareSerial(0, 0);
@@ -130,10 +130,10 @@ private:
     // ---------- Public constructors ----------
 public:
     StarMotor(
-        short receivePin,
-        short transmitPin,
-        short resetPin,
-        short errorPin = PIN_DISCONNECTED);
+        Pin receivePin,
+        Pin transmitPin,
+        Pin resetPin,
+        Pin errorPin = PIN_DISCONNECTED);
 
     // ---------- Public methods ----------
 public:

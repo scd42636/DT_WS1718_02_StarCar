@@ -13,7 +13,7 @@
 
 // ---------- Public constructors ----------
 
-StarServo::StarServo(short stepPin)
+StarServo::StarServo(Pin stepPin)
 {
     this->stepPin = stepPin;
     this->currentMicroseconds = SERVO_CENTER_MS;
