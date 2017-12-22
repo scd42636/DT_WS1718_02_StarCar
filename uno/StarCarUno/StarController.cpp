@@ -221,6 +221,4 @@ void StarController::Task(StarCar* car)
     ////    Serial.println(F("Y"));
     ////    #endif
     ////}
-
-    delay(1);
 }
