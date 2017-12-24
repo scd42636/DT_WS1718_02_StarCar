@@ -14,8 +14,8 @@
 
 enum StarControllerResult
 {
-    CR_Success = 0,
-    CR_Failed = -1,
+    ControllerResult_Success = 0,
+    ControllerResult_Failed = -1,
 };
 
 class StarController

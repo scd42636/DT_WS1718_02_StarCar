@@ -11,21 +11,21 @@
 
 enum StarCarMode
 {
-    CM_None = 0,
-    CM_Controller = 1,
-    CM_Watch = 2
+    CarMode_None = 0,
+    CarMode_Controller = 1,
+    CarMode_Watch = 2
 };
 
 enum StarCarEngineMode
 {
-    CEM_Off = 0,
-    CEM_On = 1
+    CarEngineMode_Off = 0,
+    CarEngineMode_On = 1
 };
 
 enum StarCarSensorRequest
 {
-    CSR_None = 0,
-    CSR_Sonic = 1
+    CarSensorRequest_None = 0,
+    CarSensorRequest_Sonic = 1
 };
 
 class StarCar

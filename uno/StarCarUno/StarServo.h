@@ -12,8 +12,8 @@
 
 enum StarServoResult
 {
-    SR_Success = 0,
-    SR_Failed = -1,
+    ServoResult_Success = 0,
+    ServoResult_Failed = -1,
 };
 
 class StarServo

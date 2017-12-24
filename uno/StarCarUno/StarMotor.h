@@ -14,49 +14,49 @@
 
 enum StarMotorDirection
 {
-    MD_Forward = 0x85,
-    MD_Backward = 0x86
+    MotorDirection_Forward = 0x85,
+    MotorDirection_Backward = 0x86
 };
 
 enum StarMotorLimit
 {
-    ML_MaxSpeed = 0,
-    ML_MaxAcceleration = 1,
-    ML_MaxDeceleration = 2,
-    ML_BrakeDuration = 3,
+    MotorLimit_MaxSpeed = 0,
+    MotorLimit_MaxAcceleration = 1,
+    MotorLimit_MaxDeceleration = 2,
+    MotorLimit_BrakeDuration = 3,
 
-    ML_MaxSpeedForward = ML_MaxSpeed + 4,
-    ML_MaxAccelerationForward = ML_MaxAcceleration + 4,
-    ML_MaxDecelerationForward = ML_MaxDeceleration + 4,
-    ML_BrakeDurationForward = ML_BrakeDuration + 4,
+    MotorLimit_MaxSpeedForward = MotorLimit_MaxSpeed + 4,
+    MotorLimit_MaxAccelerationForward = MotorLimit_MaxAcceleration + 4,
+    MotorLimit_MaxDecelerationForward = MotorLimit_MaxDeceleration + 4,
+    MotorLimit_BrakeDurationForward = MotorLimit_BrakeDuration + 4,
 
-    ML_MaxSpeedBackward = ML_MaxSpeed + 8,
-    ML_MaxAccelerationBackward = ML_MaxAcceleration + 8,
-    ML_MaxDecelerationBackward = ML_MaxDeceleration + 8,
-    ML_BrakeDurationBackward = ML_BrakeDuration + 8,
+    MotorLimit_MaxSpeedBackward = MotorLimit_MaxSpeed + 8,
+    MotorLimit_MaxAccelerationBackward = MotorLimit_MaxAcceleration + 8,
+    MotorLimit_MaxDecelerationBackward = MotorLimit_MaxDeceleration + 8,
+    MotorLimit_BrakeDurationBackward = MotorLimit_BrakeDuration + 8,
 };
 
 enum StarMotorLimitResult
 {
-    MLR_Success = 0,
-    MLR_UnableToSetForwardLimit = 1,
-    MLR_UnableToSetBackwardLimit = 2,
-    MLR_UnableToSetLimit = 3,
+    MotorLimitResult_Success = 0,
+    MotorLimitResult_UnableToSetForwardLimit = 1,
+    MotorLimitResult_UnableToSetBackwardLimit = 2,
+    MotorLimitResult_UnableToSetLimit = 3,
 };
 
 enum StarMotorResult
 {
-    MR_Success = 0,
+    MotorResult_Success = 0,
 
-    MR_Failed = -1,
-    MR_TimeoutExpired = -2,
+    MotorResult_Failed = -1,
+    MotorResult_TimeoutExpired = -2,
 
-    MR_UnableToSetLimit = -3,
-    MR_UnableToSetForwardLimit = -4,
-    MR_UnableToSetBackwardLimit = -5,
+    MotorResult_UnableToSetLimit = -3,
+    MotorResult_UnableToSetForwardLimit = -4,
+    MotorResult_UnableToSetBackwardLimit = -5,
 
-    MR_DirectionIsOutOfRange = -10,
-    MR_SpeedIsOutOfRange = -20
+    MotorResult_DirectionIsOutOfRange = -10,
+    MotorResult_SpeedIsOutOfRange = -20
 };
 
 /// <summary>
@@ -65,48 +65,48 @@ enum StarMotorResult
 enum StarMotorVariable
 {
     // Status Flag Registers
-    MV_ErrorStatus = 0,
-    MV_ErrorsOccured = 1,
-    MV_SerialErrorsOccured = 2,
-    MV_LimitStatus = 3,
-    MV_ResetFlags = 127,
+    MotorVariable_ErrorStatus = 0,
+    MotorVariable_ErrorsOccured = 1,
+    MotorVariable_SerialErrorsOccured = 2,
+    MotorVariable_LimitStatus = 3,
+    MotorVariable_ResetFlags = 127,
 
     // RC Channel Inputs
-    MV_RC1UnlimitedRawValue = 4,
-    MV_RC1RawValue = 5,
-    MV_RC1ScaledValue = 6,
-    MV_RC2UnlimitedRawValue = 8,
-    MV_RC2RawValue = 9,
-    MV_RC2ScaledValue = 10,
+    MotorVariable_RC1UnlimitedRawValue = 4,
+    MotorVariable_RC1RawValue = 5,
+    MotorVariable_RC1ScaledValue = 6,
+    MotorVariable_RC2UnlimitedRawValue = 8,
+    MotorVariable_RC2RawValue = 9,
+    MotorVariable_RC2ScaledValue = 10,
 
     // Analog Channel Inputs
-    MV_AN1UnlimitedRawValue = 12,
-    MV_AN1RawValue = 13,
-    MV_AN1ScaledValue = 14,
-    MV_AN2UnlimitedRawValue = 16,
-    MV_AN2RawValue = 17,
-    MV_AN2ScaledValue = 18,
+    MotorVariable_AN1UnlimitedRawValue = 12,
+    MotorVariable_AN1RawValue = 13,
+    MotorVariable_AN1ScaledValue = 14,
+    MotorVariable_AN2UnlimitedRawValue = 16,
+    MotorVariable_AN2RawValue = 17,
+    MotorVariable_AN2ScaledValue = 18,
 
     // Diagnostic Variables
-    MV_TargetSpeed = 20,
-    MV_Speed = 21,
-    MV_BrakeAmount = 22,
-    MV_InputVoltage = 23,
-    MV_Temperature = 24,
-    MV_RCPeriod = 26,
-    MV_BaudRateRegister = 27,
-    MV_SystemTimeLow = 28,
-    MV_SystemTimeHigh = 29,
+    MotorVariable_TargetSpeed = 20,
+    MotorVariable_Speed = 21,
+    MotorVariable_BrakeAmount = 22,
+    MotorVariable_InputVoltage = 23,
+    MotorVariable_Temperature = 24,
+    MotorVariable_RCPeriod = 26,
+    MotorVariable_BaudRateRegister = 27,
+    MotorVariable_SystemTimeLow = 28,
+    MotorVariable_SystemTimeHigh = 29,
 
     // Temporary Motor Limits
-    MV_MaxSpeedForward = 30,
-    MV_MaxAccelerationForward = 31,
-    MV_MaxDecelerationForward = 32,
-    MV_BrakeDurationForward = 33,
-    MV_MaxSpeedReverse = 36,
-    MV_MaxAccelerationReverse = 37,
-    MV_MaxDecelerationReverse = 38,
-    MV_BrakeDurationReverse = 39,
+    MotorVariable_MaxSpeedForward = 30,
+    MotorVariable_MaxAccelerationForward = 31,
+    MotorVariable_MaxDecelerationForward = 32,
+    MotorVariable_BrakeDurationForward = 33,
+    MotorVariable_MaxSpeedReverse = 36,
+    MotorVariable_MaxAccelerationReverse = 37,
+    MotorVariable_MaxDecelerationReverse = 38,
+    MotorVariable_BrakeDurationReverse = 39,
 };
 
 class StarMotor

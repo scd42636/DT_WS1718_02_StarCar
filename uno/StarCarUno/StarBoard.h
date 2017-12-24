@@ -11,8 +11,8 @@
 
 enum StarBoardResult
 {
-    BR_Success = 0,
-    BR_Failed = -1,
+    BoardResult_Success = 0,
+    BoardResult_Failed = -1,
 };
 
 class StarBoard

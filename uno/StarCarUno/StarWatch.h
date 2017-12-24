@@ -14,15 +14,15 @@
 
 enum StarWatchState
 {
-    WS_AP_Off = 0,
-    WS_AP_Idle = 1,
-    WS_AP_Listening = 2,
+    WatchState_AccessPoint_Off = 0,
+    WatchState_AccessPoint_Idle = 1,
+    WatchState_AccessPoint_Listening = 2,
 };
 
 enum StarWatchResult
 {
-    WR_Success = 0,
-    WR_Failed = -1,
+    WatchResult_Success = 0,
+    WatchResult_Failed = -1,
 };
 
 class StarWatch

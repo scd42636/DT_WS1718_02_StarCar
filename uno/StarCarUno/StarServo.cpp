@@ -38,7 +38,7 @@ StarServoResult StarServo::Init()
     this->servo.writeMicroseconds(SERVO_CENTER);
     //this->servo.write(SERVO_CENTER);
 
-    return StarServoResult::SR_Success;
+    return StarServoResult::ServoResult_Success;
 }
 
 void StarServo::Task(StarCar* car)
@@ -49,7 +49,7 @@ void StarServo::Task(StarCar* car)
 
     int16_t ms = SERVO_CENTER;
 
-    if (car->getMode() != StarCarMode::CM_None) {
+    if (car->getMode() != StarCarMode::CarMode_None) {
         int8_t dir = car->getDirection();
         float direction = (float)dir / 100;
 

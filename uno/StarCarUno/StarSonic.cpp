@@ -28,7 +28,7 @@ StarSonicLocation StarSonic::getLocation()
 
 StarSonicResult StarSonic::Init()
 {
-    return StarSonicResult::SCR_Success;
+    return StarSonicResult::SonicResult_Success;
 }
 
 void StarSonic::Task(StarCar* car)
@@ -38,7 +38,7 @@ void StarSonic::Task(StarCar* car)
     #endif
 
     if (this->signalPin != PIN_DISCONNECTED
-        && car->IsRequested(StarCarSensorRequest::CSR_Sonic)) {
+        && car->IsRequested(StarCarSensorRequest::CarSensorRequest_Sonic)) {
         //Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
         pinMode(this->signalPin, OUTPUT);
 
@@ -56,9 +56,9 @@ void StarSonic::Task(StarCar* car)
         long duration = pulseIn(this->signalPin, HIGH);
         long distance = duration / 29 / 2; // seconds to cm's
 
-        if (this->location == StarSonicLocation::SCL_Back)
+        if (this->location == StarSonicLocation::SonicLocation_Back)
             car->setDistanceBack(distance);
-        else if (this->location == StarSonicLocation::SCL_Front)
+        else if (this->location == StarSonicLocation::SonicLocation_Front)
             car->setDistanceFront(distance);
 
         #if !TEST

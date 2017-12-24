@@ -28,7 +28,7 @@ StarBoard::StarBoard(
     this->rightLedPin = rightLedPin;
     this->rightLedOn = false;
 
-    this->previousEngineMode = StarCarEngineMode::CEM_Off;
+    this->previousEngineMode = StarCarEngineMode::CarEngineMode_Off;
 }
 
 // ---------- Public methods ----------
@@ -58,7 +58,7 @@ StarBoardResult StarBoard::Init()
         digitalWrite(this->rightLedPin, LOW);
     }
 
-    return StarBoardResult::BR_Success;
+    return StarBoardResult::BoardResult_Success;
 }
 
 void StarBoard::Task(StarCar* car)
@@ -79,7 +79,7 @@ void StarBoard::Task(StarCar* car)
     StarCarEngineMode currentEngineMode = car->getEngineMode();
 
     if (this->previousEngineMode != currentEngineMode
-        && currentEngineMode == StarCarEngineMode::CEM_On) {
+        && currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
 
         for (int index = 0; index < 5; index++) {
             this->SwitchLed(&this->frontLedIsOn, true, this->frontLedPin);
@@ -96,7 +96,7 @@ void StarBoard::Task(StarCar* car)
         }
     }
 
-    if (currentEngineMode == StarCarEngineMode::CEM_On) {
+    if (currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
         int8_t acceleration = car->getAcceleration();
 
         this->SwitchLed(&this->frontLedIsOn, acceleration > 10, this->frontLedPin);

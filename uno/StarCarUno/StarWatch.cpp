@@ -90,7 +90,7 @@ StarWatch::StarWatch(UsbController* controller)
 {
     this->controller = controller;
 
-    this->state = StarWatchState::WS_AP_Off;
+    this->state = StarWatchState::WatchState_AccessPoint_Off;
     this->isFirstRun = true;
 }
 
@@ -105,7 +105,7 @@ StarWatchState StarWatch::getState()
 
 StarWatchResult StarWatch::Init()
 {
-    return StarWatchResult::WR_Success;
+    return StarWatchResult::WatchResult_Success;
 }
 
 void StarWatch::Task(StarCar* car)
@@ -117,25 +117,25 @@ void StarWatch::Task(StarCar* car)
     if (!this->controller->isReady())
         return;
 
-    if (car->getMode() == StarCarMode::CM_Watch) {
+    if (car->getMode() == StarCarMode::CarMode_Watch) {
         if (this->isFirstRun) {
             if (this->TransmitFrame(AP_OFF_COMMAND, sizeof(AP_OFF_COMMAND))) {
                 Serial.println("AP: Deactivated");
-                this->state = StarWatchState::WS_AP_Off;
+                this->state = StarWatchState::WatchState_AccessPoint_Off;
             }
         }
-        else if (this->state == StarWatchState::WS_AP_Off) {
+        else if (this->state == StarWatchState::WatchState_AccessPoint_Off) {
             if (this->TransmitFrame(AP_ON_COMMAND, sizeof(AP_ON_COMMAND))) {
                 Serial.println("AP: Activated");
-                this->state = StarWatchState::WS_AP_Idle;
+                this->state = StarWatchState::WatchState_AccessPoint_Idle;
             }
         }
-        else if (this->state == StarWatchState::WS_AP_Idle) {
+        else if (this->state == StarWatchState::WatchState_AccessPoint_Idle) {
             if (this->TransmitFrame(AP_ACC_DATA_REQUEST, sizeof(AP_ACC_DATA_REQUEST))) {
-                this->state = StarWatchState::WS_AP_Listening;
+                this->state = StarWatchState::WatchState_AccessPoint_Listening;
             }
         }
-        else if (this->state == StarWatchState::WS_AP_Listening) {
+        else if (this->state == StarWatchState::WatchState_AccessPoint_Listening) {
             uint8_t frame[64];
             uint16_t length = 64;
 

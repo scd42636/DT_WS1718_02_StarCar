@@ -12,14 +12,14 @@
 
 enum StarSonicResult
 {
-    SCR_Success = 0,
-    SCR_Failed = -1,
+    SonicResult_Success = 0,
+    SonicResult_Failed = -1,
 };
 
 enum StarSonicLocation
 {
-    SCL_Front = 0,
-    SCL_Back = 1
+    SonicLocation_Front = 0,
+    SonicLocation_Back = 1
 };
 
 class StarSonic

@@ -49,10 +49,10 @@ StarMotor motor(Motor_RxPin, Motor_TxPin, Motor_ResetPin);
 StarServo servo(Servo_StepPin);
 
 #define SonicFront_Pin              12
-StarSonic sonicFront(SonicFront_Pin, StarSonicLocation::SCL_Front);
+StarSonic sonicFront(SonicFront_Pin, StarSonicLocation::SonicLocation_Front);
 
 #define SonicBack_Pin               13
-StarSonic sonicBack(SonicBack_Pin, StarSonicLocation::SCL_Back);
+StarSonic sonicBack(SonicBack_Pin, StarSonicLocation::SonicLocation_Back);
 
 
 void setup()
@@ -77,7 +77,7 @@ void setup()
     Serial.print("--> Initializing Board...\t\t");
     #endif
 
-    if (board.Init() == StarBoardResult::BR_Success) {
+    if (board.Init() == StarBoardResult::BoardResult_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -93,7 +93,7 @@ void setup()
     Serial.print("--> Initializing Sonic (back)...\t\t");
     #endif
 
-    if (sonicBack.Init() == StarSonicResult::SCR_Success) {
+    if (sonicBack.Init() == StarSonicResult::SonicResult_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -109,7 +109,7 @@ void setup()
     Serial.print("--> Initializing Sonic (front)...\t\t");
     #endif
 
-    if (sonicFront.Init() == StarSonicResult::SCR_Success) {
+    if (sonicFront.Init() == StarSonicResult::SonicResult_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -125,7 +125,7 @@ void setup()
     Serial.print("--> Initializing Controller...\t\t");
     #endif
 
-    if (controller.Init() == StarControllerResult::CR_Success) {
+    if (controller.Init() == StarControllerResult::ControllerResult_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -141,7 +141,7 @@ void setup()
     Serial.print("--> Initializing Watch...\t\t");
     #endif
 
-    if (watch.Init() == StarWatchResult::WR_Success) {
+    if (watch.Init() == StarWatchResult::WatchResult_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -157,7 +157,7 @@ void setup()
     Serial.print("--> Initializing Servo...\t\t");
     #endif
 
-    if (servo.Init() == StarServoResult::SR_Success) {
+    if (servo.Init() == StarServoResult::ServoResult_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -173,7 +173,7 @@ void setup()
     Serial.print("--> Initializing Motor...\t\t");
     #endif
 
-    if (motor.Init() == StarMotorResult::MR_Success) {
+    if (motor.Init() == StarMotorResult::MotorResult_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -188,7 +188,7 @@ void setup()
     Serial.println("----------");
     #endif
 
-    car.setMode(StarCarMode::CM_Controller);
+    car.setMode(StarCarMode::CarMode_Controller);
     //car.setRequest(StarCarSensorRequest::CSR_Sonic);
 }
 

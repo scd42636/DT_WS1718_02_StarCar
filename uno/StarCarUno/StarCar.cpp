@@ -16,9 +16,9 @@ StarCar::StarCar()
     this->direction = 0;
     this->distanceBack = 0;
     this->distanceFront = 0;
-    this->mode = StarCarMode::CM_None;
-    this->engineMode = StarCarEngineMode::CEM_Off;
-    this->request = StarCarSensorRequest::CSR_None;
+    this->mode = StarCarMode::CarMode_None;
+    this->engineMode = StarCarEngineMode::CarEngineMode_Off;
+    this->request = StarCarSensorRequest::CarSensorRequest_None;
 }
 
 // ---------- Public properties ----------

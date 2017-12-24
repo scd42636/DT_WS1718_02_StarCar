@@ -32,25 +32,25 @@ StarMotor::StarMotor(
 StarMotorResult StarMotor::ChangeSpeed(int speed)
 {
     if (speed < 0)
-        return this->ChangeSpeed(-speed, StarMotorDirection::MD_Backward);
+        return this->ChangeSpeed(-speed, StarMotorDirection::MotorDirection_Backward);
 
-    return this->ChangeSpeed(speed, StarMotorDirection::MD_Forward);
+    return this->ChangeSpeed(speed, StarMotorDirection::MotorDirection_Forward);
 }
 
 StarMotorResult StarMotor::ChangeSpeed(int speed, StarMotorDirection direction)
 {
-    if (direction != StarMotorDirection::MD_Forward && direction != StarMotorDirection::MD_Backward)
-        return StarMotorResult::MR_DirectionIsOutOfRange;
+    if (direction != StarMotorDirection::MotorDirection_Forward && direction != StarMotorDirection::MotorDirection_Backward)
+        return StarMotorResult::MotorResult_DirectionIsOutOfRange;
 
     if (speed < MinSpeed || speed > MaxSpeed)
-        return StarMotorResult::MR_SpeedIsOutOfRange;
+        return StarMotorResult::MotorResult_SpeedIsOutOfRange;
 
     this->serial.write(direction);
 
     this->serial.write(speed & 0x1F);   // low five bits
     this->serial.write(speed >> 5);     // high seven bits
 
-    return StarMotorResult::MR_Success;
+    return StarMotorResult::MotorResult_Success;
 }
 
 StarMotorResult StarMotor::ChangeLimit(StarMotorLimit limit, unsigned int value)
@@ -63,23 +63,23 @@ StarMotorResult StarMotor::ChangeLimit(StarMotorLimit limit, unsigned int value)
     char result = 0;
 
     if (this->serial.readBytes(&result, 1) == 0)
-        return StarMotorResult::MR_TimeoutExpired;
+        return StarMotorResult::MotorResult_TimeoutExpired;
 
-    if (result == StarMotorLimitResult::MLR_UnableToSetLimit)
-        return StarMotorResult::MR_UnableToSetLimit;
+    if (result == StarMotorLimitResult::MotorLimitResult_UnableToSetLimit)
+        return StarMotorResult::MotorResult_UnableToSetLimit;
 
-    if (result == StarMotorLimitResult::MLR_UnableToSetForwardLimit)
-        return StarMotorResult::MR_UnableToSetForwardLimit;
+    if (result == StarMotorLimitResult::MotorLimitResult_UnableToSetForwardLimit)
+        return StarMotorResult::MotorResult_UnableToSetForwardLimit;
 
-    if (result == StarMotorLimitResult::MLR_UnableToSetBackwardLimit)
-        return StarMotorResult::MR_UnableToSetBackwardLimit;
+    if (result == StarMotorLimitResult::MotorLimitResult_UnableToSetBackwardLimit)
+        return StarMotorResult::MotorResult_UnableToSetBackwardLimit;
 
-    if (result == StarMotorLimitResult::MLR_Success) {
+    if (result == StarMotorLimitResult::MotorLimitResult_Success) {
         this->ExitSafeStart();
-        return StarMotorResult::MR_Success;
+        return StarMotorResult::MotorResult_Success;
     }
 
-    return StarMotorResult::MR_Failed;
+    return StarMotorResult::MotorResult_Failed;
 }
 
 StarMotorResult StarMotor::Init()
@@ -105,19 +105,19 @@ StarMotorResult StarMotor::Init()
     // Send baud-indicator byte.
     this->serial.write(0xAA);
 
-    this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationForward, 1);
-    this->ChangeLimit(StarMotorLimit::ML_MaxAccelerationBackward, 1);
-    this->ChangeLimit(StarMotorLimit::ML_MaxDeceleration, 10);
+    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxAccelerationForward, 1);
+    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxAccelerationBackward, 1);
+    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxDeceleration, 10);
 
     this->ExitSafeStart();
-    return StarMotorResult::MR_Success;
+    return StarMotorResult::MotorResult_Success;
 }
 
 int StarMotor::ReadCurrentSpeed()
 {
     unsigned int value = 0;
 
-    if (this->ReadVariable(StarMotorVariable::MV_Speed, &value) == StarMotorResult::MR_Success)
+    if (this->ReadVariable(StarMotorVariable::MotorVariable_Speed, &value) == StarMotorResult::MotorResult_Success)
         return value;
 
     return -1;
@@ -127,7 +127,7 @@ int StarMotor::ReadTargetSpeed()
 {
     unsigned int value = 0;
 
-    if (this->ReadVariable(StarMotorVariable::MV_TargetSpeed, &value) == StarMotorResult::MR_Success)
+    if (this->ReadVariable(StarMotorVariable::MotorVariable_TargetSpeed, &value) == StarMotorResult::MotorResult_Success)
         return value;
 
     return -1;
@@ -143,12 +143,12 @@ StarMotorResult StarMotor::ReadVariable(StarMotorVariable variable, unsigned int
     char lowByte = 0;
 
     if (this->serial.readBytes(&lowByte, 1) == 0)
-        return StarMotorResult::MR_TimeoutExpired;
+        return StarMotorResult::MotorResult_TimeoutExpired;
 
     char highByte = 0;
 
     if (this->serial.readBytes(&highByte, 1) == 0)
-        return StarMotorResult::MR_TimeoutExpired;
+        return StarMotorResult::MotorResult_TimeoutExpired;
 
     *value = lowByte + 256 * highByte;
 
@@ -158,16 +158,16 @@ StarMotorResult StarMotor::ReadVariable(StarMotorVariable variable, unsigned int
     // supported by the language you are using, you can cast the result to a signed 16-bit
     // data type.
     if (*value > 32767
-        && variable == StarMotorVariable::MV_RC1ScaledValue
-        || variable == StarMotorVariable::MV_RC2ScaledValue
-        || variable == StarMotorVariable::MV_AN1ScaledValue
-        || variable == StarMotorVariable::MV_AN2ScaledValue
-        || variable == StarMotorVariable::MV_TargetSpeed
-        || variable == StarMotorVariable::MV_Speed) {
+        && variable == StarMotorVariable::MotorVariable_RC1ScaledValue
+        || variable == StarMotorVariable::MotorVariable_RC2ScaledValue
+        || variable == StarMotorVariable::MotorVariable_AN1ScaledValue
+        || variable == StarMotorVariable::MotorVariable_AN2ScaledValue
+        || variable == StarMotorVariable::MotorVariable_TargetSpeed
+        || variable == StarMotorVariable::MotorVariable_Speed) {
         *value -= 65536;
     }
 
-    return StarMotorResult::MR_Success;
+    return StarMotorResult::MotorResult_Success;
 }
 
 void StarMotor::Stop()
@@ -181,7 +181,7 @@ void StarMotor::Task(StarCar* car)
     Serial.println("--> StarMotor::Task()");
     #endif
 
-    if (car->getEngineMode() == StarCarEngineMode::CEM_On) {
+    if (car->getEngineMode() == StarCarEngineMode::CarEngineMode_On) {
         int8_t acceleration = car->getAcceleration();
         int16_t speed = (-1) * ((float)1000 * ((float)acceleration / 100));
 
@@ -199,7 +199,7 @@ void StarMotor::Task(StarCar* car)
             this->currentSpeed = speed;
         }
     }
-    else if (car->getEngineMode() == StarCarEngineMode::CEM_Off) {
+    else if (car->getEngineMode() == StarCarEngineMode::CarEngineMode_Off) {
         this->Stop();
         this->currentSpeed = 0;
     }

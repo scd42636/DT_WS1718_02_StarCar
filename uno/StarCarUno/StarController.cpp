@@ -19,7 +19,7 @@ StarController::StarController(XBoxController* xboxController)
 
 StarControllerResult StarController::Init()
 {
-    return StarControllerResult::CR_Success;
+    return StarControllerResult::ControllerResult_Success;
 }
 
 void StarController::Task(StarCar* car)
@@ -29,7 +29,7 @@ void StarController::Task(StarCar* car)
     #endif
 
     if (this->xboxController->Xbox360Connected) {
-        if (car->getMode() == StarCarMode::CM_Controller) {
+        if (car->getMode() == StarCarMode::CarMode_Controller) {
             this->xboxController->setLedMode(ALTERNATING);
 
             int16_t leftX = this->xboxController->getAnalogHat(LeftHatX);
@@ -48,24 +48,24 @@ void StarController::Task(StarCar* car)
                 Serial.println("X");
                 StarCarEngineMode engineMode = car->getEngineMode();
 
-                if (engineMode == StarCarEngineMode::CEM_Off) {
+                if (engineMode == StarCarEngineMode::CarEngineMode_Off) {
                     this->xboxController->setRumbleOn(100, 100);
                     delay(1000);
                     this->xboxController->setRumbleOn(0, 0);
 
-                    car->setEngineMode(StarCarEngineMode::CEM_On);
+                    car->setEngineMode(StarCarEngineMode::CarEngineMode_On);
                 }
                 else {
                     this->xboxController->setRumbleOn(50, 50);
                     delay(500);
                     this->xboxController->setRumbleOn(0, 0);
 
-                    car->setEngineMode(StarCarEngineMode::CEM_Off);
+                    car->setEngineMode(StarCarEngineMode::CarEngineMode_Off);
                 }
             }
 
             if (this->xboxController->getButtonClick(B)) {
-                car->setEngineMode(StarCarEngineMode::CEM_Off);
+                car->setEngineMode(StarCarEngineMode::CarEngineMode_Off);
                 Serial.println("B");
             }
         }
