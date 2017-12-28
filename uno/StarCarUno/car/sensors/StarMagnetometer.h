@@ -1,40 +1,40 @@
 //--------------------------------------------------------------------------------------------------
-// <copyright file="StarServo.h" company="OTH Regensburg">
+// <copyright file="StarMagnetometer.h" company="OTH Regensburg">
 //     This file is protected by Team 02 StarCar Copyright (c) 2017.
 // </copyright>
+// <author>Annkathrin Bauer</author>
 // <author>Dominik Scharnagl</author>
 //--------------------------------------------------------------------------------------------------
 
 #pragma once
-#include "StarCar.h"
-#include <Servo.h>
+#include "../StarCar.h"
 
 
-enum StarServoResult
+enum StarMagnetometerResult
 {
-    ServoResult_Success = 0,
-    ServoResult_Failed = -1,
+    MagnetometerResult_Success = 0,
+    MagnetometerResult_Failed = -1,
+    MagnetometerResult_NotConnected = -2
 };
 
-class StarServo
+class StarMagnetometer
 {
     // ---------- Private fields ----------
 private:
-    int16_t currentMicroseconds;
-    Pin stepPin;
-    Servo servo;
-    int testStepIndex;
+    bool isConnected;
+    ulong_t lastRequestTime;
+    float_t scaling;
 
     // ---------- Public constructors ----------
 public:
-    StarServo(Pin stepPin);
+    StarMagnetometer();
 
     // ---------- Public methods ----------
 public:
-    StarServoResult Init();
+    StarMagnetometerResult Init();
     void Task(StarCar* car);
 
-    void Test01();
-    void Test02();
-    void Test03();
+    // ---------- Private methods ----------
+private:
+    void Write(int_t address, int_t data);
 };

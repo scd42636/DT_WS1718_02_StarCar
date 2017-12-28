@@ -9,7 +9,7 @@
 // - http://www.instructables.com/id/Control-an-Arduino-With-a-Wristwatch-TI-eZ430-Chr/
 
 #pragma once
-#include "StarCar.h"
+#include "../StarCar.h"
 
 
 enum StarWatchState
@@ -48,6 +48,6 @@ public:
 
     // ---------- Private methods ----------
 private:
-    bool ReceiveFrame(uint8_t* frame, uint16_t* length);
-    bool TransmitFrame(uint8_t* frame, uint16_t length);
+    bool ReceiveFrame(byte_t* frame, ushort_t* length);
+    bool TransmitFrame(byte_t* frame, ushort_t length);
 };

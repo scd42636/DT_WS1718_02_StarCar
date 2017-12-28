@@ -19,7 +19,7 @@
 
 // ---------- Public constructors ----------
 
-StarServo::StarServo(Pin stepPin)
+StarServo::StarServo(pin_t stepPin)
 {
     this->stepPin = stepPin;
     this->currentMicroseconds = SERVO_CENTER;
@@ -47,11 +47,11 @@ void StarServo::Task(StarCar* car)
     Serial.println("--> StarServo::Task()");
     #endif
 
-    int16_t ms = SERVO_CENTER;
+    short_t ms = SERVO_CENTER;
 
     if (car->getMode() != StarCarMode::CarMode_None) {
         int8_t dir = car->getDirection();
-        float direction = (float)dir / 100;
+        float_t direction = (float_t)dir / 100;
 
         //if (direction < 0)
         //    ms = direction * 90;
@@ -60,13 +60,13 @@ void StarServo::Task(StarCar* car)
 
         if (direction < 0) {
             // Results into values between 1100 and 1365 (inclusive).
-            ms = SERVO_CENTER - (float)(SERVO_CENTER - SERVO_LEFT) * ((-1) * direction);
+            ms = SERVO_CENTER - (float_t)(SERVO_CENTER - SERVO_LEFT) * ((-1) * direction);
 
             //if (ms > SERVO_CENTER_MS - 20)
             //    ms = SERVO_CENTER_MS;
         }
         else {
-            ms = SERVO_CENTER + (float)(SERVO_RIGHT - SERVO_CENTER) * direction;
+            ms = SERVO_CENTER + (float_t)(SERVO_RIGHT - SERVO_CENTER) * direction;
 
             //if (ms < SERVO_CENTER_MS + 20)
             //    ms = SERVO_CENTER_MS;
@@ -92,7 +92,7 @@ void StarServo::Task(StarCar* car)
 
 void StarServo::Test01()
 {
-    int pos = 0;
+    int_t pos = 0;
 
     for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees in steps of 1 degree
         this->servo.write(pos);              // tell servo to go to position in variable 'pos'
@@ -111,9 +111,9 @@ void StarServo::Test02()
     // ms = 1400 --> Mitte
     // ms = 1600 --> ganz rechts
 
-    int ms = 1100;
+    int_t ms = 1100;
 
-    for (int index = 0; index < 60; index++) {
+    for (int_t index = 0; index < 60; index++) {
         ms += 10;
 
         Serial.print("ms = ");
@@ -123,7 +123,7 @@ void StarServo::Test02()
         delay(50);
     }
 
-    for (int index = 0; index < 60; index++) {
+    for (int_t index = 0; index < 60; index++) {
         ms -= 10;
 
         Serial.print("ms = ");
@@ -139,7 +139,7 @@ void StarServo::Test03()
     if (this->testStepIndex > 60)
         this->testStepIndex = 0;
 
-    int ms = 1100 + (this->testStepIndex++) * 10;
+    int_t ms = 1100 + (this->testStepIndex++) * 10;
 
     Serial.print("ms = ");
     Serial.println(ms);

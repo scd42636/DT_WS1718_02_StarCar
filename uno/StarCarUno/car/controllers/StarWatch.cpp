@@ -136,17 +136,17 @@ void StarWatch::Task(StarCar* car)
             }
         }
         else if (this->state == StarWatchState::WatchState_AccessPoint_Listening) {
-            uint8_t frame[64];
-            uint16_t length = 64;
+            byte_t frame[64];
+            ushort_t length = 64;
 
             if (this->ReceiveFrame(frame, &length)) {
                 if (length == 7) {
-                    byte type = (byte)frame[3];
+                    byte_t type = (byte_t)frame[3];
 
                     if (type == 0x01) {
-                        int x = (int8_t)frame[4];
-                        int y = (int8_t)frame[5];
-                        int z = (int8_t)frame[6];
+                        int x = (byte_t)frame[4];
+                        int y = (byte_t)frame[5];
+                        int z = (byte_t)frame[6];
 
                         Serial.print("X = ");
                         Serial.print(x);
@@ -169,9 +169,9 @@ void StarWatch::Task(StarCar* car)
 
 // ---------- Private methods ----------
 
-bool StarWatch::ReceiveFrame(uint8_t* frame, uint16_t* length)
+bool StarWatch::ReceiveFrame(byte_t* frame, ushort_t* length)
 {
-    uint8_t rcode = this->controller->RcvData(length, frame);
+    byte_t rcode = this->controller->RcvData(length, frame);
 
     if (rcode && rcode != hrNAK)
         return false;
@@ -179,9 +179,9 @@ bool StarWatch::ReceiveFrame(uint8_t* frame, uint16_t* length)
     return true;
 }
 
-bool StarWatch::TransmitFrame(uint8_t* frame, uint16_t length)
+bool StarWatch::TransmitFrame(byte_t* frame, ushort_t length)
 {
-    uint8_t rcode = this->controller->SndData(length, frame);
+    byte_t rcode = this->controller->SndData(length, frame);
 
     if (rcode)
         return false;

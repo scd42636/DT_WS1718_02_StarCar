@@ -12,7 +12,17 @@
 
 StarController::StarController(XBoxController* xboxController)
 {
+    this->mode = StarControllerMode::Hat;
+    this->modeIsActive = false;
+
     this->xboxController = xboxController;
+}
+
+// ---------- Public properties ----------
+
+StarControllerMode StarController::getMode()
+{
+    return this->mode;
 }
 
 // ---------- Public methods ----------
@@ -30,21 +40,40 @@ void StarController::Task(StarCar* car)
 
     if (this->xboxController->Xbox360Connected) {
         if (car->getMode() == StarCarMode::CarMode_Controller) {
-            this->xboxController->setLedMode(ALTERNATING);
+            if (this->xboxController->getButtonClick(ButtonEnum::XBOX)) {
+                if (this->mode == StarControllerMode::Hat)
+                    this->mode = StarControllerMode::Button;
+                else
+                    this->mode = StarControllerMode::Hat;
 
-            int16_t leftX = this->xboxController->getAnalogHat(LeftHatX);
-            car->setDirection(((float)leftX / 32768) * 100);
+                this->xboxController->setLedOff();
+                this->modeIsActive = false;
+            }
 
-            //Serial.print("Controller: Direction = ");
-            //Serial.println((float)leftX / 32768);
+            if (!this->modeIsActive) {
+                if (this->mode == StarControllerMode::Hat)
+                    this->xboxController->setLedOn(LEDEnum::LED1);
+                else
+                    this->xboxController->setLedOn(LEDEnum::LED2);
 
-            int16_t rightY = this->xboxController->getAnalogHat(RightHatY);
-            car->setAcceleration(((float)rightY / 32768) * 100);
+                this->modeIsActive = true;
+            }
 
-            //Serial.print("Controller: Acceleration = ");
-            //Serial.println((float)rightY / 32768);
+            short_t leftX = this->xboxController->getAnalogHat(AnalogHatEnum::LeftHatX);
+            car->setDirection(((float_t)leftX / 32768) * 100);
 
-            if (this->xboxController->getButtonClick(X)) {
+            if (this->mode == StarControllerMode::Hat) {
+                short_t rightY = this->xboxController->getAnalogHat(AnalogHatEnum::RightHatY);
+                car->setSpeed(((float_t)rightY / 32768) * 100);
+            }
+            else {
+                short_t rightY = this->xboxController->getButtonPress(ButtonEnum::R2);
+                rightY -= this->xboxController->getButtonPress(ButtonEnum::L2);
+
+                car->setSpeed(((float_t)rightY / 255) * 100);
+            }
+
+            if (this->xboxController->getButtonClick(ButtonEnum::X)) {
                 Serial.println("X");
                 StarCarEngineMode engineMode = car->getEngineMode();
 
@@ -64,7 +93,7 @@ void StarController::Task(StarCar* car)
                 }
             }
 
-            if (this->xboxController->getButtonClick(B)) {
+            if (this->xboxController->getButtonClick(ButtonEnum::B)) {
                 car->setEngineMode(StarCarEngineMode::CarEngineMode_Off);
                 Serial.println("B");
             }

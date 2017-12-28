@@ -6,7 +6,7 @@
 //--------------------------------------------------------------------------------------------------
 
 #pragma once
-#include "StarCar.h"
+#include "../StarCar.h"
 
 
 enum StarBoardResult
@@ -20,26 +20,26 @@ class StarBoard
     // ---------- Private fields ----------
 public:
     bool backLedIsOn;
-    Pin backLedPin;
+    pin_t backLedPin;
 
     bool frontLedIsOn;
-    Pin frontLedPin;
+    pin_t frontLedPin;
 
     bool leftLedOn;
-    Pin leftLedPin;
+    pin_t leftLedPin;
 
     bool rightLedOn;
-    Pin rightLedPin;
+    pin_t rightLedPin;
 
     StarCarEngineMode previousEngineMode;
 
     // ---------- Public constructors ----------
 public:
     StarBoard(
-        Pin forwardLedPin = PIN_DISCONNECTED,
-        Pin backwardLedPin = PIN_DISCONNECTED,
-        Pin leftFlashLedPin = PIN_DISCONNECTED,
-        Pin rightFlashLedPin = PIN_DISCONNECTED);
+        pin_t forwardLedPin = PIN_DISCONNECTED,
+        pin_t backwardLedPin = PIN_DISCONNECTED,
+        pin_t leftFlashLedPin = PIN_DISCONNECTED,
+        pin_t rightFlashLedPin = PIN_DISCONNECTED);
 
     // ---------- Public methods ----------
 public:
@@ -48,5 +48,5 @@ public:
 
     // ---------- Private methods ----------
 private:
-    void SwitchLed(bool* current, bool target, short pin);
+    void SwitchLed(bool* current, bool target, pin_t pin);
 };

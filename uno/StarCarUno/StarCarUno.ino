@@ -6,13 +6,18 @@
 // <author>Mehmet Billor</author>
 //--------------------------------------------------------------------------------------------------
 
-#include "StarCar.h"
-#include "StarBoard.h"
-#include "StarController.h"
-#include "StarMotor.h"
-#include "StarServo.h"
-#include "StarSonic.h"
-#include "StarWatch.h"
+#include "./car/StarCar.h"
+#include "./car/board/StarBoard.h"
+
+#include "./car/actuators/StarMotor.h"
+#include "./car/actuators/StarServo.h"
+
+#include "./car/sensors/StarAccelerometer.h"
+#include "./car/sensors/StarMagnetometer.h"
+#include "./car/sensors/StarSonic.h"
+
+#include "./car/controllers/StarController.h"
+#include "./car/controllers/StarWatch.h"
 
 // REASONs WHY THE FIRMWARE COULD STOP WORKING:
 // - Arduino classes initializes using new. Do not create heap variables of them.
@@ -48,6 +53,9 @@ StarMotor motor(Motor_RxPin, Motor_TxPin, Motor_ResetPin);
 #define Servo_StepPin               5
 StarServo servo(Servo_StepPin);
 
+StarAccelerometer accelerometer;
+StarMagnetometer magnetometer;
+
 #define SonicFront_Pin              12
 StarSonic sonicFront(SonicFront_Pin, StarSonicLocation::SonicLocation_Front);
 
@@ -78,6 +86,38 @@ void setup()
     #endif
 
     if (board.Init() == StarBoardResult::BoardResult_Success) {
+        #if _DEBUG
+        Serial.println("success!");
+        #endif
+    }
+    else {
+        #if _DEBUG
+        Serial.println("FAILED!");
+        #endif
+    }
+
+    #if _DEBUG
+    delay(100);
+    Serial.print("--> Initializing Accelerator...\t\t");
+    #endif
+
+    if (accelerometer.Init() == StarAccelerometerResult::AccelerometerResult_Success) {
+        #if _DEBUG
+        Serial.println("success!");
+        #endif
+    }
+    else {
+        #if _DEBUG
+        Serial.println("FAILED!");
+        #endif
+    }
+
+    #if _DEBUG
+    delay(100);
+    Serial.print("--> Initializing Magnet...\t\t");
+    #endif
+
+    if (magnetometer.Init() == StarMagnetometerResult::MagnetometerResult_Success) {
         #if _DEBUG
         Serial.println("success!");
         #endif
@@ -201,6 +241,8 @@ void loop()
 
     usb.Task();
     board.Task(&car);
+
+    //magnetometer.Task(&car);
 
     //sonicFront.Task(&car);
     //sonicBack.Task(&car);

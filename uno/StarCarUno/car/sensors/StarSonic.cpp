@@ -11,7 +11,7 @@
 
 // ---------- Public constructors ----------
 
-StarSonic::StarSonic(Pin signalPin, StarSonicLocation location)
+StarSonic::StarSonic(pin_t signalPin, StarSonicLocation location)
 {
     this->signalPin = signalPin;
     this->location = location;
@@ -53,8 +53,8 @@ void StarSonic::Task(StarCar* car)
         //Same pin is ued to read and receive
         pinMode(this->signalPin, INPUT);
 
-        long duration = pulseIn(this->signalPin, HIGH);
-        long distance = duration / 29 / 2; // seconds to cm's
+        long_t duration = pulseIn(this->signalPin, HIGH);
+        long_t distance = duration / 29 / 2; // seconds to cm's
 
         if (this->location == StarSonicLocation::SonicLocation_Back)
             car->setDistanceBack(distance);
@@ -63,7 +63,7 @@ void StarSonic::Task(StarCar* car)
 
         #if !TEST
         Serial.print("Sonic: Distance = ");
-        Serial.println(distance);
+        Serial.println((long)distance);
         #endif
     }
 }

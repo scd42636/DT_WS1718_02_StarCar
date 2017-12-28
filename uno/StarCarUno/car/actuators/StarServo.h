@@ -1,35 +1,40 @@
 //--------------------------------------------------------------------------------------------------
-// <copyright file="StarController.h" company="OTH Regensburg">
+// <copyright file="StarServo.h" company="OTH Regensburg">
 //     This file is protected by Team 02 StarCar Copyright (c) 2017.
 // </copyright>
 // <author>Dominik Scharnagl</author>
 //--------------------------------------------------------------------------------------------------
 
-// Implemented using the protocol documented on:
-// - https://github.com/felis/USB_Host_Shield_2.0/tree/master/examples/Xbox/XBOXUSB/
-
 #pragma once
-#include "StarCar.h"
+#include "../StarCar.h"
+#include <Servo.h>
 
 
-enum StarControllerResult
+enum StarServoResult
 {
-    ControllerResult_Success = 0,
-    ControllerResult_Failed = -1,
+    ServoResult_Success = 0,
+    ServoResult_Failed = -1,
 };
 
-class StarController
+class StarServo
 {
     // ---------- Private fields ----------
 private:
-    XBoxController* xboxController;
+    short_t currentMicroseconds;
+    pin_t stepPin;
+    Servo servo;
+    byte_t testStepIndex;
 
     // ---------- Public constructors ----------
 public:
-    StarController(XBoxController* xboxController);
+    StarServo(pin_t stepPin);
 
     // ---------- Public methods ----------
 public:
-    StarControllerResult Init();
+    StarServoResult Init();
     void Task(StarCar* car);
+
+    void Test01();
+    void Test02();
+    void Test03();
 };

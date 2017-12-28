@@ -12,52 +12,65 @@
 
 StarCar::StarCar()
 {
-    this->acceleration = 0;
+    this->accelerationX = 0;
+    this->accelerationY = 0;
     this->direction = 0;
     this->distanceBack = 0;
     this->distanceFront = 0;
-    this->mode = StarCarMode::CarMode_None;
     this->engineMode = StarCarEngineMode::CarEngineMode_Off;
+    this->mode = StarCarMode::CarMode_None;
+    this->orientation = 0;
     this->request = StarCarSensorRequest::CarSensorRequest_None;
+    this->speed = 0;
 }
 
 // ---------- Public properties ----------
 
-int8_t StarCar::getAcceleration()
+int_t StarCar::getAccelerationX()
 {
-    return this->acceleration;
+    return this->accelerationX;
 }
-StarCar* StarCar::setAcceleration(int8_t value)
+StarCar* StarCar::setAccelerationX(int_t value)
 {
-    this->acceleration = value;
+    this->accelerationX = value;
     return this;
 }
 
-int8_t StarCar::getDirection()
+int_t StarCar::getAccelerationY()
+{
+    return this->accelerationY;
+}
+StarCar* StarCar::setAccelerationY(int_t value)
+{
+    this->accelerationY = value;
+    return this;
+}
+
+sbyte_t StarCar::getDirection()
 {
     return this->direction;
 }
-StarCar* StarCar::setDirection(int8_t value)
+StarCar* StarCar::setDirection(sbyte_t value)
 {
     this->direction = value;
     return this;
 }
 
-int8_t StarCar::getDistanceBack()
+short_t StarCar::getDistanceBack()
 {
     return this->distanceBack;
 }
-StarCar* StarCar::setDistanceBack(int8_t value)
+StarCar* StarCar::setDistanceBack(short_t value)
 {
     this->distanceBack = value;
     return this;
 }
 
-int8_t StarCar::getDistanceFront()
+short_t StarCar::getDistanceFront()
 {
     return this->distanceFront;
 }
-StarCar* StarCar::setDistanceFront(int8_t value)
+StarCar* StarCar::setDistanceFront(short_t value)
 {
     this->distanceFront = value;
     return this;
@@ -87,6 +100,16 @@ StarCar* StarCar::setEngineMode(StarCarEngineMode value)
     return this;
 }
 
+short_t StarCar::getOrientation()
+{
+    return this->orientation;
+}
+StarCar* StarCar::setOrientation(short_t value)
+{
+    this->orientation = value;
+    return this;
+}
+
 StarCarSensorRequest StarCar::getRequest()
 {
     return this->request;
@@ -94,6 +117,16 @@ StarCarSensorRequest StarCar::getRequest()
 StarCar* StarCar::setRequest(StarCarSensorRequest value)
 {
     this->request = value;
+    return this;
+}
+
+sbyte_t StarCar::getSpeed()
+{
+    return this->speed;
+}
+StarCar* StarCar::setSpeed(sbyte_t value)
+{
+    this->speed = value;
     return this;
 }
 

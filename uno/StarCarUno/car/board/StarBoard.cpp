@@ -11,10 +11,10 @@
 // ---------- Public constructors ----------
 
 StarBoard::StarBoard(
-    Pin frontLedPin,
-    Pin backLedPin,
-    Pin leftLedPin,
-    Pin rightLedPin)
+    pin_t frontLedPin,
+    pin_t backLedPin,
+    pin_t leftLedPin,
+    pin_t rightLedPin)
 {
     this->frontLedPin = frontLedPin;
     this->frontLedIsOn = false;
@@ -81,7 +81,7 @@ void StarBoard::Task(StarCar* car)
     if (this->previousEngineMode != currentEngineMode
         && currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
 
-        for (int index = 0; index < 5; index++) {
+        for (int_t index = 0; index < 5; index++) {
             this->SwitchLed(&this->frontLedIsOn, true, this->frontLedPin);
             this->SwitchLed(&this->backLedIsOn, true, this->backLedPin);
             this->SwitchLed(&this->rightLedOn, true, this->rightLedPin);
@@ -97,10 +97,10 @@ void StarBoard::Task(StarCar* car)
     }
 
     if (currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
-        int8_t acceleration = car->getAcceleration();
+        int8_t speed = car->getSpeed();
 
-        this->SwitchLed(&this->frontLedIsOn, acceleration > 10, this->frontLedPin);
-        this->SwitchLed(&this->backLedIsOn, acceleration < -10, this->backLedPin);
+        this->SwitchLed(&this->frontLedIsOn, speed > 10, this->frontLedPin);
+        this->SwitchLed(&this->backLedIsOn, speed < -10, this->backLedPin);
 
         int8_t direction = car->getDirection();
 
@@ -113,7 +113,7 @@ void StarBoard::Task(StarCar* car)
 
 // ---------- Private methods ----------
 
-void StarBoard::SwitchLed(bool* current, bool target, short pin)
+void StarBoard::SwitchLed(bool* current, bool target, pin_t pin)
 {
     if (pin != PIN_DISCONNECTED) {
         if (*current != target) {

@@ -9,7 +9,7 @@
 // - https://www.pololu.com/docs/0J44/6.2.1
 
 #pragma once
-#include "StarCar.h"
+#include "../StarCar.h"
 
 
 enum StarMotorDirection
@@ -113,40 +113,40 @@ class StarMotor
 {
     // ---------- Public const fields ----------
 public:
-    const int MinSpeed = 0;
-    const int MaxSpeed = 3200;
+    const short_t MinSpeed = 0;
+    const short_t MaxSpeed = 3200;
 
     // ---------- Private fields ----------
 private:
-    int16_t currentSpeed;
-    Pin errorPin;
-    Pin receivePin;
-    Pin resetPin;
-    Pin transmitPin;
-    int testStepIndex;
+    short_t currentSpeed;
+    pin_t errorPin;
+    pin_t receivePin;
+    pin_t resetPin;
+    pin_t transmitPin;
+    byte_t testStepIndex;
 
     SoftwareSerial serial = SoftwareSerial(0, 0);
 
     // ---------- Public constructors ----------
 public:
     StarMotor(
-        Pin receivePin,
-        Pin transmitPin,
-        Pin resetPin,
-        Pin errorPin = PIN_DISCONNECTED);
+        pin_t receivePin,
+        pin_t transmitPin,
+        pin_t resetPin,
+        pin_t errorPin = PIN_DISCONNECTED);
 
     // ---------- Public methods ----------
 public:
-    StarMotorResult ChangeSpeed(int speed);
-    StarMotorResult ChangeSpeed(int speed, StarMotorDirection direction);
+    StarMotorResult ChangeSpeed(short_t speed);
+    StarMotorResult ChangeSpeed(short_t speed, StarMotorDirection direction);
 
-    StarMotorResult ChangeLimit(StarMotorLimit limit, unsigned int value);
+    StarMotorResult ChangeLimit(StarMotorLimit limit, ushort_t value);
     StarMotorResult Init();
 
-    int ReadCurrentSpeed();
-    int ReadTargetSpeed();
+    short_t ReadCurrentSpeed();
+    short_t ReadTargetSpeed();
 
-    StarMotorResult ReadVariable(StarMotorVariable variable, unsigned int* value);
+    StarMotorResult ReadVariable(StarMotorVariable variable, ushort_t* value);
 
     void Stop();
 

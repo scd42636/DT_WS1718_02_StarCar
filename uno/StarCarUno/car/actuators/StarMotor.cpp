@@ -11,10 +11,10 @@
 // ---------- Public constructors ----------
 
 StarMotor::StarMotor(
-    Pin receivePin,
-    Pin transmitPin,
-    Pin resetPin,
-    Pin errorPin)
+    pin_t receivePin,
+    pin_t transmitPin,
+    pin_t resetPin,
+    pin_t errorPin)
 {
     this->receivePin = receivePin;
     this->transmitPin = transmitPin;
@@ -29,7 +29,7 @@ StarMotor::StarMotor(
 
 // ---------- Public methods ----------
 
-StarMotorResult StarMotor::ChangeSpeed(int speed)
+StarMotorResult StarMotor::ChangeSpeed(short_t speed)
 {
     if (speed < 0)
         return this->ChangeSpeed(-speed, StarMotorDirection::MotorDirection_Backward);
@@ -37,7 +37,7 @@ StarMotorResult StarMotor::ChangeSpeed(int speed)
     return this->ChangeSpeed(speed, StarMotorDirection::MotorDirection_Forward);
 }
 
-StarMotorResult StarMotor::ChangeSpeed(int speed, StarMotorDirection direction)
+StarMotorResult StarMotor::ChangeSpeed(short_t speed, StarMotorDirection direction)
 {
     if (direction != StarMotorDirection::MotorDirection_Forward && direction != StarMotorDirection::MotorDirection_Backward)
         return StarMotorResult::MotorResult_DirectionIsOutOfRange;
@@ -53,7 +53,7 @@ StarMotorResult StarMotor::ChangeSpeed(int speed, StarMotorDirection direction)
     return StarMotorResult::MotorResult_Success;
 }
 
-StarMotorResult StarMotor::ChangeLimit(StarMotorLimit limit, unsigned int value)
+StarMotorResult StarMotor::ChangeLimit(StarMotorLimit limit, ushort_t value)
 {
     this->serial.write(0xA2);
     this->serial.write(limit);
@@ -113,9 +113,9 @@ StarMotorResult StarMotor::Init()
     return StarMotorResult::MotorResult_Success;
 }
 
-int StarMotor::ReadCurrentSpeed()
+short_t StarMotor::ReadCurrentSpeed()
 {
-    unsigned int value = 0;
+    ushort_t value = 0;
 
     if (this->ReadVariable(StarMotorVariable::MotorVariable_Speed, &value) == StarMotorResult::MotorResult_Success)
         return value;
@@ -123,9 +123,9 @@ int StarMotor::ReadCurrentSpeed()
     return -1;
 }
 
-int StarMotor::ReadTargetSpeed()
+short_t StarMotor::ReadTargetSpeed()
 {
-    unsigned int value = 0;
+    ushort_t value = 0;
 
     if (this->ReadVariable(StarMotorVariable::MotorVariable_TargetSpeed, &value) == StarMotorResult::MotorResult_Success)
         return value;
@@ -133,7 +133,7 @@ int StarMotor::ReadTargetSpeed()
     return -1;
 }
 
-StarMotorResult StarMotor::ReadVariable(StarMotorVariable variable, unsigned int* value)
+StarMotorResult StarMotor::ReadVariable(StarMotorVariable variable, ushort_t* value)
 {
     *value = 0;
 
@@ -182,8 +182,8 @@ void StarMotor::Task(StarCar* car)
     #endif
 
     if (car->getEngineMode() == StarCarEngineMode::CarEngineMode_On) {
-        int8_t acceleration = car->getAcceleration();
-        int16_t speed = (-1) * ((float)1000 * ((float)acceleration / 100));
+        byte_t acceleration = car->getSpeed();
+        short_t speed = (-1) * ((float_t)1000 * ((float_t)acceleration / 100));
 
         if (this->currentSpeed != speed) {
             #if TEST
@@ -208,9 +208,9 @@ void StarMotor::Task(StarCar* car)
 void StarMotor::Test01()
 {
     //this->ChangeSpeed(300);
-    int speed = 0;
+    int_t speed = 0;
 
-    for (int index = 0; index < 320; index++) {
+    for (int_t index = 0; index < 320; index++) {
         speed += 10;
 
         Serial.print("Speed = ");
@@ -220,8 +220,8 @@ void StarMotor::Test01()
         delay(500);
     }
 
-    int currentSpeed = this->ReadCurrentSpeed();
-    int targetSpeed = this->ReadTargetSpeed();
+    short_t currentSpeed = this->ReadCurrentSpeed();
+    short_t targetSpeed = this->ReadTargetSpeed();
 
     Serial.print("Target Speed: ");
     Serial.println(targetSpeed);
@@ -237,7 +237,7 @@ void StarMotor::Test02()
     if (this->testStepIndex > 100)
         this->testStepIndex = 0;
 
-    int speed = (this->testStepIndex++) * 10;
+    short_t speed = (this->testStepIndex++) * 10;
 
     Serial.print("Speed = ");
     Serial.println(speed);
