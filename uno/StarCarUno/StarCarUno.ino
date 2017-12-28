@@ -34,7 +34,6 @@ UsbDriver usbDriver;
 UsbController usbController(&usb, &usbDriver);
 XBoxController xboxController(&usb);
 
-StarCar car;
 
 #define Board_FrontLedPin           6
 #define Board_BackLedPin            7
@@ -63,6 +62,21 @@ StarSonic sonicFront(SonicFront_Pin, StarSonicLocation::SonicLocation_Front);
 StarSonic sonicBack(SonicBack_Pin, StarSonicLocation::SonicLocation_Back);
 
 
+const StarCarModule* modules[] = {
+    &board,
+    //&accelerometer,
+    //&magnetometer,
+    //&sonicBack,
+    //&sonicFront,
+    &controller,
+    //&watch,
+    &servo,
+    &motor
+};
+
+StarCar car(modules, sizeof(modules) / sizeof(StarCarModule*));
+
+
 void setup()
 {
     Serial.begin(115200);
@@ -72,157 +86,9 @@ void setup()
     Serial.println("-> setup()");
     #endif
 
-    if (usb.Init() == -1) {
-        #if _DEBUG
-        Serial.println("--> Initializing USB Shield...\t\tFAILED!");
-        #endif
-    }
-
-    delay(200);
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Board...\t\t");
-    #endif
-
-    if (board.Init() == StarBoardResult::BoardResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Accelerator...\t\t");
-    #endif
-
-    if (accelerometer.Init() == StarAccelerometerResult::AccelerometerResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Magnet...\t\t");
-    #endif
-
-    if (magnetometer.Init() == StarMagnetometerResult::MagnetometerResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Sonic (back)...\t\t");
-    #endif
-
-    if (sonicBack.Init() == StarSonicResult::SonicResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Sonic (front)...\t\t");
-    #endif
-
-    if (sonicFront.Init() == StarSonicResult::SonicResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Controller...\t\t");
-    #endif
-
-    if (controller.Init() == StarControllerResult::ControllerResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Watch...\t\t");
-    #endif
-
-    if (watch.Init() == StarWatchResult::WatchResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Servo...\t\t");
-    #endif
-
-    if (servo.Init() == StarServoResult::ServoResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
-
-    #if _DEBUG
-    delay(100);
-    Serial.print("--> Initializing Motor...\t\t");
-    #endif
-
-    if (motor.Init() == StarMotorResult::MotorResult_Success) {
-        #if _DEBUG
-        Serial.println("success!");
-        #endif
-    }
-    else {
-        #if _DEBUG
-        Serial.println("FAILED!");
-        #endif
-    }
+    usb.Init();
+    delay(200); // Test if this is really necessary!
+    car.Init();
 
     #if _DEBUG
     Serial.println("----------");
@@ -240,18 +106,7 @@ void loop()
     #endif
 
     usb.Task();
-    board.Task(&car);
-
-    //magnetometer.Task(&car);
-
-    //sonicFront.Task(&car);
-    //sonicBack.Task(&car);
-
-    controller.Task(&car);
-    // watch.Task(&car);
-    
-    motor.Task(&car);
-    servo.Task(&car);
+    car.Task();
 
     #if _DEBUG
     Serial.println("----------");
