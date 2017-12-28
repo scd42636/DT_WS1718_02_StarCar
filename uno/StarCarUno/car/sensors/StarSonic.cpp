@@ -24,12 +24,15 @@ StarSonicLocation StarSonic::getLocation()
     return this->location;
 }
 
-// ---------- Public methods ----------
-
-StarSonicResult StarSonic::Init()
+const char* StarSonic::getName()
 {
-    return StarSonicResult::SonicResult_Success;
+    if (this->location == StarSonicLocation::SonicLocation_Back)
+        return "Sonic (back)";
+
+    return "Sonic (front)";
 }
+
+// ---------- Public methods ----------
 
 void StarSonic::Task(StarCar* car)
 {
@@ -66,4 +69,11 @@ void StarSonic::Task(StarCar* car)
         Serial.println((long)distance);
         #endif
     }
+}
+
+// ---------- Protected methods ----------
+
+byte_t StarSonic::InitCore()
+{
+    return StarSonicResult::SonicResult_Success;
 }

@@ -18,15 +18,14 @@ StarAccelerometer::StarAccelerometer()
     this->lastRequestTime = 0;
 }
 
-// ---------- Public methods ----------
+// ---------- Public properties ----------
 
-StarAccelerometerResult StarAccelerometer::Init()
+const char* StarAccelerometer::getName()
 {
-    if (this->accelerator.begin()) {
-        this->accelerator.setRange(ADXL345_RANGE_2_G);
-        this->isConnected = true;
-    }
+    return "Accelerometer";
 }
+
+// ---------- Public methods ----------
 
 void StarAccelerometer::Task(StarCar* car)
 {
@@ -65,4 +64,18 @@ void StarAccelerometer::Task(StarCar* car)
 
         this->lastRequestTime = currentRequestTime;
     }
+}
+
+// ---------- Protected methods ----------
+
+byte_t StarAccelerometer::InitCore()
+{
+    if (this->accelerator.begin()) {
+        this->accelerator.setRange(ADXL345_RANGE_2_G);
+        this->isConnected = true;
+
+        return StarAccelerometerResult::AccelerometerResult_NotConnected;
+    }
+
+    return StarAccelerometerResult::AccelerometerResult_Success;
 }

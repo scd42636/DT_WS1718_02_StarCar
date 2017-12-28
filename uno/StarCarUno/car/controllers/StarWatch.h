@@ -25,7 +25,7 @@ enum StarWatchResult
     WatchResult_Failed = -1,
 };
 
-class StarWatch
+class StarWatch : public StarCarModule
 {
     // ---------- Private fields ----------
 private:
@@ -39,12 +39,16 @@ public:
 
     // ---------- Public properties ----------
 public:
+    virtual const char* getName();
     StarWatchState getState();
 
     // ---------- Public methods ----------
 public:
-    StarWatchResult Init();
-    void Task(StarCar* car);
+    virtual void Task(StarCar* car);
+
+    // ---------- Protected methods ----------
+protected:
+    virtual byte_t InitCore();
 
     // ---------- Private methods ----------
 private:

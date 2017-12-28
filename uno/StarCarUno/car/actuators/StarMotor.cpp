@@ -27,6 +27,13 @@ StarMotor::StarMotor(
     this->testStepIndex = 0;
 }
 
+// ---------- Public properties ----------
+
+const char* StarMotor::getName()
+{
+    return "Motor";
+}
+
 // ---------- Public methods ----------
 
 StarMotorResult StarMotor::ChangeSpeed(short_t speed)
@@ -80,37 +87,6 @@ StarMotorResult StarMotor::ChangeLimit(StarMotorLimit limit, ushort_t value)
     }
 
     return StarMotorResult::MotorResult_Failed;
-}
-
-StarMotorResult StarMotor::Init()
-{
-    this->serial.begin(19200);
-
-    // Briefly reset SMC when Arduino starts up (optional).
-    pinMode(this->resetPin, OUTPUT);
-
-    digitalWrite(this->resetPin, LOW);  // reset SMC
-    delay(1); // 10                           // wait 1 ms
-
-    //pinMode(this->resetPin, INPUT);     // let SMC run again
-
-                                        // Must wait at least 1 ms after reset before transmitting.
-    delay(5); // 50
-
-    if (this->errorPin != PIN_DISCONNECTED) {
-        // This lets us read the state of the SMC ERR pin (optional).
-        pinMode(this->errorPin, INPUT);
-    }
-
-    // Send baud-indicator byte.
-    this->serial.write(0xAA);
-
-    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxAccelerationForward, 1);
-    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxAccelerationBackward, 1);
-    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxDeceleration, 10);
-
-    this->ExitSafeStart();
-    return StarMotorResult::MotorResult_Success;
 }
 
 short_t StarMotor::ReadCurrentSpeed()
@@ -244,6 +220,39 @@ void StarMotor::Test02()
 
     this->ChangeSpeed(speed);
     Serial.println("-----");
+}
+
+// ---------- Protected methods ----------
+
+byte_t StarMotor::InitCore()
+{
+    this->serial.begin(19200);
+
+    // Briefly reset SMC when Arduino starts up (optional).
+    pinMode(this->resetPin, OUTPUT);
+
+    digitalWrite(this->resetPin, LOW);  // reset SMC
+    delay(1); // 10                           // wait 1 ms
+
+              //pinMode(this->resetPin, INPUT);     // let SMC run again
+
+              // Must wait at least 1 ms after reset before transmitting.
+    delay(5); // 50
+
+    if (this->errorPin != PIN_DISCONNECTED) {
+        // This lets us read the state of the SMC ERR pin (optional).
+        pinMode(this->errorPin, INPUT);
+    }
+
+    // Send baud-indicator byte.
+    this->serial.write(0xAA);
+
+    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxAccelerationForward, 1);
+    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxAccelerationBackward, 1);
+    this->ChangeLimit(StarMotorLimit::MotorLimit_MaxDeceleration, 10);
+
+    this->ExitSafeStart();
+    return StarMotorResult::MotorResult_Success;
 }
 
 // ---------- Private methods ----------

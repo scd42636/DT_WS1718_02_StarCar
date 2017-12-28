@@ -10,7 +10,7 @@
 
 // ---------- Public constructors ----------
 
-StarCar::StarCar()
+StarCar::StarCar(const StarCarModule** modules, short_t modulesLength)
 {
     this->accelerationX = 0;
     this->accelerationY = 0;
@@ -22,6 +22,9 @@ StarCar::StarCar()
     this->orientation = 0;
     this->request = StarCarSensorRequest::CarSensorRequest_None;
     this->speed = 0;
+
+    this->modulesLength = modulesLength;
+    this->modules = modules;
 }
 
 // ---------- Public properties ----------
@@ -135,4 +138,56 @@ StarCar* StarCar::setSpeed(sbyte_t value)
 bool StarCar::IsRequested(StarCarSensorRequest request)
 {
     return (this->request & request) == request;
+}
+
+void StarCar::RegisterModule(StarCarModule* module)
+{
+    bool found = false;
+    short_t index = 0;
+
+    for (; index < this->modulesLength; index++) {
+        StarCarModule* registeredModule = this->modules[index];
+
+        if (registeredModule == module) {
+            found = true;
+            break;
+        }
+    }
+
+    if (!found)
+        this->modules[index] = module;
+}
+
+void StarCar::UnregisterModule(StarCarModule* module)
+{
+    short_t index = 0;
+
+    for (; index < this->modulesLength; index++) {
+        StarCarModule* registeredModule = this->modules[index];
+
+        if (registeredModule == module) {
+            this->modules[index] = nullptr;
+            break;
+        }
+    }
+}
+
+void StarCar::Init()
+{
+    for (short_t index = 0; index < this->modulesLength; index++) {
+        StarCarModule* module = this->modules[index];
+
+        if (module != nullptr)
+            module->Init();
+    }
+}
+
+void StarCar::Task()
+{
+    for (short_t index = 0; index < this->modulesLength; index++) {
+        StarCarModule* module = this->modules[index];
+
+        if (module != nullptr)
+            module->Task(this);
+    }
 }

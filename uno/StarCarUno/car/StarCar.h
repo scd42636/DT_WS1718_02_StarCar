@@ -7,6 +7,7 @@
 
 #pragma once
 #include "StarCarDefines.h"
+#include "StarCarModule.h"
 
 
 enum StarCarMode
@@ -41,13 +42,15 @@ private:
     short_t distanceFront;
     StarCarEngineMode engineMode;
     StarCarMode mode;
+    StarCarModule** modules;
+    short_t modulesLength;
     short_t orientation;
     StarCarSensorRequest request;
     sbyte_t speed;
 
     // ---------- Public constructors ----------
 public:
-    StarCar();
+    StarCar(const StarCarModule** modules, short_t modulesLength);
 
     // ---------- Public properties ----------
 public:
@@ -84,4 +87,10 @@ public:
     // ---------- Public methods ----------
 public:
     bool IsRequested(StarCarSensorRequest request);
+
+    void RegisterModule(StarCarModule* module);
+    void UnregisterModule(StarCarModule* module);
+
+    void Init();
+    void Task();
 };

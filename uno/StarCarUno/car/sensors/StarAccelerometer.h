@@ -21,7 +21,7 @@ enum StarAccelerometerResult
     AccelerometerResult_NotConnected = -2
 };
 
-class StarAccelerometer
+class StarAccelerometer : public StarCarModule
 {
     // ---------- Private fields ----------
 private:
@@ -33,8 +33,15 @@ private:
 public:
     StarAccelerometer();
 
+    // ---------- Public properties ----------
+public:
+    virtual const char* getName();
+
     // ---------- Public methods ----------
 public:
-    StarAccelerometerResult Init();
     void Task(StarCar* car);
+
+    // ---------- Protected methods ----------
+protected:
+    virtual byte_t InitCore();
 };

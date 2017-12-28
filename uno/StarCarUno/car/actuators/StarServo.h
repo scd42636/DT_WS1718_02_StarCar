@@ -16,7 +16,7 @@ enum StarServoResult
     ServoResult_Failed = -1,
 };
 
-class StarServo
+class StarServo : public StarCarModule
 {
     // ---------- Private fields ----------
 private:
@@ -29,12 +29,19 @@ private:
 public:
     StarServo(pin_t stepPin);
 
+    // ---------- Public properties ----------
+public:
+    virtual const char* getName();
+
     // ---------- Public methods ----------
 public:
-    StarServoResult Init();
     void Task(StarCar* car);
 
     void Test01();
     void Test02();
     void Test03();
+
+    // ---------- Protected methods ----------
+protected:
+    virtual byte_t InitCore();
 };

@@ -31,35 +31,14 @@ StarBoard::StarBoard(
     this->previousEngineMode = StarCarEngineMode::CarEngineMode_Off;
 }
 
-// ---------- Public methods ----------
+// ---------- Public properties ----------
 
-StarBoardResult StarBoard::Init()
+const char* StarBoard::getName()
 {
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, LOW);
-
-    if (this->frontLedPin != PIN_DISCONNECTED) {
-        pinMode(this->frontLedPin, OUTPUT);
-        digitalWrite(this->frontLedPin, LOW);
-    }
-
-    if (this->backLedPin != PIN_DISCONNECTED) {
-        pinMode(this->backLedPin, OUTPUT);
-        digitalWrite(this->backLedPin, LOW);
-    }
-
-    if (this->leftLedPin != PIN_DISCONNECTED) {
-        pinMode(this->leftLedPin, OUTPUT);
-        digitalWrite(this->leftLedPin, LOW);
-    }
-
-    if (this->rightLedPin != PIN_DISCONNECTED) {
-        pinMode(this->rightLedPin, OUTPUT);
-        digitalWrite(this->rightLedPin, LOW);
-    }
-
-    return StarBoardResult::BoardResult_Success;
+    return "Board";
 }
+
+// ---------- Public methods ----------
 
 void StarBoard::Task(StarCar* car)
 {
@@ -109,6 +88,36 @@ void StarBoard::Task(StarCar* car)
     }
 
     this->previousEngineMode = currentEngineMode;
+}
+
+// ---------- Protected methods ----------
+
+byte_t StarBoard::InitCore()
+{
+    pinMode(LED_BUILTIN, OUTPUT);
+    digitalWrite(LED_BUILTIN, LOW);
+
+    if (this->frontLedPin != PIN_DISCONNECTED) {
+        pinMode(this->frontLedPin, OUTPUT);
+        digitalWrite(this->frontLedPin, LOW);
+    }
+
+    if (this->backLedPin != PIN_DISCONNECTED) {
+        pinMode(this->backLedPin, OUTPUT);
+        digitalWrite(this->backLedPin, LOW);
+    }
+
+    if (this->leftLedPin != PIN_DISCONNECTED) {
+        pinMode(this->leftLedPin, OUTPUT);
+        digitalWrite(this->leftLedPin, LOW);
+    }
+
+    if (this->rightLedPin != PIN_DISCONNECTED) {
+        pinMode(this->rightLedPin, OUTPUT);
+        digitalWrite(this->rightLedPin, LOW);
+    }
+
+    return StarBoardResult::BoardResult_Success;
 }
 
 // ---------- Private methods ----------

@@ -27,19 +27,14 @@ StarServo::StarServo(pin_t stepPin)
     this->testStepIndex = 0;
 }
 
-// ---------- Public methods ----------
+// ---------- Public properties ----------
 
-StarServoResult StarServo::Init()
+const char* StarServo::getName()
 {
-    pinMode(this->stepPin, OUTPUT);
-    this->servo.attach(this->stepPin);
-
-    // Move into neutral (= straight) direction.
-    this->servo.writeMicroseconds(SERVO_CENTER);
-    //this->servo.write(SERVO_CENTER);
-
-    return StarServoResult::ServoResult_Success;
+    return "Servo";
 }
+
+// ---------- Public methods ----------
 
 void StarServo::Task(StarCar* car)
 {
@@ -148,3 +143,16 @@ void StarServo::Test03()
     delay(50);
 }
 
+// ---------- Protected methods ----------
+
+byte_t StarServo::InitCore()
+{
+    pinMode(this->stepPin, OUTPUT);
+    this->servo.attach(this->stepPin);
+
+    // Move into neutral (= straight) direction.
+    this->servo.writeMicroseconds(SERVO_CENTER);
+    //this->servo.write(SERVO_CENTER);
+
+    return StarServoResult::ServoResult_Success;
+}

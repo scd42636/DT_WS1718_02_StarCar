@@ -109,7 +109,7 @@ enum StarMotorVariable
     MotorVariable_BrakeDurationReverse = 39,
 };
 
-class StarMotor
+class StarMotor : public StarCarModule
 {
     // ---------- Public const fields ----------
 public:
@@ -135,13 +135,16 @@ public:
         pin_t resetPin,
         pin_t errorPin = PIN_DISCONNECTED);
 
+    // ---------- Public properties ----------
+public:
+    virtual const char* getName();
+
     // ---------- Public methods ----------
 public:
     StarMotorResult ChangeSpeed(short_t speed);
     StarMotorResult ChangeSpeed(short_t speed, StarMotorDirection direction);
 
     StarMotorResult ChangeLimit(StarMotorLimit limit, ushort_t value);
-    StarMotorResult Init();
 
     short_t ReadCurrentSpeed();
     short_t ReadTargetSpeed();
@@ -153,6 +156,10 @@ public:
     void Task(StarCar* car);
     void Test01();
     void Test02();
+
+    // ---------- Protected methods ----------
+protected:
+    virtual byte_t InitCore();
 
     // ---------- Private methods ----------
 private:

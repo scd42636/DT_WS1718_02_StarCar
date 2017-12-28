@@ -22,7 +22,7 @@ enum StarSonicLocation
     SonicLocation_Back = 1
 };
 
-class StarSonic
+class StarSonic : public StarCarModule
 {
     // ---------- Private fields ----------
 private:
@@ -36,9 +36,13 @@ public:
     // ---------- Public properties ----------
 public:
     StarSonicLocation getLocation();
+    virtual const char* getName();
 
     // ---------- Public methods ----------
 public:
-    StarSonicResult Init();
     void Task(StarCar* car);
+
+    // ---------- Protected methods ----------
+protected:
+    virtual byte_t InitCore();
 };

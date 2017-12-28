@@ -33,42 +33,14 @@ StarMagnetometer::StarMagnetometer()
     this->scaling = 0.0;
 }
 
-// ---------- Public methods ----------
+// ---------- Public properties ----------
 
-StarMagnetometerResult StarMagnetometer::Init()
+const char* StarMagnetometer::getName()
 {
-    // Start the I2C interface.
-    Wire.begin();
-
-    delay(100);
-
-    // Check that a device responds at the compass address.
-    Wire.beginTransmission(HMC5883L_Address);
-
-    if (!Wire.endTransmission()) {
-        this->isConnected = true;
-
-        // Configure the control registers using static settings above compass autoranges, but
-        // starts in the mode given
-        Write(ControlRegister1, MODE);
-        Write(ControlRegister2, CR2);
-
-        // Write(SetResetRegister, RESET);
-
-        switch (MODE & 0b00010000) {
-            case 0b00010000:
-                this->scaling = (float_t)8 / (float_t)32768;
-                break;
-            default:
-                this->scaling = (float_t)2 / (float_t)32768;
-                break;
-        }
-
-        return StarMagnetometerResult::MagnetometerResult_Success;
-    }
-
-    return StarMagnetometerResult::MagnetometerResult_NotConnected;
+    return "Magnetometer";
 }
+
+// ---------- Public methods ----------
 
 void StarMagnetometer::Task(StarCar* car)
 {
@@ -142,6 +114,43 @@ void StarMagnetometer::Task(StarCar* car)
 
         this->lastRequestTime = currentRequestTime;
     }
+}
+
+// ---------- Protected methods ----------
+
+byte_t StarMagnetometer::InitCore()
+{
+    // Start the I2C interface.
+    Wire.begin();
+
+    delay(100);
+
+    // Check that a device responds at the compass address.
+    Wire.beginTransmission(HMC5883L_Address);
+
+    if (!Wire.endTransmission()) {
+        this->isConnected = true;
+
+        // Configure the control registers using static settings above compass autoranges, but
+        // starts in the mode given
+        Write(ControlRegister1, MODE);
+        Write(ControlRegister2, CR2);
+
+        // Write(SetResetRegister, RESET);
+
+        switch (MODE & 0b00010000) {
+            case 0b00010000:
+                this->scaling = (float_t)8 / (float_t)32768;
+                break;
+            default:
+                this->scaling = (float_t)2 / (float_t)32768;
+                break;
+        }
+
+        return StarMagnetometerResult::MagnetometerResult_Success;
+    }
+
+    return StarMagnetometerResult::MagnetometerResult_NotConnected;
 }
 
 // ---------- Private methods ----------

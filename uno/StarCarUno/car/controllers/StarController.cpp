@@ -25,12 +25,12 @@ StarControllerMode StarController::getMode()
     return this->mode;
 }
 
-// ---------- Public methods ----------
-
-StarControllerResult StarController::Init()
+const char* StarController::getName()
 {
-    return StarControllerResult::ControllerResult_Success;
+    return "Controller";
 }
+
+// ---------- Public methods ----------
 
 void StarController::Task(StarCar* car)
 {
@@ -250,4 +250,11 @@ void StarController::Task(StarCar* car)
     ////    Serial.println(F("Y"));
     ////    #endif
     ////}
+}
+
+// ---------- Protected methods ----------
+
+byte_t StarController::InitCore()
+{
+    return StarControllerResult::ControllerResult_Success;
 }

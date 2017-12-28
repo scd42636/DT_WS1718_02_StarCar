@@ -15,7 +15,7 @@ enum StarBoardResult
     BoardResult_Failed = -1,
 };
 
-class StarBoard
+class StarBoard : public StarCarModule
 {
     // ---------- Private fields ----------
 public:
@@ -41,10 +41,17 @@ public:
         pin_t leftFlashLedPin = PIN_DISCONNECTED,
         pin_t rightFlashLedPin = PIN_DISCONNECTED);
 
+    // ---------- Public properties ----------
+public:
+    virtual const char* getName();
+
     // ---------- Public methods ----------
 public:
-    StarBoardResult Init();
-    void Task(StarCar* car);
+    virtual void Task(StarCar* car);
+
+    // ---------- Protected methods ----------
+protected:
+    virtual byte_t InitCore();
 
     // ---------- Private methods ----------
 private:

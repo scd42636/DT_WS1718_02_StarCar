@@ -24,7 +24,7 @@ enum StarControllerMode
     Button = 1
 };
 
-class StarController
+class StarController : public StarCarModule
 {
     // ---------- Private fields ----------
 private:
@@ -39,9 +39,13 @@ public:
     // ---------- Public properties ----------
 public:
     StarControllerMode getMode();
+    virtual const char* getName();
 
     // ---------- Public methods ----------
 public:
-    StarControllerResult Init();
-    void Task(StarCar* car);
+    virtual void Task(StarCar* car);
+
+    // ---------- Protected methods ----------
+protected:
+    virtual byte_t InitCore();
 };

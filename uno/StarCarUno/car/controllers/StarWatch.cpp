@@ -96,17 +96,17 @@ StarWatch::StarWatch(UsbController* controller)
 
 // ---------- Public properties ----------
 
+const char* StarWatch::getName()
+{
+    return "Watch";
+}
+
 StarWatchState StarWatch::getState()
 {
     return this->state;
 }
 
 // ---------- Public methods ----------
-
-StarWatchResult StarWatch::Init()
-{
-    return StarWatchResult::WatchResult_Success;
-}
 
 void StarWatch::Task(StarCar* car)
 {
@@ -165,6 +165,13 @@ void StarWatch::Task(StarCar* car)
 
         this->isFirstRun = false;
     }
+}
+
+// ---------- Protected methods ----------
+
+byte_t StarWatch::InitCore()
+{
+    return StarWatchResult::WatchResult_Success;
 }
 
 // ---------- Private methods ----------

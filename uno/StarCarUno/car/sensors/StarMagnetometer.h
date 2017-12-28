@@ -17,7 +17,7 @@ enum StarMagnetometerResult
     MagnetometerResult_NotConnected = -2
 };
 
-class StarMagnetometer
+class StarMagnetometer : public StarCarModule
 {
     // ---------- Private fields ----------
 private:
@@ -29,10 +29,17 @@ private:
 public:
     StarMagnetometer();
 
+    // ---------- Public properties ----------
+public:
+    virtual const char* getName();
+
     // ---------- Public methods ----------
 public:
-    StarMagnetometerResult Init();
     void Task(StarCar* car);
+
+    // ---------- Protected methods ----------
+protected:
+    virtual byte_t InitCore();
 
     // ---------- Private methods ----------
 private:
