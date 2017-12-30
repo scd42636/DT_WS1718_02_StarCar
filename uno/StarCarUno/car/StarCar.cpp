@@ -10,7 +10,7 @@
 
 // ---------- Public constructors ----------
 
-StarCar::StarCar(const StarCarModule** modules, short_t modulesLength)
+StarCar::StarCar(StarCarModule** modules, short_t modulesLength)
 {
     this->accelerationX = 0;
     this->accelerationY = 0;
@@ -36,6 +36,17 @@ int_t StarCar::getAccelerationX()
 StarCar* StarCar::setAccelerationX(int_t value)
 {
     this->accelerationX = value;
+    //EEPROM.put(9, value);
+
+    if (value < 0) {
+        EEPROM.write(EEPROM_ACCELEROMETER_X_PARITY, 1);
+        EEPROM.write(EEPROM_ACCELEROMETER_X_VALUE, -value);
+    }
+    else {
+        EEPROM.write(EEPROM_ACCELEROMETER_X_PARITY, 0);
+        EEPROM.write(EEPROM_ACCELEROMETER_X_VALUE, value);
+    }
+
     return this;
 }
 
@@ -46,6 +57,17 @@ int_t StarCar::getAccelerationY()
 StarCar* StarCar::setAccelerationY(int_t value)
 {
     this->accelerationY = value;
+    //EEPROM.put(10, value);
+
+    if (value < 0) {
+        EEPROM.write(EEPROM_ACCELEROMETER_Y_PARITY, 1);
+        EEPROM.write(EEPROM_ACCELEROMETER_Y_VALUE, -value);
+    }
+    else {
+        EEPROM.write(EEPROM_ACCELEROMETER_Y_PARITY, 0);
+        EEPROM.write(EEPROM_ACCELEROMETER_Y_VALUE, value);
+    }
+
     return this;
 }
 
@@ -66,6 +88,8 @@ short_t StarCar::getDistanceBack()
 StarCar* StarCar::setDistanceBack(short_t value)
 {
     this->distanceBack = value;
+    EEPROM.write(EEPROM_SONIC_BACK_VALUE, value);
+
     return this;
 }
 
@@ -76,6 +100,8 @@ short_t StarCar::getDistanceFront()
 StarCar* StarCar::setDistanceFront(short_t value)
 {
     this->distanceFront = value;
+    EEPROM.write(EEPROM_SONIC_FRONT_VALUE, value);
+
     return this;
 }
 
@@ -103,13 +129,23 @@ StarCar* StarCar::setEngineMode(StarCarEngineMode value)
     return this;
 }
 
-short_t StarCar::getOrientation()
+float_t StarCar::getOrientation()
 {
     return this->orientation;
 }
-StarCar* StarCar::setOrientation(short_t value)
+StarCar* StarCar::setOrientation(float_t value)
 {
     this->orientation = value;
+
+    if (value < 0) {
+        EEPROM.write(EEPROM_MAGNETOMETER_PARITY, 1);
+        EEPROM.write(EEPROM_MAGNETOMETER_VALUE, -value);
+    }
+    else {
+        EEPROM.write(EEPROM_MAGNETOMETER_PARITY, 0);
+        EEPROM.write(EEPROM_MAGNETOMETER_VALUE, value);
+    }
+
     return this;
 }
 
@@ -140,37 +176,37 @@ bool StarCar::IsRequested(StarCarSensorRequest request)
     return (this->request & request) == request;
 }
 
-void StarCar::RegisterModule(StarCarModule* module)
-{
-    bool found = false;
-    short_t index = 0;
-
-    for (; index < this->modulesLength; index++) {
-        StarCarModule* registeredModule = this->modules[index];
-
-        if (registeredModule == module) {
-            found = true;
-            break;
-        }
-    }
-
-    if (!found)
-        this->modules[index] = module;
-}
-
-void StarCar::UnregisterModule(StarCarModule* module)
-{
-    short_t index = 0;
-
-    for (; index < this->modulesLength; index++) {
-        StarCarModule* registeredModule = this->modules[index];
-
-        if (registeredModule == module) {
-            this->modules[index] = nullptr;
-            break;
-        }
-    }
-}
+////void StarCar::RegisterModule(StarCarModule* module)
+////{
+////    bool found = false;
+////    short_t index = 0;
+////
+////    for (; index < this->modulesLength; index++) {
+////        StarCarModule* registeredModule = this->modules[index];
+////
+////        if (registeredModule == module) {
+////            found = true;
+////            break;
+////        }
+////    }
+////
+////    if (!found)
+////        this->modules[index] = module;
+////}
+////
+////void StarCar::UnregisterModule(StarCarModule* module)
+////{
+////    short_t index = 0;
+////
+////    for (; index < this->modulesLength; index++) {
+////        StarCarModule* registeredModule = this->modules[index];
+////
+////        if (registeredModule == module) {
+////            this->modules[index] = nullptr;
+////            break;
+////        }
+////    }
+////}
 
 void StarCar::Init()
 {

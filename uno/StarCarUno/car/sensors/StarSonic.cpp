@@ -65,7 +65,10 @@ void StarSonic::Task(StarCar* car)
             car->setDistanceFront(distance);
 
         #if !TEST
-        Serial.print("Sonic: Distance = ");
+        Serial.print(this->getName());
+        Serial.print(":");
+
+        Serial.print(" Distance = ");
         Serial.println((long)distance);
         #endif
     }

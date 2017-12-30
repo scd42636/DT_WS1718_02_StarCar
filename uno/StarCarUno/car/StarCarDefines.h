@@ -8,6 +8,7 @@
 #pragma once
 #include <Arduino.h>
 #include <SoftwareSerial.h>
+#include <EEPROM.h>
 
 typedef int8_t sbyte_t;
 typedef uint8_t byte_t;
@@ -40,20 +41,33 @@ typedef XBOXUSB XBoxController;
 #define PIN_DISCONNECTED -1
 
 
+#define EEPROM_SONIC_FRONT_VALUE        0
+#define EEPROM_SONIC_BACK_VALUE         1
+
+#define EEPROM_MAGNETOMETER_PARITY      3
+#define EEPROM_MAGNETOMETER_VALUE       4
+
+#define EEPROM_ACCELEROMETER_X_PARITY   5
+#define EEPROM_ACCELEROMETER_X_VALUE    6
+
+#define EEPROM_ACCELEROMETER_Y_PARITY   7
+#define EEPROM_ACCELEROMETER_Y_VALUE    8
+
+
 // Implemented using the code provided on:
 // - https://github.com/laurb9/StepperDriver/blob/master/src/BasicStepperDriver.h
-static inline void delayMicros(unsigned long delay_us, unsigned long start_us = 0)
-{
-    if (delay_us) {
-        if (!start_us) {
-            start_us = micros();
-        }
-
-        if (delay_us > 50 /* MIN_YIELD_MICROS */) {
-            yield();
-        }
-
-        // See https://www.gammon.com.au/millis
-        while (micros() - start_us < delay_us);
-    }
-}
+////static inline void delayMicros(unsigned long delay_us, unsigned long start_us = 0)
+////{
+////    if (delay_us) {
+////        if (!start_us) {
+////            start_us = micros();
+////        }
+////
+////        if (delay_us > 50 /* MIN_YIELD_MICROS */) {
+////            yield();
+////        }
+////
+////        // See https://www.gammon.com.au/millis
+////        while (micros() - start_us < delay_us);
+////    }
+////}

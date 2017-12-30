@@ -34,12 +34,13 @@ UsbDriver usbDriver;
 UsbController usbController(&usb, &usbDriver);
 XBoxController xboxController(&usb);
 
+IbcDriver ibcDriver(115200);
 
 #define Board_FrontLedPin           6
 #define Board_BackLedPin            7
 #define Board_LeftFlashLedPin       PIN_DISCONNECTED
 #define Board_RightFlashLedPin      PIN_DISCONNECTED
-StarBoard board(Board_FrontLedPin, Board_BackLedPin, Board_LeftFlashLedPin, Board_RightFlashLedPin);
+StarBoard board(&ibcDriver, Board_FrontLedPin, Board_BackLedPin, Board_LeftFlashLedPin, Board_RightFlashLedPin);
 
 StarController controller(&xboxController);
 StarWatch watch(&usbController);
@@ -62,7 +63,7 @@ StarSonic sonicFront(SonicFront_Pin, StarSonicLocation::SonicLocation_Front);
 StarSonic sonicBack(SonicBack_Pin, StarSonicLocation::SonicLocation_Back);
 
 
-const StarCarModule* modules[] = {
+StarCarModule* modules[] = {
     &board,
     //&accelerometer,
     //&magnetometer,
@@ -79,15 +80,13 @@ StarCar car(modules, sizeof(modules) / sizeof(StarCarModule*));
 
 void setup()
 {
-    Serial.begin(115200);
-
     #if _DEBUG
     Serial.println("----------");
     Serial.println("-> setup()");
     #endif
 
     usb.Init();
-    delay(200); // Test if this is really necessary!
+    //delay(200);
     car.Init();
 
     #if _DEBUG

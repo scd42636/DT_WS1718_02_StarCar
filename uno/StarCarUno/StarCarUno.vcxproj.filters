@@ -54,6 +54,9 @@
     <ClInclude Include="car\StarCarModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="drivers\IbcDriver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="StarCarUno.ino" />
@@ -90,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="car\StarCarModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\IbcDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

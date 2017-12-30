@@ -11,11 +11,14 @@
 // ---------- Public constructors ----------
 
 StarBoard::StarBoard(
+    IbcDriver* ibcDriver,
     pin_t frontLedPin,
     pin_t backLedPin,
     pin_t leftLedPin,
     pin_t rightLedPin)
 {
+    this->ibcDriver = ibcDriver;
+
     this->frontLedPin = frontLedPin;
     this->frontLedIsOn = false;
 
@@ -46,14 +49,14 @@ void StarBoard::Task(StarCar* car)
     Serial.println("--> StarBoard::Task()");
     #endif
 
-    if (Serial.available()) {
-        int value = Serial.read();
+    ////if (Serial.available()) {
+    ////    int value = Serial.read();
 
-        if (value >= 48 && value <= 57) {
-            StarCarMode mode = (StarCarMode)(value - 48);
-            car->setMode(mode);
-        }
-    }
+    ////    if (value >= 48 && value <= 57) {
+    ////        StarCarMode mode = (StarCarMode)(value - 48);
+    ////        car->setMode(mode);
+    ////    }
+    ////}
 
     StarCarEngineMode currentEngineMode = car->getEngineMode();
 
@@ -88,6 +91,7 @@ void StarBoard::Task(StarCar* car)
     }
 
     this->previousEngineMode = currentEngineMode;
+    this->ibcDriver->next(car);
 }
 
 // ---------- Protected methods ----------

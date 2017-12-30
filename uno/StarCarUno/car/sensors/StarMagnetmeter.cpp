@@ -105,10 +105,13 @@ void StarMagnetometer::Task(StarCar* car)
         if (degrees > 180)
             degrees = 180 - degrees;
 
-        car->setOrientation((short_t)(degrees * (float_t)100));
+        car->setOrientation(degrees);
 
         #if !TEST
-        Serial.print("Magnet: Orientation = ");
+        Serial.print(this->getName());
+        Serial.print(":");
+
+        Serial.print(" Orientation = ");
         Serial.println(degrees);
         #endif
 

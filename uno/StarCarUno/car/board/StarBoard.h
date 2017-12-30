@@ -7,6 +7,7 @@
 
 #pragma once
 #include "../StarCar.h"
+#include "../../drivers/IbcDriver.h"
 
 
 enum StarBoardResult
@@ -19,6 +20,8 @@ class StarBoard : public StarCarModule
 {
     // ---------- Private fields ----------
 public:
+    IbcDriver* ibcDriver;
+
     bool backLedIsOn;
     pin_t backLedPin;
 
@@ -36,6 +39,7 @@ public:
     // ---------- Public constructors ----------
 public:
     StarBoard(
+        IbcDriver* ibcDriver,
         pin_t forwardLedPin = PIN_DISCONNECTED,
         pin_t backwardLedPin = PIN_DISCONNECTED,
         pin_t leftFlashLedPin = PIN_DISCONNECTED,

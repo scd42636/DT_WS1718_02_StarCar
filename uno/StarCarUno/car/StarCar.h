@@ -44,13 +44,13 @@ private:
     StarCarMode mode;
     StarCarModule** modules;
     short_t modulesLength;
-    short_t orientation;
+    float_t orientation;
     StarCarSensorRequest request;
     sbyte_t speed;
 
     // ---------- Public constructors ----------
 public:
-    StarCar(const StarCarModule** modules, short_t modulesLength);
+    StarCar(StarCarModule** modules, short_t modulesLength);
 
     // ---------- Public properties ----------
 public:
@@ -72,8 +72,8 @@ public:
     StarCarMode getMode();
     StarCar* setMode(StarCarMode value);
 
-    short_t getOrientation();
-    StarCar* setOrientation(short_t value);
+    float_t getOrientation();
+    StarCar* setOrientation(float_t value);
 
     StarCarEngineMode getEngineMode();
     StarCar* setEngineMode(StarCarEngineMode value);
@@ -88,8 +88,8 @@ public:
 public:
     bool IsRequested(StarCarSensorRequest request);
 
-    void RegisterModule(StarCarModule* module);
-    void UnregisterModule(StarCarModule* module);
+    ////void RegisterModule(StarCarModule* module);
+    ////void UnregisterModule(StarCarModule* module);
 
     void Init();
     void Task();
