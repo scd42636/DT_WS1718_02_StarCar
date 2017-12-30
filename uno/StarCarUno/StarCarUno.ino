@@ -69,8 +69,8 @@ StarCarModule* modules[] = {
     //&magnetometer,
     //&sonicBack,
     //&sonicFront,
-    &controller,
-    //&watch,
+    //&controller,
+    &watch,
     &servo,
     &motor
 };
@@ -93,7 +93,9 @@ void setup()
     Serial.println("----------");
     #endif
 
-    car.setMode(StarCarMode::CarMode_Controller);
+    //car.setMode(StarCarMode::CarMode_Controller);
+    car.setMode(StarCarMode::CarMode_Watch);
+
     //car.setRequest(StarCarSensorRequest::CSR_Sonic);
 }
 

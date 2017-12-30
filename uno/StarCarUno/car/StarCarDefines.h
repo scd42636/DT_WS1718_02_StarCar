@@ -10,8 +10,11 @@
 #include <SoftwareSerial.h>
 #include <EEPROM.h>
 
-typedef int8_t sbyte_t;
-typedef uint8_t byte_t;
+typedef signed char sbyte_t;
+typedef unsigned char byte_t;
+
+typedef unsigned short word_t;
+typedef unsigned int dword_t;
 
 typedef int16_t short_t;
 typedef uint16_t ushort_t;

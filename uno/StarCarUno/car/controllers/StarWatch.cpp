@@ -8,82 +8,6 @@
 #include "StarWatch.h"
 
 
-enum AccessPointRequest
-{
-    // Byte 0: Start marker (0xFF)
-    AP_REQ_Start = 0,
-
-    // Byte 1: Command code
-    AP_REQ_Command = 1,
-
-    // Byte 2: Packet size (including overhead)
-    AP_REQ_Size = 2,
-
-    // Byte 3: Data 3..size
-    AP_REQ_StartOfData = 3
-};
-
-enum AccessPointResponse
-{
-    // Byte 0: Start marker (0xFF)
-    AP_RES_Start = 0,
-
-    // Byte 1: Status code
-    AP_RES_State = 1,
-};
-
-enum AccessPointCommandCode
-{
-    AP_CMD_GetStatus = 0x00,
-    AP_CMD_GetProductId = 0x20,
-    AP_CMD_StartBSL = 0x21,
-    AP_CMD_StartSimplicti = 0x07,
-    AP_CMD_GetSimplicitData = 0x08,
-    AP_CMD_StopSimplicit = 0x09
-};
-
-enum AccessPointStatusCode
-{
-    AP_STA_Idle = 0x00,
-    AP_STA_SimplicitStopped = 0x01,
-    AP_STA_SimplicitTryingToLink = 0x02,
-    AP_STA_SimplicitLinked = 0x03,
-    AP_STA_BlueRobingStopped = 0x04,
-    AP_STA_BlueRobinTransmitting = 0x05,
-    AP_STA_Error = 0x05,
-    AP_STA_NoError = 0x06,
-    AP_STA_NotConnected = 0x07,
-    AP_STA_SimplicitLinkTimeout = 0x08,
-    AP_STA_WbslTryingToLink = 0x09,
-    AP_STA_WbslLinked = 0x0A,
-    AP_STA_WbslError = 0x0B,
-    AP_STA_WbslStopped = 0x0C,
-    AP_STA_WbslLinkTimeout = 0x0D,
-};
-
-enum AccessPointSync
-{
-    AP_SYNC_Start = 0x30,
-    AP_SYNC_SendCommand = 0x31,
-    AP_SYNC_GetBufferStatus = 0x32,
-    AP_SYNC_ReadBuffer = 0x33
-};
-
-#define AP_PacketStartMarker 0xFF
-
-uint8_t AP_ON_COMMAND[] = {
-    AP_PacketStartMarker,
-    AP_CMD_StartSimplicti, 0x03 };
-
-uint8_t AP_OFF_COMMAND[] = {
-    AP_PacketStartMarker,
-    AP_CMD_StopSimplicit, 0x03 };
-
-uint8_t AP_ACC_DATA_REQUEST[] = {
-    AP_PacketStartMarker,
-    AP_CMD_GetSimplicitData, 0x07, 0x00, 0x00, 0x00, 0x00 };
-
-
 // ---------- Public constructors ----------
 
 StarWatch::StarWatch(UsbController* controller)
@@ -119,51 +43,123 @@ void StarWatch::Task(StarCar* car)
 
     if (car->getMode() == StarCarMode::CarMode_Watch) {
         if (this->isFirstRun) {
-            if (this->TransmitFrame(AP_OFF_COMMAND, sizeof(AP_OFF_COMMAND))) {
-                Serial.println("AP: Deactivated");
+            AP_OffRequest offRequest;
+            AP_OffResponse offResponse;
+
+            if (this->SendAndReceive(&offRequest, &offResponse)) {
+                #if _DEBUG
+                Serial.println("AP: OFF");
+                #endif
+
                 this->state = StarWatchState::WatchState_AccessPoint_Off;
+
+                AP_ResetRequest resetRequest;
+                AP_ResetResponse resetResponse;
+
+                if (this->SendAndReceive(&resetRequest, &resetResponse)) {
+                    #if _DEBUG
+                    Serial.println("AP: Reset");
+                    #endif
+                }
+                else {
+                    #if _DEBUG
+                    Serial.print("AP: Reset - failed, Result=");
+                    Serial.println(resetResponse.Result);
+                    #endif
+                }
+            }
+            else {
+                #if _DEBUG
+                Serial.print("AP: OFF - failed, Result=");
+                Serial.println(offResponse.Result);
+                #endif
+
+                this->state = StarWatchState::WatchState_AccessPoint_Error;
             }
         }
         else if (this->state == StarWatchState::WatchState_AccessPoint_Off) {
-            if (this->TransmitFrame(AP_ON_COMMAND, sizeof(AP_ON_COMMAND))) {
-                Serial.println("AP: Activated");
-                this->state = StarWatchState::WatchState_AccessPoint_Idle;
+            AP_OnRequest request;
+            AP_OnResponse response;
+
+            if (this->SendAndReceive(&request, &response)) {
+                Serial.println("AP: ON");
+                this->state = StarWatchState::WatchState_AccessPoint_On;
+            }
+            else {
+                #if _DEBUG
+                Serial.print("AP: ON - failed, Result=");
+                Serial.println(response.Result);
+                #endif
+
+                this->state = StarWatchState::WatchState_AccessPoint_Error;
             }
         }
-        else if (this->state == StarWatchState::WatchState_AccessPoint_Idle) {
-            if (this->TransmitFrame(AP_ACC_DATA_REQUEST, sizeof(AP_ACC_DATA_REQUEST))) {
-                this->state = StarWatchState::WatchState_AccessPoint_Listening;
+        else if (this->state == StarWatchState::WatchState_AccessPoint_On) {
+            AP_GetStatusRequest request;
+            AP_GetStatusResponse response;
+
+            if (this->SendAndReceive(&request, &response)) {
+                Serial.print("AP: GetStatus = ");
+                Serial.println(response.Status);
+
+                if (response.Status == AccessPointStatusCode::AP_STA_SimplicitLinked)
+                    this->state = StarWatchState::WatchState_AccessPoint_Listening;
+            }
+            else {
+                #if _DEBUG
+                Serial.print("AP: GetStatus - failed, Result=");
+                Serial.println(response.Result);
+                #endif
             }
         }
         else if (this->state == StarWatchState::WatchState_AccessPoint_Listening) {
-            byte_t frame[64];
-            ushort_t length = 64;
+            AP_GetSimplicitiDataRequest request;
+            AP_GetSimplicitiDataResponse response;
 
-            if (this->ReceiveFrame(frame, &length)) {
-                if (length == 7) {
-                    byte_t type = (byte_t)frame[3];
+            if (this->SendAndReceive(&request, &response)) {
+                // Check if response is ACC response.
+                if (response.Data.Raw.Value > 255) {
+                    short_t x = response.Data.Values.AccelerationX;
+                    short_t y = response.Data.Values.AccelerationY;
+                    short_t z = response.Data.Values.AccelerationZ;
 
-                    if (type == 0x01) {
-                        int x = (byte_t)frame[4];
-                        int y = (byte_t)frame[5];
-                        int z = (byte_t)frame[6];
+                    if (x > 127)
+                        x = (-1 * (255 - x));
 
-                        Serial.print("X = ");
+                    if (y > 127)
+                        y = (-1 * (255 - y));
+
+                    if (z > 127)
+                        z = (-1 * (255 - z));
+
+                    if (x != 0 || y != 0 || z != 0) {
+                        #if !TEST
+                        Serial.print("AP: GetSimplicitiData");
+                        Serial.print(", ");
+                        Serial.print("X=");
                         Serial.print(x);
-
-                        Serial.print(", Y = ");
+                        Serial.print(", ");
+                        Serial.print("Y=");
                         Serial.print(y);
-
-                        Serial.print(", Z = ");
+                        Serial.print(", ");
+                        Serial.print("Z=");
                         Serial.println(z);
-
-                        delay(2000);
+                        #endif
                     }
                 }
+            }
+            else {
+                #if _DEBUG
+                Serial.print("AP: GetSimplicitiData - failed, Result=");
+                Serial.println(response.Result);
+                #endif
             }
         }
 
         this->isFirstRun = false;
+    }
+    else {
+        this->isFirstRun = true;
     }
 }
 
@@ -176,9 +172,38 @@ byte_t StarWatch::InitCore()
 
 // ---------- Private methods ----------
 
-bool StarWatch::ReceiveFrame(byte_t* frame, ushort_t* length)
+bool StarWatch::SendAndReceive(AP_Request* request, AP_Response* response)
 {
-    byte_t rcode = this->controller->RcvData(length, frame);
+    bool success = false;
+
+    byte_t* requestData = (byte_t*)malloc(request->Length);
+    memcpy(requestData, request, request->Length);
+
+    if (this->TransmitFrame(requestData, request->Length)) {
+        delay(1); // Wait a while before trying to receive the response.
+
+        byte_t* responseData = (byte_t*)malloc(response->Length);
+        memset(responseData, 0, response->Length);
+
+        ushort_t responseLength = response->Length;
+
+        if (this->ReceiveFrame(responseData, &responseLength)) {
+            response->Length = responseLength;
+
+            memcpy(response, responseData, response->Length);
+            success = response->Result == AccessPointStatusCode::AP_STA_NoError;
+        }
+
+        free(responseData);
+    }
+
+    free(requestData);
+    return success;
+}
+
+bool StarWatch::ReceiveFrame(byte_t* data, ushort_t* length)
+{
+    byte_t rcode = this->controller->RcvData(length, data);
 
     if (rcode && rcode != hrNAK)
         return false;
@@ -186,9 +211,9 @@ bool StarWatch::ReceiveFrame(byte_t* frame, ushort_t* length)
     return true;
 }
 
-bool StarWatch::TransmitFrame(byte_t* frame, ushort_t length)
+bool StarWatch::TransmitFrame(byte_t* data, ushort_t length)
 {
-    byte_t rcode = this->controller->SndData(length, frame);
+    byte_t rcode = this->controller->SndData(length, data);
 
     if (rcode)
         return false;
