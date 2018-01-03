@@ -3,69 +3,116 @@
 //     This file is protected by Team 02 StarCar Copyright (c) 2017.
 // </copyright>
 // <author>Dominik Scharnagl</author>
+// <author>Mehmet Billor</author>
 //--------------------------------------------------------------------------------------------------
 
-#include "Motor.h";
-#include "Servo.h";
+#include "./car/StarCar.h"
+#include "./car/board/StarBoard.h"
 
-#define Motor_RxPin 3       // Pin 3 connects to SMC TX
-#define Motor_TxPin 4       // Pin 4 connects to SMC RX
-#define Motor_ResetPin 5    // Pin 5 connects to SMC nRST
-#define Motor_ErrorPin 6    // Pin 6 connects to SMC ERR
+#include "./car/actuators/StarMotor.h"
+#include "./car/actuators/StarServo.h"
 
-#define Servo_DirPin -1
-#define Servo_StepPin -1
-#define Servo_EnablePin -1
-#define Servo_MS1Pin -1
-#define Servo_MS2Pin -1
-#define Servo_MS3Pin -1
+#include "./car/sensors/StarAccelerometer.h"
+#include "./car/sensors/StarMagnetometer.h"
+#include "./car/sensors/StarSonic.h"
 
-static Motor motor = Motor(Motor_RxPin, Motor_TxPin, Motor_ResetPin, Motor_ErrorPin);
-static Servo servo = Servo(Servo_DirPin, Servo_StepPin, Servo_EnablePin, Servo_MS1Pin, Servo_MS2Pin, Servo_MS3Pin);
+#include "./car/controllers/StarController.h"
+#include "./car/controllers/StarWatch.h"
+
+// REASONs WHY THE FIRMWARE COULD STOP WORKING:
+// - Arduino classes initializes using new. Do not create heap variables of them.
+// - Serial.print / Serial.println: If used to extensive an internal overflow will occur.
+// - Using the PIN #10 did not work for the servo control class.
+
+// USING THE USB SHIELD THE FOLLOWING PIN BEHAIVOUR APPLIES TO THE BOARD:
+// - Working PINs: 2, 3, 4, 5, 6, 7, 10, 12, 13
+// - Strange working PINs: 8
+// - Not working PINs: 0, 1, 9, 11
+
+Usb usb;
+UsbDriver usbDriver;
+UsbController usbController(&usb, &usbDriver);
+XBoxController xboxController(&usb);
+
+IbcDriver ibcDriver(115200);
+
+#define Board_FrontLedPin           6
+#define Board_BackLedPin            7
+#define Board_LeftFlashLedPin       PIN_DISCONNECTED
+#define Board_RightFlashLedPin      PIN_DISCONNECTED
+StarBoard board(&ibcDriver, Board_FrontLedPin, Board_BackLedPin, Board_LeftFlashLedPin, Board_RightFlashLedPin);
+
+StarController controller(&xboxController);
+StarWatch watch(&usbController);
+
+#define Motor_RxPin                 2
+#define Motor_TxPin                 3
+#define Motor_ResetPin              4
+StarMotor motor(Motor_RxPin, Motor_TxPin, Motor_ResetPin);
+
+#define Servo_StepPin               5
+StarServo servo(Servo_StepPin);
+
+StarAccelerometer accelerometer;
+StarMagnetometer magnetometer;
+
+#define SonicFront_Pin              12
+StarSonic sonicFront(SonicFront_Pin, StarSonicLocation::SonicLocation_Front);
+
+#define SonicBack_Pin               13
+StarSonic sonicBack(SonicBack_Pin, StarSonicLocation::SonicLocation_Back);
 
 
-void setupBoard()
-{
-    pinMode(LED_BUILTIN, OUTPUT);
-    digitalWrite(LED_BUILTIN, LOW);
-}
+StarCarModule* modules[] = {
+    &board,
+    &accelerometer,
+    &magnetometer,
+    &sonicBack,
+    &sonicFront,
+    &controller,
+    &watch,
+    &servo,
+    &motor
+};
 
-void setupMotor()
-{
-    motor.Setup();
+StarCar car(modules, sizeof(modules) / sizeof(StarCarModule*));
 
-    motor.ChangeLimit(MotorLimit::ML_MaxAccelerationForward, 1);
-    motor.ChangeLimit(MotorLimit::ML_MaxAccelerationBackward, 1);
-    motor.ChangeLimit(MotorLimit::ML_MaxDeceleration, 10);
-}
 
-void setupServo()
-{
-    servo.Setup();
-}
-
-/// <summary>
-// Runs once when reset is pressed or the board is powered.
-/// </summary>
 void setup()
 {
-    setupBoard();
-    setupMotor();
-    setupServo();
+    #if _DEBUG
+    Serial.println("----------");
+    Serial.println("-> setup()");
+    #endif
+
+    usb.Init();
+    //delay(200);
+    car.Init();
+
+    #if _DEBUG
+    Serial.println("----------");
+    #endif
+
+    //car.setMode(StarCarMode::CarMode_Controller);
+    //car.setMode(StarCarMode::CarMode_Watch);
+
+    car.setRequest((StarCarSensorRequest)(
+        StarCarSensorRequest::CarSensorRequest_Sonic
+        | StarCarSensorRequest::CarSensorRequest_Accelerator
+        | StarCarSensorRequest::CarSensorRequest_Magnet));
 }
 
 void loop()
 {
-    motor.ChangeSpeed(300);
+    #if _DEBUG
+    Serial.println("----------");
+    Serial.println("-> loop()");
+    #endif
 
-    int currentSpeed = motor.ReadCurrentSpeed();
-    int targetSpeed = motor.ReadTargetSpeed();
+    usb.Task();
+    car.Task();
 
-    Serial.print("Target Speed: ");
-    Serial.println(targetSpeed);
-
-    Serial.print("Current Speed: ");
-    Serial.println(currentSpeed);
-
-    Serial.println("-----");
+    #if _DEBUG
+    Serial.println("----------");
+    #endif
 }

@@ -15,16 +15,46 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="car\actuators\StarMotor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="car\actuators\StarServo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="car\sensors\StarSonic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="car\StarCar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="car\StarCarDefines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="car\controllers\StarController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="car\controllers\StarWatch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drivers\UsbDriver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="__vm\.StarCarUno.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Motor.h">
+    <ClInclude Include="car\board\StarBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Servo.h">
+    <ClInclude Include="car\sensors\StarMagnetometer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="StarCar.h">
+    <ClInclude Include="car\sensors\StarAccelerometer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="car\StarCarModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="drivers\IbcDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -32,10 +62,40 @@
     <None Include="StarCarUno.ino" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Motor.cpp">
+    <ClCompile Include="car\actuators\StarMotor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Servo.cpp">
+    <ClCompile Include="car\actuators\StarServo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="car\sensors\StarSonic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="car\StarCar.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="car\controllers\StarController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="car\controllers\StarWatch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\UsbDriver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="car\board\StarBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="car\sensors\StarMagnetmeter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="car\sensors\StarAccelerometer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="car\StarCarModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="drivers\IbcDriver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
