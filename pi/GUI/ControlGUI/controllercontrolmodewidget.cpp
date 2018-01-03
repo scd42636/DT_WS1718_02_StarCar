@@ -152,7 +152,7 @@ void ControllerControlModeWidget::createControllAnimation(){
 
     pButtonNext               = new QPushButton();
     hboxButtonsBottom->addWidget(pButtonNext);
-    pButtonNext->setText("Zeige Sensorwerte");
+    pButtonNext->setText("Starte Raumerkennung");
     connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(slotShowSensorValues()));
 
     blinkTimer                = new QTimer();
