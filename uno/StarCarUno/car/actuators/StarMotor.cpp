@@ -57,6 +57,7 @@ StarMotorResult StarMotor::ChangeSpeed(short_t speed, StarMotorDirection directi
     this->serial.write(speed & 0x1F);   // low five bits
     this->serial.write(speed >> 5);     // high seven bits
 
+    this->isStopped = false;
     return StarMotorResult::MotorResult_Success;
 }
 
@@ -148,7 +149,10 @@ StarMotorResult StarMotor::ReadVariable(StarMotorVariable variable, ushort_t* va
 
 void StarMotor::Stop()
 {
-    this->ExitSafeStart();
+    if (!this->isStopped) {
+        this->ExitSafeStart();
+        this->isStopped = true;
+    }
 }
 
 void StarMotor::Task(StarCar* car)
@@ -158,7 +162,7 @@ void StarMotor::Task(StarCar* car)
     #endif
 
     if (car->getEngineMode() == StarCarEngineMode::CarEngineMode_On) {
-        byte_t acceleration = car->getSpeed();
+        sbyte_t acceleration = car->getSpeed();
         short_t speed = (-1) * ((float_t)1000 * ((float_t)acceleration / 100));
 
         if (this->currentSpeed != speed) {
@@ -234,9 +238,9 @@ byte_t StarMotor::InitCore()
     digitalWrite(this->resetPin, LOW);  // reset SMC
     delay(1); // 10                           // wait 1 ms
 
-              //pinMode(this->resetPin, INPUT);     // let SMC run again
+                //pinMode(this->resetPin, INPUT);     // let SMC run again
 
-              // Must wait at least 1 ms after reset before transmitting.
+                // Must wait at least 1 ms after reset before transmitting.
     delay(5); // 50
 
     if (this->errorPin != PIN_DISCONNECTED) {

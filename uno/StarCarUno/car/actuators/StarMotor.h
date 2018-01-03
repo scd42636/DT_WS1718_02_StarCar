@@ -120,6 +120,7 @@ public:
 private:
     short_t currentSpeed;
     pin_t errorPin;
+    bool isStopped;
     pin_t receivePin;
     pin_t resetPin;
     pin_t transmitPin;
