@@ -305,3 +305,5 @@ pi/GUI/build-ControlGUI-Desktop_Qt_5_9_3_clang_64bit-Debug/*
 pi/GUI/build-ControlGUI-Desktop_Qt_5_9_2_MinGW_32bit-Debug/*
 pi/GUI/build-ControlGUI-Desktop-Debug/*
 
+/watch/binary
+

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>663168123</fileChecksum>
+  <configuration>
+    <name>Debug</name>
+    <outputs>
+      <file>$PROJ_DIR$\content\firmware\firmware.h</file>
+      <file>$TOOLKIT_DIR$\inc\io430.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\simpliciti.c</file>
+      <file>$TOOLKIT_DIR$\inc\iocc430f6137.h</file>
+      <file>$PROJ_DIR$\binary\debug\obj\firmware.__cstat.et</file>
+      <file>$PROJ_DIR$\binary\debug\obj\firmware.pbi</file>
+      <file>$PROJ_DIR$\content\firmware\firmware.c</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$PROJ_DIR$\binary\debug\exe\caromotion.d43</file>
+      <file>$PROJ_DIR$\binary\debug\obj\program.__cstat.et</file>
+      <file>$PROJ_DIR$\binary\debug\obj\firmware.r43</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\bsp.h</file>
+      <file>$PROJ_DIR$\binary\debug\obj\simpliciti.r43</file>
+      <file>$PROJ_DIR$\binary\debug\obj\simpliciti.__cstat.et</file>
+      <file>$PROJ_DIR$\binary\debug\obj\program.r43</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\simpliciti.h</file>
+      <file>$PROJ_DIR$\content\program.c</file>
+      <file>$PROJ_DIR$\content\defines.h</file>
+      <file>$PROJ_DIR$\binary\debug\obj\caromotion.pbd</file>
+      <file>$PROJ_DIR$\binary\debug\obj\simpliciti.pbi</file>
+      <file>$PROJ_DIR$\binary\debug\obj\program.pbi</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\bsp_macros.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\boards\CC430EM\bsp_board_defs.h</file>
+      <file>$TOOLKIT_DIR$\inc\cc430f6137.h</file>
+      <file>$TOOLKIT_DIR$\lib\dlib\dl430xlsfn.r43</file>
+      <file>$TOOLKIT_DIR$\inc\in430.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\drivers\bsp_leds.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\drivers\code\bsp_generic_buttons.h</file>
+      <file>$TOOLKIT_DIR$\config\linker\lnkcc430f6137.xcl</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\nwk\nwk_api.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\drivers\bsp_buttons.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\boards\CC430EM\bsp_led_defs.h</file>
+      <file>$PROJ_DIR$\binary\debug\list\caromotion.map</file>
+      <file>$TOOLKIT_DIR$\inc\msp430.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\boards\CC430EM\bsp_config.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\boards\CC430EM\bsp_button_defs.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\mrfi\mrfi.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\mcus\bsp_msp430_defs.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\nwk\nwk_types.h</file>
+      <file>$TOOLKIT_DIR$\config\linker\multiplier32.xcl</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\bsp\drivers\code\bsp_generic_leds.h</file>
+      <file>$PROJ_DIR$\content\drivers\simpliciti\stack\mrfi\mrfi_defs.h</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 8 32</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\content\drivers\simpliciti\simpliciti.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 12</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 13</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 19</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 11 22 37 33 23 25 7 34 21 36 41 38 29 26 31 40 30 35 27 15</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 21 37 25 26 7 38 15 23 22 36 29 30 34 33 11 41 31 40 35 27</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\content\firmware\firmware.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 10</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 4</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 5</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 0 1 3 7 15</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 3 15 1 7 0</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\binary\debug\exe\caromotion.d43</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 32</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 28 39 10 14 12 24</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\content\program.c</name>
+      <outputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 14</file>
+        </tool>
+        <tool>
+          <name>__cstat</name>
+          <file> 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 20</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICC430</name>
+          <file> 17 0</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17 0</file>
+        </tool>
+      </inputs>
+    </file>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
+    </forcedrebuild>
+  </configuration>
+  <configuration>
+    <name>Release</name>
+    <outputs/>
+    <forcedrebuild>
+      <name>[MULTI_TOOL]</name>
+      <tool>XLINK</tool>
+    </forcedrebuild>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+
