@@ -183,7 +183,7 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
     pButtonNext             = new QPushButton();
     hBoxButtonsBottom->addWidget(pButtonNext);
-    pButtonNext->setText("Zeige Sensorwerte");
+    pButtonNext->setText("Starte Raumerkennung");
     connect(pButtonNext, SIGNAL(clicked(bool)), this, SLOT(slotShowSensorValues()));
 
     blinkTimer->stop();
