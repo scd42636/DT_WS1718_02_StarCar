@@ -57,7 +57,7 @@ void StarSonic::Task(StarCar* car)
         pinMode(this->signalPin, INPUT);
 
         long_t duration = pulseIn(this->signalPin, HIGH);
-        long_t distance = duration / 29 / 2; // seconds to cm's
+        long_t distance = (long_t)((float_t)duration / 29.0 / 2.0); // seconds to cm's
 
         if (this->location == StarSonicLocation::SonicLocation_Back)
             car->setDistanceBack(distance);
@@ -69,7 +69,7 @@ void StarSonic::Task(StarCar* car)
         Serial.print(":");
 
         Serial.print(" Distance = ");
-        Serial.println((long)distance);
+        Serial.println(distance);
         #endif
     }
 }
