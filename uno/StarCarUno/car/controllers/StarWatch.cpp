@@ -49,6 +49,8 @@ void StarWatch::Task(StarCar* car)
             if (this->SendAndReceive(&offRequest, &offResponse)) {
                 #if _DEBUG
                 Serial.println("AP: OFF");
+                #else
+                delay(5);
                 #endif
 
                 this->state = StarWatchState::WatchState_AccessPoint_Off;
@@ -59,6 +61,8 @@ void StarWatch::Task(StarCar* car)
                 if (this->SendAndReceive(&resetRequest, &resetResponse)) {
                     #if _DEBUG
                     Serial.println("AP: Reset");
+                    #else
+                    delay(5);
                     #endif
                 }
                 else {
@@ -73,8 +77,6 @@ void StarWatch::Task(StarCar* car)
                 Serial.print("AP: OFF - failed, Result=");
                 Serial.println(offResponse.Result);
                 #endif
-
-                this->state = StarWatchState::WatchState_AccessPoint_Error;
             }
         }
         else if (this->state == StarWatchState::WatchState_AccessPoint_Off) {
@@ -82,7 +84,11 @@ void StarWatch::Task(StarCar* car)
             AP_OnResponse response;
 
             if (this->SendAndReceive(&request, &response)) {
+                #if _DEBUG
                 Serial.println("AP: ON");
+                #else
+                delay(5);
+                #endif
                 this->state = StarWatchState::WatchState_AccessPoint_On;
             }
             else {
@@ -90,8 +96,6 @@ void StarWatch::Task(StarCar* car)
                 Serial.print("AP: ON - failed, Result=");
                 Serial.println(response.Result);
                 #endif
-
-                this->state = StarWatchState::WatchState_AccessPoint_Error;
             }
         }
         else if (this->state == StarWatchState::WatchState_AccessPoint_On) {
@@ -99,8 +103,12 @@ void StarWatch::Task(StarCar* car)
             AP_GetStatusResponse response;
 
             if (this->SendAndReceive(&request, &response)) {
+                #if _DEBUG
                 Serial.print("AP: GetStatus = ");
                 Serial.println(response.Status);
+                #else
+                delay(5);
+                #endif
 
                 if (response.Status == AccessPointStatusCode::AP_STA_SimplicitLinked)
                     this->state = StarWatchState::WatchState_AccessPoint_Listening;
@@ -117,23 +125,46 @@ void StarWatch::Task(StarCar* car)
             AP_GetSimplicitiDataResponse response;
 
             if (this->SendAndReceive(&request, &response)) {
+                StarWatchButton button = response.Data.Values.Button;
+
                 // Check if response is ACC response.
                 if (response.Data.Raw.Value > 255) {
-                    short_t x = response.Data.Values.AccelerationX;
-                    short_t y = response.Data.Values.AccelerationY;
-                    short_t z = response.Data.Values.AccelerationZ;
+                    float_t x = response.Data.Values.AccelerationX;
+                    float_t y = response.Data.Values.AccelerationY;
 
                     if (x > 127)
-                        x = (-1 * (255 - x));
-
+                        x = -(255 - x);
                     if (y > 127)
-                        y = (-1 * (255 - y));
+                        y = -(255 - y);
 
-                    if (z > 127)
-                        z = (-1 * (255 - z));
+                    if (x != 0 || y != 0) {
+                        short_t speed = 0;
 
-                    if (x != 0 || y != 0 || z != 0) {
-                        #if !TEST
+                        if (x < 0)
+                            speed = (-x / 50.0) * 100;
+                        else
+                            speed = (-x / 40.0) * 100;
+
+                        if (speed > -10 && speed < 10)
+                            speed = 0;
+                        else if (speed < -100)
+                            speed = -100;
+                        else if (speed > 100)
+                            speed = 100;
+
+                        car->setSpeed((sbyte_t)((float_t)speed * 0.8));
+                        short_t direction = ((y / 45.0) * 1.6) * 100;
+
+                        if (direction > -10 && direction < 10)
+                            direction = 0;
+                        else if (direction < -100)
+                            direction = -100;
+                        else if (direction > 100)
+                            direction = 100;
+
+                        car->setDirection(direction);
+
+                        #if TEST
                         Serial.print("AP: GetSimplicitiData");
                         Serial.print(", ");
                         Serial.print("X=");
@@ -141,11 +172,28 @@ void StarWatch::Task(StarCar* car)
                         Serial.print(", ");
                         Serial.print("Y=");
                         Serial.print(y);
-                        Serial.print(", ");
-                        Serial.print("Z=");
-                        Serial.println(z);
+
+                        Serial.print(" -> Speed = ");
+                        Serial.print(speed);
+
+                        Serial.print(", Direction = ");
+                        Serial.println(direction);
                         #endif
                     }
+                }
+
+                if (button == StarWatchButton::WatchButton_TopLeft) {
+                    Serial.print(button);
+                    Serial.print(", ");
+
+                    StarCarEngineMode engineMode = car->getEngineMode();
+
+                    if (engineMode == StarCarEngineMode::CarEngineMode_Off)
+                        car->setEngineMode(StarCarEngineMode::CarEngineMode_On);
+                    else
+                        car->setEngineMode(StarCarEngineMode::CarEngineMode_Off);
+
+                    delay(250);
                 }
             }
             else {

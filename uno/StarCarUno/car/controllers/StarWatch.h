@@ -20,6 +20,14 @@ enum StarWatchState
     WatchState_AccessPoint_Listening = 2,
 };
 
+enum StarWatchButton : byte_t
+{
+    WatchButton_None = 1,
+    WatchButton_TopLeft = 17,
+    WatchButton_TopRight = 49,
+    WatchButton_BottomLeft = 33,
+};
+
 enum StarWatchResult
 {
     WatchResult_Success = 0,
@@ -141,7 +149,7 @@ typedef union AP_SimplicitiRawData_t
 
 typedef struct AP_SimplicitiData_t
 {
-    byte_t Button;
+    StarWatchButton Button;
     byte_t AccelerationX;
     byte_t AccelerationY;
     byte_t AccelerationZ;
