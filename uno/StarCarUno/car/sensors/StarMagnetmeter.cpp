@@ -107,7 +107,7 @@ void StarMagnetometer::Task(StarCar* car)
 
         car->setOrientation(degrees);
 
-        #if !TEST
+        #if TEST
         Serial.print(this->getName());
         Serial.print(":");
 
