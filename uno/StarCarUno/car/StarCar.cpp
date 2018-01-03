@@ -112,9 +112,12 @@ StarCarMode StarCar::getMode()
 StarCar* StarCar::setMode(StarCarMode value)
 {
     this->mode = value;
+    this->engineMode = StarCarEngineMode::CarEngineMode_Off;
 
+    #if _DEBUG
     Serial.print("Mode Change = ");
     Serial.println(this->mode);
+    #endif
 
     return this;
 }
