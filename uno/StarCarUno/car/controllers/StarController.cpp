@@ -60,17 +60,17 @@ void StarController::Task(StarCar* car)
             }
 
             short_t leftX = this->xboxController->getAnalogHat(AnalogHatEnum::LeftHatX);
-            car->setDirection(((float_t)leftX / 32768) * 100);
+            car->setDirection(((float_t)leftX / 32768.0) * 100);
 
             if (this->mode == StarControllerMode::Hat) {
                 short_t rightY = this->xboxController->getAnalogHat(AnalogHatEnum::RightHatY);
-                car->setSpeed(((float_t)rightY / 32768) * 100);
+                car->setSpeed(((float_t)rightY / 32768.0) * 100);
             }
             else {
                 short_t rightY = this->xboxController->getButtonPress(ButtonEnum::R2);
-                rightY -= this->xboxController->getButtonPress(ButtonEnum::L2);
+                rightY += -this->xboxController->getButtonPress(ButtonEnum::L2);
 
-                car->setSpeed(((float_t)rightY / 255) * 100);
+                car->setSpeed(((float_t)rightY / 255.0) * 100);
             }
 
             if (this->xboxController->getButtonClick(ButtonEnum::X)) {
