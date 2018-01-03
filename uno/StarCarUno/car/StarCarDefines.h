@@ -30,7 +30,6 @@ typedef double double_t;
 
 typedef uint8_t pin_t;
 
-#include <SPI.h>
 #include <cdcacm.h>
 #include <XBOXUSB.h>
 

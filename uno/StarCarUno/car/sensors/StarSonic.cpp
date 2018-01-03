@@ -69,7 +69,7 @@ void StarSonic::Task(StarCar* car)
         Serial.print(":");
 
         Serial.print(" Distance = ");
-        Serial.println(distance);
+        Serial.println((long)distance);
         #endif
     }
 }
