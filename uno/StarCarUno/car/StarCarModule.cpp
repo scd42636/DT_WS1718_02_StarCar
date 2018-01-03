@@ -18,7 +18,7 @@ StarCarModule::StarCarModule()
 
 void StarCarModule::Init()
 {
-    #if !_DEBUG
+    #if _DEBUG
     delay(100);
     Serial.print("--> Initializing ");
     Serial.print(this->getName());
@@ -28,12 +28,12 @@ void StarCarModule::Init()
     short_t status = this->InitCore();
 
     if (status == 0) {
-        #if !_DEBUG
+        #if _DEBUG
         Serial.println("success!");
         #endif
     }
     else {
-        #if !_DEBUG
+        #if _DEBUG
         Serial.println("FAILED!");
         #endif
     }
