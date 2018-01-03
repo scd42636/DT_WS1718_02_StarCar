@@ -129,6 +129,8 @@ StarCarEngineMode StarCar::getEngineMode()
 StarCar* StarCar::setEngineMode(StarCarEngineMode value)
 {
     this->engineMode = value;
+    this->speed = 0;
+
     return this;
 }
 
