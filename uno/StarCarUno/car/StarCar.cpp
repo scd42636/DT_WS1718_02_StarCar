@@ -232,3 +232,15 @@ void StarCar::Task()
             module->Task(this);
     }
 }
+
+void StarCar::SwitchEngineMode()
+{
+    StarCarEngineMode engineMode = this->engineMode;
+
+    if (engineMode == StarCarEngineMode::CarEngineMode_Off)
+        this->engineMode = StarCarEngineMode::CarEngineMode_On;
+    else
+        this->engineMode = StarCarEngineMode::CarEngineMode_Off;
+
+    this->speed = 0;
+}

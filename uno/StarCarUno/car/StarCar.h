@@ -93,4 +93,6 @@ public:
 
     void Init();
     void Task();
+
+    void SwitchEngineMode();
 };
