@@ -22,10 +22,18 @@ enum StarWatchState
 
 enum StarWatchButton : byte_t
 {
+    WatchButton_Unkown = 0,
     WatchButton_None = 1,
     WatchButton_TopLeft = 17,
     WatchButton_TopRight = 49,
     WatchButton_BottomLeft = 33,
+};
+
+enum StarWatchDevice : byte_t
+{
+    WatchDevice_Unkown = 0,
+    WatchDevice_DirectionWheel = 10,
+    WatchDevice_SpeedWheel = 11
 };
 
 enum StarWatchResult
@@ -143,7 +151,7 @@ typedef struct AP_ResetResponse_t : AP_Response
 typedef union AP_SimplicitiRawData_t
 {
     dword_t Value;
-    byte_t Values[4];
+    byte_t Values[5];
 } AP_SimplicitiRawData;
 
 
@@ -153,6 +161,7 @@ typedef struct AP_SimplicitiData_t
     byte_t AccelerationX;
     byte_t AccelerationY;
     byte_t AccelerationZ;
+    StarWatchDevice Device;
 } AP_SimplicitiData;
 typedef struct AP_GetSimplicitiDataRequest_t : AP_Request
 {
@@ -192,7 +201,7 @@ class StarWatch : public StarCarModule
 private:
     UsbController* controller;
     StarWatchState state;
-    bool isFirstRun;
+    bool isAccessPointInitialized;
 
     // ---------- Public constructors ----------
 public:
@@ -213,6 +222,17 @@ protected:
 
     // ---------- Private methods ----------
 private:
+    void ActivateAccessPoint();
+    void InitializeAccessPoint();
+
+    void UpdateState();
+
+    bool RequestControlValue(
+        StarWatchDevice* device,
+        StarWatchButton* button,
+        sbyte_t* controlValue,
+        sbyte_t* positionValue);
+
     bool SendAndReceive(AP_Request* request, AP_Response* response);
 
     bool ReceiveFrame(byte_t* frame, ushort_t* length);

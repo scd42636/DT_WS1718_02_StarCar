@@ -15,7 +15,7 @@ StarWatch::StarWatch(UsbController* controller)
     this->controller = controller;
 
     this->state = StarWatchState::WatchState_AccessPoint_Off;
-    this->isFirstRun = true;
+    this->isAccessPointInitialized = true;
 }
 
 // ---------- Public properties ----------
@@ -42,172 +42,72 @@ void StarWatch::Task(StarCar* car)
         return;
 
     if (car->getMode() == StarCarMode::CarMode_Watch) {
-        if (this->isFirstRun) {
-            AP_OffRequest offRequest;
-            AP_OffResponse offResponse;
-
-            if (this->SendAndReceive(&offRequest, &offResponse)) {
-                #if _DEBUG
-                Serial.println("AP: OFF");
-                #else
-                delay(5);
-                #endif
-
-                this->state = StarWatchState::WatchState_AccessPoint_Off;
-
-                AP_ResetRequest resetRequest;
-                AP_ResetResponse resetResponse;
-
-                if (this->SendAndReceive(&resetRequest, &resetResponse)) {
-                    #if _DEBUG
-                    Serial.println("AP: Reset");
-                    #else
-                    delay(5);
-                    #endif
-                }
-                else {
-                    #if _DEBUG
-                    Serial.print("AP: Reset - failed, Result=");
-                    Serial.println(resetResponse.Result);
-                    #endif
-                }
-            }
-            else {
-                #if _DEBUG
-                Serial.print("AP: OFF - failed, Result=");
-                Serial.println(offResponse.Result);
-                #endif
-            }
+        if (!this->isAccessPointInitialized) {
+            this->InitializeAccessPoint();
+            this->isAccessPointInitialized = true;
         }
         else if (this->state == StarWatchState::WatchState_AccessPoint_Off) {
-            AP_OnRequest request;
-            AP_OnResponse response;
-
-            if (this->SendAndReceive(&request, &response)) {
-                #if _DEBUG
-                Serial.println("AP: ON");
-                #else
-                delay(5);
-                #endif
-                this->state = StarWatchState::WatchState_AccessPoint_On;
-            }
-            else {
-                #if _DEBUG
-                Serial.print("AP: ON - failed, Result=");
-                Serial.println(response.Result);
-                #endif
-            }
+            this->ActivateAccessPoint();
         }
-        else if (this->state == StarWatchState::WatchState_AccessPoint_On) {
-            AP_GetStatusRequest request;
-            AP_GetStatusResponse response;
+        else if (this->state >= StarWatchState::WatchState_AccessPoint_On) {
+            this->UpdateState();
 
-            if (this->SendAndReceive(&request, &response)) {
-                #if _DEBUG
-                Serial.print("AP: GetStatus = ");
-                Serial.println(response.Status);
-                #else
-                delay(5);
-                #endif
-
-                if (response.Status == AccessPointStatusCode::AP_STA_SimplicitLinked)
-                    this->state = StarWatchState::WatchState_AccessPoint_Listening;
+            if (this->state == StarWatchState::WatchState_AccessPoint_On) {
+                car->setEngineMode(StarCarEngineMode::CarEngineMode_Off);
             }
-            else {
-                #if _DEBUG
-                Serial.print("AP: GetStatus - failed, Result=");
-                Serial.println(response.Result);
-                #endif
-            }
-        }
-        else if (this->state == StarWatchState::WatchState_AccessPoint_Listening) {
-            AP_GetSimplicitiDataRequest request;
-            AP_GetSimplicitiDataResponse response;
+            else if (this->state == StarWatchState::WatchState_AccessPoint_Listening) {
+                StarWatchDevice device = StarWatchDevice::WatchDevice_Unkown;
+                StarWatchButton button = StarWatchButton::WatchButton_Unkown;
 
-            if (this->SendAndReceive(&request, &response)) {
-                StarWatchButton button = response.Data.Values.Button;
+                sbyte_t controlValue = 0;
+                sbyte_t positionValue = 0;
 
-                // Check if response is ACC response.
-                if (response.Data.Raw.Value > 255) {
-                    float_t x = response.Data.Values.AccelerationX;
-                    float_t y = response.Data.Values.AccelerationY;
+                if (this->RequestControlValue(&device, &button, &controlValue, &positionValue)) {
+                    sbyte_t oldValue = 0;
+                    sbyte_t newValue = controlValue;
 
-                    if (x > 127)
-                        x = -(255 - x);
-                    if (y > 127)
-                        y = -(255 - y);
+                    if (device == StarWatchDevice::WatchDevice_SpeedWheel) {
+                        oldValue = car->getSpeed();
 
-                    if (x != 0 || y != 0) {
-                        short_t speed = 0;
+                        // Check if watch is in a valid horizontal "command area".
+                        if (positionValue < -5 || positionValue > 5)
+                            newValue = 0;
 
-                        if (x < 0)
-                            speed = (-x / 50.0) * 100;
-                        else
-                            speed = (-x / 40.0) * 100;
+                        newValue = (float_t)newValue * 0.8;
+                        car->setSpeed(newValue);
+                    }
+                    else if (device == StarWatchDevice::WatchDevice_DirectionWheel) {
+                        oldValue = car->getDirection();
 
-                        if (speed > -10 && speed < 10)
-                            speed = 0;
-                        else if (speed < -100)
-                            speed = -100;
-                        else if (speed > 100)
-                            speed = 100;
+                        // Check if watch is in a valid horizontal "command area".
+                        if (positionValue < -15 || positionValue > 0)
+                            newValue = 0;
 
-                        car->setSpeed((sbyte_t)((float_t)speed * 0.8));
-                        short_t direction = ((y / 45.0) * 1.6) * 100;
+                        car->setDirection(newValue);
+                    }
 
-                        if (direction > -10 && direction < 10)
-                            direction = 0;
-                        else if (direction < -100)
-                            direction = -100;
-                        else if (direction > 100)
-                            direction = 100;
+                    if (button == StarWatchButton::WatchButton_TopLeft) {
+                        car->SwitchEngineMode();
+                        delay(250);
+                    }
 
-                        car->setDirection(direction);
-
-                        #if TEST
+                    #if !TEST
+                    if (oldValue != newValue) {
                         Serial.print("AP: GetSimplicitiData");
-                        Serial.print(", ");
-                        Serial.print("X=");
-                        Serial.print(x);
-                        Serial.print(", ");
-                        Serial.print("Y=");
-                        Serial.print(y);
+
+                        Serial.print(": Device = ");
+                        Serial.print(device);
 
                         Serial.print(" -> Speed = ");
-                        Serial.print(speed);
+                        Serial.print(car->getSpeed());
 
                         Serial.print(", Direction = ");
-                        Serial.println(direction);
-                        #endif
+                        Serial.println(car->getDirection());
                     }
+                    #endif
                 }
-
-                if (button == StarWatchButton::WatchButton_TopLeft) {
-                    Serial.print(button);
-                    Serial.print(", ");
-
-                    StarCarEngineMode engineMode = car->getEngineMode();
-
-                    if (engineMode == StarCarEngineMode::CarEngineMode_Off)
-                        car->setEngineMode(StarCarEngineMode::CarEngineMode_On);
-                    else
-                        car->setEngineMode(StarCarEngineMode::CarEngineMode_Off);
-
-                    delay(250);
-                }
-            }
-            else {
-                #if _DEBUG
-                Serial.print("AP: GetSimplicitiData - failed, Result=");
-                Serial.println(response.Result);
-                #endif
             }
         }
-
-        this->isFirstRun = false;
-    }
-    else {
-        this->isFirstRun = true;
     }
 }
 
@@ -219,6 +119,180 @@ byte_t StarWatch::InitCore()
 }
 
 // ---------- Private methods ----------
+
+void StarWatch::ActivateAccessPoint()
+{
+    AP_OnRequest request;
+    AP_OnResponse response;
+
+    if (this->SendAndReceive(&request, &response)) {
+        #if _DEBUG
+        Serial.println("AP: ON");
+        #endif
+
+        this->state = StarWatchState::WatchState_AccessPoint_On;
+    }
+    else {
+        #if _DEBUG
+        Serial.print("AP: ON - failed, Result=");
+        Serial.println(response.Result);
+        #endif
+    }
+}
+
+void StarWatch::InitializeAccessPoint()
+{
+    AP_OffRequest offRequest;
+    AP_OffResponse offResponse;
+
+    if (this->SendAndReceive(&offRequest, &offResponse)) {
+        #if _DEBUG
+        Serial.println("AP: OFF");
+        #endif
+
+        this->state = StarWatchState::WatchState_AccessPoint_Off;
+        delay(5);
+
+        AP_ResetRequest resetRequest;
+        AP_ResetResponse resetResponse;
+
+        if (this->SendAndReceive(&resetRequest, &resetResponse)) {
+            #if _DEBUG
+            Serial.println("AP: Reset");
+            #endif
+        }
+        else {
+            #if _DEBUG
+            Serial.print("AP: Reset - failed, Result=");
+            Serial.println(resetResponse.Result);
+            #endif
+        }
+    }
+    else {
+        #if _DEBUG
+        Serial.print("AP: OFF - failed, Result=");
+        Serial.println(offResponse.Result);
+        #endif
+    }
+}
+
+bool StarWatch::RequestControlValue(
+    StarWatchDevice* device,
+    StarWatchButton* button,
+    sbyte_t* controlValue,
+    sbyte_t* positionValue)
+{
+    bool success = false;
+
+    *device = StarWatchDevice::WatchDevice_Unkown;
+    *button = StarWatchButton::WatchButton_None;
+    *controlValue = 0;
+
+    AP_GetSimplicitiDataRequest request;
+    AP_GetSimplicitiDataResponse response;
+
+    if (this->SendAndReceive(&request, &response)) {
+        success = true;
+
+        #if _DEBUG
+        Serial.print("AP: GetSimplicitiData = ");
+        Serial.println(response.Status);
+        #endif
+
+        *device = response.Data.Values.Device;
+        *button = response.Data.Values.Button;
+
+        // Check if response is ACC response.
+        if (response.Data.Raw.Value > 255) {
+            float_t x = response.Data.Values.AccelerationX;
+            float_t y = response.Data.Values.AccelerationY;
+
+            // Align value around zero and determine -/+ range.
+            if (x > 127)
+                x = -(255 - x);
+
+            // Align value around zero and determine -/+ range.
+            if (y > 127)
+                y = -(255 - y);
+
+            // Calculate percentage portion of the value relative to its possible range.
+            if (x < 0)
+                x = (-x / 50.0) * 100;
+            else
+                x = (-x / 40.0) * 100;
+
+            // Skip values lower than 5%.
+            if (x > -5 && x < 5)
+                x = 0;
+
+            // Align values lower than -100% to exact -100%.
+            if (x < -100)
+                x = -100;
+            // Align values greater than 100% to exact 100%.
+            else if (x > 100)
+                x = 100;
+
+            if (x < 0) {
+                // Align value to maximum possible motion range.
+                // The motion range -60% to 100% (without alignment).
+                x = (x / 60.0) * 100;
+
+                // Align values lower than -100% to exact -100%.
+                if (x < -100)
+                    x = -100;
+            }
+
+            *controlValue = x;
+            *positionValue = y;
+        }
+    }
+    else {
+        #if _DEBUG
+        Serial.print("AP: GetSimplicitiData - failed, Result=");
+        Serial.println(response.Result);
+        #endif
+    }
+
+    return success;
+}
+
+void StarWatch::UpdateState()
+{
+    AP_GetStatusRequest request;
+    AP_GetStatusResponse response;
+
+    if (this->SendAndReceive(&request, &response)) {
+        #if _DEBUG
+        Serial.print("AP: GetStatus = ");
+        Serial.println(response.Status);
+        #endif
+
+        AccessPointStatusCode status = response.Status;
+
+        if (status == AccessPointStatusCode::AP_STA_Idle
+            || status == AccessPointStatusCode::AP_STA_SimplicitLinked) {
+            this->state = StarWatchState::WatchState_AccessPoint_Listening;
+        }
+        else if (status == AccessPointStatusCode::AP_STA_SimplicitStopped) {
+            this->state = StarWatchState::WatchState_AccessPoint_Off;
+        }
+        else if ((byte_t)status == 255) {
+            // The access point will send this status in case it is ready but did not yet
+            // set up its internal status appropriate.
+            this->state = StarWatchState::WatchState_AccessPoint_Listening;
+        }
+        else {
+            ////Serial.println(status);
+            this->state = StarWatchState::WatchState_AccessPoint_On;
+        }
+    }
+    else {
+        #if _DEBUG
+        Serial.print("AP: GetStatus - failed, Result=");
+        Serial.println(response.Result);
+        #endif
+    }
+}
 
 bool StarWatch::SendAndReceive(AP_Request* request, AP_Response* response)
 {
@@ -251,7 +325,7 @@ bool StarWatch::SendAndReceive(AP_Request* request, AP_Response* response)
 
 bool StarWatch::ReceiveFrame(byte_t* data, ushort_t* length)
 {
-    byte_t rcode = this->controller->RcvData(length, data);
+    byte_t rcode = this->controller->RcvData(length, (uint8_t*)data);
 
     if (rcode && rcode != hrNAK)
         return false;
@@ -261,7 +335,7 @@ bool StarWatch::ReceiveFrame(byte_t* data, ushort_t* length)
 
 bool StarWatch::TransmitFrame(byte_t* data, ushort_t length)
 {
-    byte_t rcode = this->controller->SndData(length, data);
+    byte_t rcode = this->controller->SndData(length, (uint8_t*)data);
 
     if (rcode)
         return false;
