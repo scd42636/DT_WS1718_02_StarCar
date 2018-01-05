@@ -230,11 +230,10 @@ void IbcDriver::next(StarCar* car)
             /* IBC_PRESERVE_SEND_BEGIN 180 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
             int SonicFront = EEPROM.read(EEPROM_SONIC_FRONT_VALUE);
             byte * bpSF = (byte*)&SonicFront;
-
             send(bpSF, sizeof(int));
 
             //DONT FORGET TO HASH
-            setDH(createDH(bpSF, 2));
+            setDH(createDH(bpSF, sizeof(int)));
             /* IBC_PRESERVE_SEND_END 180 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
         break;
@@ -270,11 +269,10 @@ void IbcDriver::next(StarCar* car)
             /* IBC_PRESERVE_SEND_BEGIN 181 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
             int SonicBack = EEPROM.read(EEPROM_SONIC_BACK_VALUE);
             byte * bpSB = (byte*)&SonicBack;
+            send(bpSB, sizeof(int));
 
-            for (int i = 0; i < 2; i++) { send(bpSB[i]); }
             //DONT FORGET TO HASH
-            setDH(createDH(bpSB, 2));
-
+            setDH(createDH(bpSB, sizeof(int)));
             /* IBC_PRESERVE_SEND_END 181 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
         break;
@@ -312,10 +310,10 @@ void IbcDriver::next(StarCar* car)
             send(parityMag);
 
             byte * bpM = (byte*)&Mag;
-            send(bpM, 2);
+            send(bpM, sizeof(int));
 
             //DONT FORGET TO HASH
-            setDH(createDH(&parityMag, 1, createDH(bpM, 2)));
+            setDH(createDH(&parityMag, sizeof(byte), createDH(bpM, sizeof(int))));
 
             /* IBC_PRESERVE_SEND_END 182 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
@@ -354,13 +352,24 @@ void IbcDriver::next(StarCar* car)
 
             send(parityXacc);
             byte * bpXacc = (byte*)&Xaccel;
-            send(bpXacc, 2);
+            send(bpXacc, sizeof(int));
             send(parityYacc);
             byte * bpYacc = (byte*)&Yaccel;
-            send(bpYacc, 2);
+            send(bpYacc, sizeof(int));
 
             //DONT FORGET TO HASH
-            setDH(createDH(&parityXacc, 1, createDH(bpXacc, 2, createDH(&parityYacc, 1, createDH(bpYacc, 2)))));
+            setDH(createDH(
+                &parityXacc,
+                sizeof(byte),
+                createDH(
+                bpXacc,
+                sizeof(int),
+                createDH(
+                &parityYacc,
+                sizeof(byte),
+                createDH(
+                bpYacc, 
+                sizeof(int))))));
 
             /* IBC_PRESERVE_SEND_END 183 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
@@ -445,10 +454,10 @@ void IbcDriver::next(StarCar* car)
             /* IBC_PRESERVE_SEND_BEGIN 253 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
             char message[4] = "me2";
-            send(((byte*)message), 4);
+            send(((byte*)message), sizeof(message));
 
             //DONT FORGET TO HASH
-            setDH(createDH(((byte*)message), 4));
+            setDH(createDH(((byte*)message), sizeof(message)));
 
             /* IBC_PRESERVE_SEND_END 253 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
