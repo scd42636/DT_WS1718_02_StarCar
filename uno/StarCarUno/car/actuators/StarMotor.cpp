@@ -177,6 +177,7 @@ void StarMotor::Task(StarCar* car)
             #endif
 
             this->currentSpeed = speed;
+            this->isStopped = false;
         }
     }
     else if (car->getEngineMode() == StarCarEngineMode::CarEngineMode_Off) {
