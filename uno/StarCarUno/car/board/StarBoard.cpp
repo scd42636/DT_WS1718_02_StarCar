@@ -49,14 +49,14 @@ void StarBoard::Task(StarCar* car)
     Serial.println("--> StarBoard::Task()");
     #endif
 
-    ////if (Serial.available()) {
-    ////    int value = Serial.read();
+    //if (Serial.available()) {
+    //    int value = Serial.read();
 
-    ////    if (value >= 48 && value <= 57) {
-    ////        StarCarMode mode = (StarCarMode)(value - 48);
-    ////        car->setMode(mode);
-    ////    }
-    ////}
+    //    if (value >= 48 && value <= 57) {
+    //        StarCarMode mode = (StarCarMode)(value - 48);
+    //        car->setMode(mode);
+    //    }
+    //}
 
     StarCarEngineMode currentEngineMode = car->getEngineMode();
 
@@ -79,12 +79,12 @@ void StarBoard::Task(StarCar* car)
     }
 
     if (currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
-        int8_t speed = car->getSpeed();
+        sbyte_t speed = car->getSpeed();
 
         this->SwitchLed(&this->frontLedIsOn, speed > 10, this->frontLedPin);
         this->SwitchLed(&this->backLedIsOn, speed < -10, this->backLedPin);
 
-        int8_t direction = car->getDirection();
+        sbyte_t direction = car->getDirection();
 
         this->SwitchLed(&this->rightLedOn, direction > 0, this->rightLedPin);
         this->SwitchLed(&this->leftLedOn, direction < 0, this->leftLedPin);
