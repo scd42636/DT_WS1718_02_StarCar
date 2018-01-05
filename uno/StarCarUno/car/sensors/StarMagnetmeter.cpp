@@ -21,7 +21,7 @@
 #define HMC5883L_Address 0x0D
 #define ControlRegister1 0x09
 #define ControlRegister2 0x0A
-#define DataRegisterBegin 0x00 // from 00H to 05H
+#define DataRegisterBegin 0x03 // from 00H to 05H
 
 
 // ---------- Public constructors ----------
@@ -109,9 +109,9 @@ void StarMagnetometer::Task(StarCar* car)
 
         #if TEST
         Serial.print(this->getName());
-        Serial.print(":");
+        Serial.print(": ");
 
-        Serial.print(" Orientation = ");
+        Serial.print("Orientation = ");
         Serial.println(degrees);
         #endif
 

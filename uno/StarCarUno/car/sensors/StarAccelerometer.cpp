@@ -54,7 +54,7 @@ void StarAccelerometer::Task(StarCar* car)
 
         #if TEST
         Serial.print(this->getName());
-        Serial.print(":");
+        Serial.print(": ");
 
         Serial.print("X=");
         Serial.print(xAcceleration);
