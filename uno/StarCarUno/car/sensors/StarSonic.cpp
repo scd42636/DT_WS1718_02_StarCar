@@ -64,7 +64,7 @@ void StarSonic::Task(StarCar* car)
         else if (this->location == StarSonicLocation::SonicLocation_Front)
             car->setDistanceFront(distance);
 
-        #if !TEST
+        #if TEST
         Serial.print(this->getName());
         Serial.print(":");
 
