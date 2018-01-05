@@ -13,3 +13,56 @@
   \item Der Benutzer kann einen Fahrbefehl von Punkt A zu Punkt B erteilen.
 \end{itemize}
 
+\begin{description}
+  \item[/F0101/]
+    \textit{Automatischer Start der Benutzeroberfläche:}
+	Verbindet der Benutzer das Fahrzeug mit einer von Ihn gewählten Stromquelle, 
+	bootet der Raspberry Pi direkt in die Benutzeroberfläche des Fahrzeugs und verhindert so eine falsche Bedienmöglichkeit des Fahrzeugs.
+  \item[/F0102/]
+    \textit{GUI - Initialisierung des Fahrzeugs:}
+	Der Benutzer kann über einen Button das Fahrzeug initialisieren. Das bedeutet im konkreten Fall, 
+	dass zunächst ein Serieller Port geöffnet wird und das Inter Board Protocoll (IBC) gestartet wird. 
+	Weiterführende Steuerungsmöglichkeiten dürfen dem Benutzer zu diesem Zeitpunkt nicht zu Verfügung stehen.
+  \item[/F0103/]
+	\textit{GUI - Modusauswahl:}
+	Der Benutzer hat die Möglichkeit zwischen zwei Betriebsmodi auszuwählen:
+	\begin{itemize}
+		\item Uhrsteuerung
+		\item Controllersteuerung
+	  \end{itemize}
+	Zusätzlich muss der Benutzer, ohne einen Modus auszuwählen, die Möglichkeit erhalten, sich die aktuellen Sensorwerte ansehen zu können.
+  \item[/F0104/]
+  \textit{Neustart der Benutzeroberfläche:}
+  Der Benutzer muss über ein Menü die Möglichkeit erhalten, die Benutzeroberfläche neu zu starten.
+  Dies ist insbesondere bei Verbindungsproblemen zum Mikrocontroller unabdingbar.
+  \item[/F0105/]
+  \textit{Beenden des Systems:}
+  Der Benutzer muss über ein Menü die Möglichkeit erhalten, die Benutzeroberfläche sowie den Raspberry Pi ordnungsgemäß herunterfahren zu können.
+  \item[/F0106/]
+  \textit{GUI - Uhrsteuerung:}
+  Wählt der Benutzer den Modus Uhrsteuerung, muss diesem zunächst eine kurze Anleitung dargestellt werden, 
+  wie er die Uhren anzulegen hat. Hat der Benutzer diese Information verstanden, muss er diese bestätigen.
+  Nach der positiven Bestätigung, muss dem Benutzer die Steuerung anhand von Bildern und Animationen verständlich erklärt werden. 
+  Zudem muss der Benutzer über einen Button die Möglichkeit gegeben werden, den Raumscan zu starten /F0111/.
+  \item[/F0107/]
+  \textit{GUI - Controllersteuerung: }
+  Wählt der Benutzer den Modus Controllersteuerung, wird dieser aufgefordert, den Controller griffbereit zu halten. 
+  Hat der Benutzer diese Information verstanden, muss er diese bestätigen. 
+  Nach der positiven Bestätigung, muss dem Benutzer die Steuerung anhand von Bildern und Animationen verständlich erklärt werden. 
+  Zudem muss der Benutzer über einen Button die Möglichkeit gegeben werden, den Raumscan zu starten /F0111/.
+  \item[/F0108/]
+  \textit{GUI - Navigation:}
+  Der Benutzer muss jederzeit die Möglichkeit erhalten, zur Modusauswahl  /F0103/ zurückzukehren und einen anderen Modus wählen zu können. 
+  Dabei ist die Navigationstiefe in einem Modus unrelevant.
+  \item[/F0109/]
+  \textit{Darstellung der Sensorwerte:}
+  Dem Benutzer muss nach der Wahl, sich die Sensorwerte anzeigen zu lassen, eine Übersicht der vorhandenen Sensoren und deren aktuellen Werte dargestellt werden.
+  \item[/F0110/]
+  \textit{Fehleranzeige:}
+  Dem Benutzer muss eine Fehleranzeige bereitgestellt werden. Diese muss unabhängig von allen Darstellungen und Benutzereingaben jederzeit gut sichtbar sein. 
+  Weiterhin müssen dem Benutzer spezifische Details über einem Fehlerfall dargestellt werden.
+  \item[/F0111/]
+  \textit{GUI-Raumscan:}
+  Der Benutzer muss die Möglichkeit erhalten, nach der Wahl eines Modi, den Raumscan zu starten. 
+  Während der Raumscan läuft, werden dem Benutzer die Sensordaten dargestellt /F0109/
+\end{description}
