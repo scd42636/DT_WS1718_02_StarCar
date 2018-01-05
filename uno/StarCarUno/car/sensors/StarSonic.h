@@ -26,6 +26,7 @@ class StarSonic : public StarCarModule
 {
     // ---------- Private fields ----------
 private:
+    ulong_t lastRequestTime;
     StarSonicLocation location;
     pin_t signalPin;
 

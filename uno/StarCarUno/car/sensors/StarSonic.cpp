@@ -14,6 +14,7 @@
 StarSonic::StarSonic(pin_t signalPin, StarSonicLocation location)
 {
     this->signalPin = signalPin;
+    this->lastRequestTime = 0;
     this->location = location;
 }
 
@@ -40,7 +41,11 @@ void StarSonic::Task(StarCar* car)
     Serial.println("--> StarSonic::Task()");
     #endif
 
+    ulong_t currentRequestTime = millis();
+    ulong_t duration = currentRequestTime - this->lastRequestTime;
+
     if (this->signalPin != PIN_DISCONNECTED
+        && (this->lastRequestTime == 0 || duration >= 100)
         && car->IsRequested(StarCarSensorRequest::CarSensorRequest_Sonic)) {
         //Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
         pinMode(this->signalPin, OUTPUT);
@@ -71,6 +76,8 @@ void StarSonic::Task(StarCar* car)
         Serial.print(" Distance = ");
         Serial.println((long)distance);
         #endif
+
+        this->lastRequestTime = currentRequestTime;
     }
 }
 
