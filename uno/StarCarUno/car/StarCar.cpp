@@ -87,6 +87,9 @@ short_t StarCar::getDistanceBack()
 }
 StarCar* StarCar::setDistanceBack(short_t value)
 {
+    if (this->speed < 0 && value < 15)
+        this->speed = 0;
+
     this->distanceBack = value;
     EEPROM.write(EEPROM_SONIC_BACK_VALUE, value);
 
@@ -99,6 +102,9 @@ short_t StarCar::getDistanceFront()
 }
 StarCar* StarCar::setDistanceFront(short_t value)
 {
+    if (this->speed > 0 && value < 15)
+        this->speed = 0;
+
     this->distanceFront = value;
     EEPROM.write(EEPROM_SONIC_FRONT_VALUE, value);
 
@@ -170,7 +176,14 @@ sbyte_t StarCar::getSpeed()
 }
 StarCar* StarCar::setSpeed(sbyte_t value)
 {
-    this->speed = value;
+    if ((value > 0 && this->distanceFront > 15)
+        || (value < 0 && this->distanceBack > 15)) {
+        this->speed = value;
+    }
+    else {
+        this->speed = 0;
+    }
+
     return this;
 }
 
