@@ -155,10 +155,13 @@ void SensorValuesWidget::generateStyle(){
 }
 
 void SensorValuesWidget::slotpButtonGoBackPushed(){
+#ifdef Q_OS_LINUX
 
     threadLidar->finishLidar();
     QuerySensorValuesTimer->stop();
     emit removeWindowfromStack();
+
+#endif
 }
 
 void SensorValuesWidget::slotQuerySensorValues(){
@@ -193,6 +196,8 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
 
 QString SensorValuesWidget::getMesureValue(Inbox *inbox){
+
+#ifdef Q_OS_LINUX
 
     Packet tempPacket = *inbox->back();
     uint8_t *packetContent = tempPacket.content();
@@ -269,6 +274,8 @@ QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 
     inbox->pop_front();
     return resultValue;
+
+#endif
 }
 
 

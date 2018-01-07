@@ -189,9 +189,12 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
     blinkTimer->stop();
     delete blinkTimer;
 
+#ifdef Q_OS_LINUX
+
     Packet ClockPacket(101,0);
     IBCPointer->send(ClockPacket);
 
+#endif
     createControllAnimation();
 
 }
