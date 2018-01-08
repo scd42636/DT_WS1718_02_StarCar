@@ -103,6 +103,17 @@ private:
     void generateStyle();
 
     QString getMesureValue(Inbox *inbox);
+
+    template<typename TData>
+    void ReadData(TData* data, Packet packet)
+    {
+        size_t dataSize = sizeof(TData);
+
+        if (dataSize < packet.contentsize())
+            dataSize = packet.contentsize();
+
+        memcpy(data, packet.content(), dataSize);
+    }
 };
 
 #endif // SENSORVALUESWIDGET_H
