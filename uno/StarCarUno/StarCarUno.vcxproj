@@ -84,6 +84,7 @@
     <IncludePath>$(ProgramFiles)\Arduino\hardware\arduino\avr\cores\arduino\;$(ProgramFiles)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src\;$(ProgramFiles)\Arduino\hardware\arduino\avr\libraries\EEPROM\src\;$(ProgramFiles)\Arduino\hardware\arduino\avr\libraries\SPI\src\;$(ProjectDir)libraries\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="Overview.cd" />
     <None Include="StarCarUno.ino">
       <FileType>CppCode</FileType>
     </None>

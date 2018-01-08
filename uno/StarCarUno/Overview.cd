@@ -1,0 +1,162 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="StarMotor" Collapsed="true">
+    <Position X="2.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAIAIACAEAgAAEAQEEAAYAAAAAFAAIFAEAAEIACg=</HashCode>
+      <FileName>car\actuators\StarMotor.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StarServo" Collapsed="true">
+    <Position X="2.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAIAAAAAAAAAAAAAAAAAIAAQAAAgAAEAEAAAIAgA=</HashCode>
+      <FileName>car\actuators\StarServo.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StarBoard" Collapsed="true">
+    <Position X="2.5" Y="4.25" Width="1.5" />
+    <Members>
+      <Field Name="backLedIsOn" Hidden="true" />
+      <Field Name="backLedPin" Hidden="true" />
+      <Field Name="frontLedIsOn" Hidden="true" />
+      <Field Name="frontLedPin" Hidden="true" />
+      <Method Name="getName" Hidden="true" />
+      <Method Name="InitCore" Hidden="true" />
+      <Field Name="leftLedOn" Hidden="true" />
+      <Field Name="leftLedPin" Hidden="true" />
+      <Field Name="previousEngineMode" Hidden="true" />
+      <Field Name="rightLedOn" Hidden="true" />
+      <Field Name="rightLedPin" Hidden="true" />
+      <Method Name="StarBoard" Hidden="true" />
+      <Method Name="SwitchLed" Hidden="true" />
+      <Method Name="Task" Hidden="true" />
+    </Members>
+    <AssociationLine Name="ibcDriver" Type="IbcDriver">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.848" Y="0.206" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>DAAAAAAABAABAAwAAAABAAAIRCAAAAAAAEEEAAAAAAA=</HashCode>
+      <FileName>car\board\StarBoard.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="ibcDriver" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="StarWatch" Collapsed="true">
+    <Position X="10.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAECAAAAAEUAAAAAQAAIAAAAAAAEAEAMNAAAAAA=</HashCode>
+      <FileName>car\controllers\StarWatch.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StarAccelerometer" Collapsed="true">
+    <Position X="4.75" Y="4.25" Width="1.75" />
+    <InheritanceLine Type="StarCarModule" FixedToPoint="true">
+      <Path>
+        <Point X="7.25" Y="3.312" />
+        <Point X="7.25" Y="4.625" />
+        <Point X="6.5" Y="4.625" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAQAAAAAAAAAQAAIAAIAAAAAAEAEAAAAAAA=</HashCode>
+      <FileName>car\sensors\StarAccelerometer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StarMagnetometer" Collapsed="true">
+    <Position X="8" Y="4.25" Width="1.75" />
+    <InheritanceLine Type="StarCarModule" FixedToPoint="true">
+      <Path>
+        <Point X="7.25" Y="3.312" />
+        <Point X="7.25" Y="4.625" />
+        <Point X="8" Y="4.625" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAABACAAQAAIAAAAAAAAAEAEAAEAAAA=</HashCode>
+      <FileName>car\sensors\StarMagnetometer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StarSonic" Collapsed="true">
+    <Position X="6.5" Y="5.5" Width="1.5" />
+    <InheritanceLine Type="StarCarModule" FixedToPoint="true">
+      <Path>
+        <Point X="7.25" Y="3.312" />
+        <Point X="7.25" Y="5.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAIAAAABAAAAAAAAAAAAAAAKAAAQAAAAAEAEAAAAAIA=</HashCode>
+      <FileName>car\sensors\StarSonic.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StarCar">
+    <Position X="10.5" Y="2.75" Width="1.5" />
+    <Members>
+      <Field Name="accelerationX" Hidden="true" />
+      <Field Name="accelerationY" Hidden="true" />
+      <Field Name="direction" Hidden="true" />
+      <Field Name="distanceBack" Hidden="true" />
+      <Field Name="distanceFront" Hidden="true" />
+      <Field Name="engineMode" Hidden="true" />
+      <Method Name="IsRequested" Hidden="true" />
+      <Field Name="mode" Hidden="true" />
+      <Field Name="modulesLength" Hidden="true" />
+      <Field Name="orientation" Hidden="true" />
+      <Field Name="request" Hidden="true" />
+      <Method Name="setAccelerationX" Hidden="true" />
+      <Method Name="setAccelerationY" Hidden="true" />
+      <Method Name="setDirection" Hidden="true" />
+      <Method Name="setDistanceBack" Hidden="true" />
+      <Method Name="setDistanceFront" Hidden="true" />
+      <Method Name="setEngineMode" Hidden="true" />
+      <Method Name="setMode" Hidden="true" />
+      <Method Name="setOrientation" Hidden="true" />
+      <Method Name="setRequest" Hidden="true" />
+      <Method Name="setSpeed" Hidden="true" />
+      <Field Name="speed" Hidden="true" />
+      <Method Name="StarCar" Hidden="true" />
+      <Method Name="SwitchEngineMode" Hidden="true" />
+    </Members>
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <AssociationLine Name="modules" Type="StarCarModule">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.862" Y="0.072" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AARBAAggyAgAICCAAhIEAACAAyAQjcARkEIDAAAgAAA=</HashCode>
+      <FileName>car\StarCar.h</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="modules" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="StarCarModule" Collapsed="true">
+    <Position X="6.5" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAEAGAAAAAAA=</HashCode>
+      <FileName>car\StarCarModule.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StarController" Collapsed="true">
+    <Position X="6.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAACCCAAAAAAAIAAAAAAgAAEAEAAAAAAA=</HashCode>
+      <FileName>car\controllers\StarController.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IbcDriver" Collapsed="true">
+    <Position X="2.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAQABAAAgEAAAAAAAAAEAAAAAAIAAAA=</HashCode>
+      <FileName>drivers\IbcDriver.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
