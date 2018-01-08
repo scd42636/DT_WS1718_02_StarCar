@@ -203,8 +203,12 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
     blinkTimer->stop();
     delete blinkTimer;
 
+#ifdef Q_OS_LINUX
+
     Packet ControllerPacket(100,0);
     IBCPointer->send(ControllerPacket);
+
+#endif
 
     createControllAnimation();
 }
