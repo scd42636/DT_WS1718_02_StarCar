@@ -63,7 +63,7 @@ void AlertWidget::generateLayout(){
 
     if(errIsEmpty == false){
 
-        data << "\nErrors: \n";
+        data << "\nFehler: \n";
 
         for (QString errMsg : alertThread->geterrMsg()){
 

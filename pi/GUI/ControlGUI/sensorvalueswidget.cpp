@@ -3,6 +3,31 @@
 #define PI
 //#define IBCTEST
 
+typedef uint8_t InoByte_t;
+typedef int16_t InoInt_t;
+
+typedef struct StarCarSonicData_t
+{
+    InoInt_t Value;
+
+} StarCarSonicData;
+
+typedef struct StarCarMagnetData_t
+{
+    InoByte_t Parity;
+    InoInt_t Value;
+
+} StarCarMagnetData;
+
+typedef struct StarCarAccelerationData_t
+{
+    InoByte_t ParityOfXValue;
+    InoInt_t  XValue;
+    InoByte_t ParityOfYValue;
+    InoInt_t  YValue;
+
+} StarCarAccelerationData;
+
 SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
 {
     this->alertThread = alertThread;
@@ -194,23 +219,15 @@ void SensorValuesWidget::slotQuerySensorValues(){
 #endif
 }
 
-
 QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 
 #ifdef Q_OS_LINUX
 
-    Packet tempPacket = *inbox->back();
-    uint8_t *packetContent = tempPacket.content();
-    int ID = (int)tempPacket.id();
-    char *packetContentChar = (char *)packetContent;
-    packetContentChar[(int)tempPacket.contentsize()] = '\0';
-
     QString resultValue;
 
-    for (int i = 0; i < (int)tempPacket.contentsize(); i++){
+    Packet tempPacket = *inbox->back();
 
-        resultValue += QString::number(packetContentChar[i]);
-    }
+    int ID = (int)tempPacket.id();
 
     QString filePath;
 
@@ -219,24 +236,61 @@ QString SensorValuesWidget::getMesureValue(Inbox *inbox){
         case 180:
         {
             filePath = "/home/pi/SensorOutput/UltraVorne.txt";
+
+            StarCarSonicData sonicFrontData;
+            ReadData<StarCarSonicData>(&sonicFrontData, tempPacket);
+
+            resultValue = QString::number((int)sonicFrontData.Value);
             break;
         }
 
         case 181:
         {
             filePath = "/home/pi/SensorOutput/UltraHinten.txt";
+
+            StarCarSonicData sonicBackData;
+            ReadData<StarCarSonicData>(&sonicBackData, tempPacket);
+
+            resultValue = QString::number((int)sonicBackData.Value);
             break;
         }
 
         case 182:
         {
             filePath = "/home/pi/SensorOutput/Compass.txt";
+
+            StarCarMagnetData magnetData;
+            ReadData<StarCarMagnetData>(&magnetData, tempPacket);
+
+            int value = (int)magnetData.Value;
+
+            if (magnetData.Parity == 1)
+                value *= -1;
+
+            resultValue = QString::number(value);
             break;
         }
 
         case 183:
         {
             filePath = "/home/pi/SensorOutput/Beschleunigung.txt";
+
+            StarCarAccelerationData acceleratorData;
+            ReadData<StarCarAccelerationData>(&acceleratorData, tempPacket);
+
+            int xValue = (int)acceleratorData.XValue;
+
+            if (acceleratorData.ParityOfXValue == 1)
+                xValue *= -1;
+
+            resultValue = "X= " + QString::number(xValue);
+
+            int yValue = (int)acceleratorData.YValue;
+
+            if (acceleratorData.ParityOfYValue == 1)
+                yValue *= -1;
+
+            resultValue += ", Y= " + QString::number(yValue);
             break;
         }
 
