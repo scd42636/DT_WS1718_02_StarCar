@@ -152,6 +152,7 @@ void HomeWindow::slotShowControllerControlModeWidget(){
 
 void HomeWindow::slotShowOperationModeWidget(){
 
+    IBCactive = true;
     operationModeWidget = new OperationModeWidget(this, this->alertThread);
     connect(operationModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     connect(operationModeWidget, SIGNAL(showclockcontrollmodewidget()), this, SLOT(slotShowClockControlModeWidget()));
@@ -162,7 +163,7 @@ void HomeWindow::slotShowOperationModeWidget(){
 
 void HomeWindow::slotShowExitWidget(){
 
-    exitWidget = new ExitWidget(this, this->alertThread, &this->IBCPointer);
+    exitWidget = new ExitWidget(this, this->alertThread, &this->IBCPointer, IBCactive);
     connect(exitWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(exitWidget);
 }

@@ -4,10 +4,11 @@
 
 #define DEBUG
 
-ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, IBC **IBCPointer) : QWidget(parent)
+ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, IBC **IBCPointer, bool IBCactive) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
+    this->IBCactive = IBCactive;
 
     generateLayout();
     setupConnect();
@@ -69,7 +70,10 @@ void ExitWidget::slotRestartApplication(){
 
 #ifdef Q_OS_LINUX
 
-    delete *IBCPointer;
+    if(IBCactive){
+
+            delete *IBCPointer;
+    }
 
 #endif
 
@@ -84,14 +88,16 @@ void ExitWidget::slotShutdownPi(){
 
     #ifdef Q_OS_LINUX
 
-        delete *IBCPointer;
+    if(IBCactive){
+
+            delete *IBCPointer;
+    }
 
     #endif
 
     QProcess process;
     process.startDetached("shutdown -P now");
 
-    //this->parentWidget()->parentWidget()->parentWidget()->close();
 
 #endif
 }

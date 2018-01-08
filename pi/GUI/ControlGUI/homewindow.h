@@ -85,6 +85,9 @@ private:
     // IBC
     IBC             *IBCPointer;
 
+    // Vars
+    bool            IBCactive = false;
+
 private:
 
     // Method
