@@ -9,8 +9,6 @@ HomeWindow::HomeWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::HomeWi
     setupConnects();
     createAlertThread();
     slotShowStartWidget();
-    alertThread->fireError("Test Fehler",21);
-    alertThread->fireWarning("Test Warnung");
 }
 
 void HomeWindow::generateLayout(){

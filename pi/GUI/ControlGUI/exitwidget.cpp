@@ -88,7 +88,10 @@ void ExitWidget::slotShutdownPi(){
 
     #endif
 
-    this->parentWidget()->parentWidget()->parentWidget()->close();
+    QProcess process;
+    process.startDetached("shutdown -P now");
+
+    //this->parentWidget()->parentWidget()->parentWidget()->close();
 
 #endif
 }
