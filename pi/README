@@ -1,1 +1,10 @@
 This directory contains source code which will run on the Raspberry Pi.
+
+Autostart:
+
+sudo nano /home/pi/.config/lxsession/LXDE-pi/autostart
+
+Am Ende der Datei anfügen:
+
+@/home/pi/DT_WS1718_02_StarCar/pi/GUI/build-ControlGUI-Desktop-Debug/ControlGUI
+
