@@ -28,20 +28,21 @@ int main (int argc , char** argv)
 
 int run (IBC* ibc)
 {
+	char buff [4] = "Hi!";
 	
 	Inbox *i = new Inbox(ibc->getInbox(180));
-
-	Packet p (180, 0);
-
+	
+	Packet p (254, 4,(uint8_t*) buff);
 	ibc->send(p);
-
+	
+	//wait for an answer to arrive
 	std::this_thread::sleep_for(std::chrono::seconds(1));
 
 	i->fetch();
 
 	if(i->size())
     {
-		std::cout << *(i->front()) << '\n';
+		std::cout << i->front() << '\n';
     }
 
 	delete i;
