@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="StarCarUno.ino" />
+    <None Include="Overview.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="car\actuators\StarMotor.cpp">
