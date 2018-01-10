@@ -65,8 +65,8 @@ StarSonic sonicBack(SonicBack_Pin, StarSonicLocation::SonicLocation_Back);
 
 StarCarModule* modules[] = {
     &board,
-    &accelerometer,
-    &magnetometer,
+    //&accelerometer,
+    //&magnetometer,
     &sonicBack,
     &sonicFront,
     &controller,
@@ -99,7 +99,7 @@ void setup()
         | StarCarSensorRequest::CarSensorRequest_Magnet));
 
     //car.setMode(StarCarMode::CarMode_Watch);
-    //car.setEngineMode(StarCarEngineMode::CarEngineMode_On);
+    car.setEngineMode(StarCarEngineMode::CarEngineMode_On);
 }
 
 void loop()
