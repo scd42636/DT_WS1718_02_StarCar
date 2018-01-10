@@ -19,7 +19,7 @@ enum StarBoardResult
 class StarBoard : public StarCarModule
 {
     // ---------- Private fields ----------
-public:
+private:
     IbcDriver* ibcDriver;
 
     bool backLedIsOn;
@@ -59,5 +59,6 @@ protected:
 
     // ---------- Private methods ----------
 private:
+    void Blink(short_t times, short_t interval);
     void SwitchLed(bool* current, bool target, pin_t pin);
 };

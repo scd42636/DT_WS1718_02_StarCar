@@ -63,31 +63,24 @@ void StarBoard::Task(StarCar* car)
     if (this->previousEngineMode != currentEngineMode
         && currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
 
-        for (int_t index = 0; index < 5; index++) {
-            this->SwitchLed(&this->frontLedIsOn, true, this->frontLedPin);
-            this->SwitchLed(&this->backLedIsOn, true, this->backLedPin);
-            this->SwitchLed(&this->rightLedOn, true, this->rightLedPin);
-            this->SwitchLed(&this->leftLedOn, true, this->leftLedPin);
-            delay(100);
-
-            this->SwitchLed(&this->frontLedIsOn, false, this->frontLedPin);
-            this->SwitchLed(&this->backLedIsOn, false, this->backLedPin);
-            this->SwitchLed(&this->rightLedOn, false, this->rightLedPin);
-            this->SwitchLed(&this->leftLedOn, false, this->leftLedPin);
-            delay(100);
-        }
+        this->Blink(/*times:*/ 5, /*interval:*/ 100);
     }
 
     if (currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
-        sbyte_t speed = car->getSpeed();
+        if (car->IsBlocked()) {
+            this->Blink(/*times:*/ 10, /*interval:*/ 50);
+        }
+        else {
+            sbyte_t speed = car->getSpeed();
 
-        this->SwitchLed(&this->frontLedIsOn, speed > 10, this->frontLedPin);
-        this->SwitchLed(&this->backLedIsOn, speed < -10, this->backLedPin);
+            this->SwitchLed(&this->frontLedIsOn, speed > 10, this->frontLedPin);
+            this->SwitchLed(&this->backLedIsOn, speed < -10, this->backLedPin);
 
-        sbyte_t direction = car->getDirection();
+            sbyte_t direction = car->getDirection();
 
-        this->SwitchLed(&this->rightLedOn, direction > 0, this->rightLedPin);
-        this->SwitchLed(&this->leftLedOn, direction < 0, this->leftLedPin);
+            this->SwitchLed(&this->rightLedOn, direction > 0, this->rightLedPin);
+            this->SwitchLed(&this->leftLedOn, direction < 0, this->leftLedPin);
+        }
     }
 
     this->previousEngineMode = currentEngineMode;
@@ -125,6 +118,23 @@ byte_t StarBoard::InitCore()
 }
 
 // ---------- Private methods ----------
+
+void StarBoard::Blink(short_t times, short_t interval)
+{
+    for (int_t index = 0; index < times; index++) {
+        this->SwitchLed(&this->frontLedIsOn, true, this->frontLedPin);
+        this->SwitchLed(&this->backLedIsOn, true, this->backLedPin);
+        this->SwitchLed(&this->rightLedOn, true, this->rightLedPin);
+        this->SwitchLed(&this->leftLedOn, true, this->leftLedPin);
+        delay(interval);
+
+        this->SwitchLed(&this->frontLedIsOn, false, this->frontLedPin);
+        this->SwitchLed(&this->backLedIsOn, false, this->backLedPin);
+        this->SwitchLed(&this->rightLedOn, false, this->rightLedPin);
+        this->SwitchLed(&this->leftLedOn, false, this->leftLedPin);
+        delay(interval);
+    }
+}
 
 void StarBoard::SwitchLed(bool* current, bool target, pin_t pin)
 {
