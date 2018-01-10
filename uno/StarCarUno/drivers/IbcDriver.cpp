@@ -27,9 +27,9 @@ void IbcDriver::send(byte d)
     this->send(&d, 1);
 }
 
-int IbcDriver::recv(byte* d, int length)
+int IbcDriver::recv(byte* d, int length, bool block)
 {
-    if (Serial.available()) {
+    if (block || Serial.available()) {
         while (Serial.available() < length);
 
         for (int i = 0; i < length; i++) {
@@ -42,10 +42,10 @@ int IbcDriver::recv(byte* d, int length)
     return -1;
 }
 
-byte IbcDriver::recv()
+byte IbcDriver::recv(bool block)
 {
     byte ret = -1;
-    recv(&ret, 1);
+    recv(&ret, 1, block);
     return ret;
 }
 
@@ -81,11 +81,11 @@ void IbcDriver::next(StarCar* car)
     if (mid == -1)
         return;
 
-    char midstat = recv();
+    char midstat = recv(/*block*/ true);
 
     send(sstat);
 
-    char mstat = recv();
+    char mstat = recv(/*block*/ true);
 
     switch ((unsigned char)mid) {
 
@@ -103,7 +103,7 @@ void IbcDriver::next(StarCar* car)
             /* IBC_PRESERVE_RECV_BEGIN 0 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
             byte buffr0[0];
-            recv(buffr0, 0);
+            recv(buffr0, 0, /*block*/ true);
 
             //DONT FORGET TO HASH
             setDH(createDH(buffr0, 0));
@@ -176,7 +176,7 @@ void IbcDriver::next(StarCar* car)
             car->setMode(StarCarMode::CarMode_Watch);
 
             byte buffr101[0];
-            recv(buffr101, 0);
+            recv(buffr101, 0, /*block*/ true);
 
             //DONT FORGET TO HASH
             setDH(createDH(buffr101, 0));
@@ -251,7 +251,7 @@ void IbcDriver::next(StarCar* car)
             /* IBC_PRESERVE_RECV_BEGIN 181 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
             byte buffr181[0];
-            recv(buffr181, 0);
+            recv(buffr181, 0, /*block*/ true);
 
             //DONT FORGET TO HASH
             setDH(createDH(buffr181, 0));
@@ -368,7 +368,7 @@ void IbcDriver::next(StarCar* car)
                 &parityYacc,
                 sizeof(byte),
                 createDH(
-                bpYacc, 
+                bpYacc,
                 sizeof(int))))));
 
             /* IBC_PRESERVE_SEND_END 183 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
@@ -388,7 +388,7 @@ void IbcDriver::next(StarCar* car)
             /* IBC_PRESERVE_RECV_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
             byte buffr254[4];
-            recv(buffr254, 4);
+            recv(buffr254, 4, /*block*/ true);
 
             //DONT FORGET TO HASH
             setDH(createDH(buffr254, 4));
@@ -436,7 +436,7 @@ void IbcDriver::next(StarCar* car)
             /* IBC_PRESERVE_RECV_BEGIN 253 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
             byte buffr253[16];
-            recv(buffr253, 16);
+            recv(buffr253, 16, /*block*/ true);
 
             //DONT FORGET TO HASH
             setDH(createDH(buffr253, 16));

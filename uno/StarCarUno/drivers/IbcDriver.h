@@ -21,8 +21,8 @@ public:
 
     void send(byte* d, int length);
     void send(byte d);
-    int recv(byte*d, int length);
-    byte recv();
+    int recv(byte*d, int length, bool block = false);
+    byte recv(bool block = false);
 
     void setDH(byte dh);
 
