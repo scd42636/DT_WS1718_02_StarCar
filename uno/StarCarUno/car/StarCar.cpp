@@ -14,6 +14,7 @@ StarCar::StarCar(StarCarModule** modules, short_t modulesLength)
 {
     this->accelerationX = 0;
     this->accelerationY = 0;
+    this->blockings = StarCarBlockings::CarBlocking_None;
     this->direction = 0;
     this->distanceBack = 0;
     this->distanceFront = 0;
@@ -87,8 +88,18 @@ short_t StarCar::getDistanceBack()
 }
 StarCar* StarCar::setDistanceBack(short_t value)
 {
-    if (this->speed < 0 && value < 15)
+    if (this->speed < 0 && value < 15) {
         this->speed = 0;
+
+        this->blockings = (StarCarBlockings)
+            (this->blockings
+            | StarCarBlockings::CarBlocking_Back);
+    }
+    else {
+        this->blockings = (StarCarBlockings)
+            (this->blockings
+            & ~StarCarBlockings::CarBlocking_Back);
+    }
 
     this->distanceBack = value;
     EEPROM.write(EEPROM_SONIC_BACK_VALUE, value);
@@ -102,8 +113,18 @@ short_t StarCar::getDistanceFront()
 }
 StarCar* StarCar::setDistanceFront(short_t value)
 {
-    if (this->speed > 0 && value < 15)
+    if (this->speed > 0 && value < 15) {
         this->speed = 0;
+
+        this->blockings = (StarCarBlockings)
+            (this->blockings
+            | StarCarBlockings::CarBlocking_Front);
+    }
+    else {
+        this->blockings = (StarCarBlockings)
+            (this->blockings
+            & ~StarCarBlockings::CarBlocking_Front);
+    }
 
     this->distanceFront = value;
     EEPROM.write(EEPROM_SONIC_FRONT_VALUE, value);
@@ -176,18 +197,22 @@ sbyte_t StarCar::getSpeed()
 }
 StarCar* StarCar::setSpeed(sbyte_t value)
 {
-    if ((value > 0 && this->distanceFront > 15)
-        || (value < 0 && this->distanceBack > 15)) {
-        this->speed = value;
+    if (this->IsBlocked()) {
+        this->speed = 0;
     }
     else {
-        this->speed = 0;
+        this->speed = value;
     }
 
     return this;
 }
 
 // ---------- Public methods ----------
+
+bool StarCar::IsBlocked()
+{
+    return this->blockings != StarCarBlockings::CarBlocking_None;
+}
 
 bool StarCar::IsRequested(StarCarSensorRequest request)
 {

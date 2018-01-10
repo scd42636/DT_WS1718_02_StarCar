@@ -17,6 +17,13 @@ enum StarCarMode
     CarMode_Watch = 2
 };
 
+enum StarCarBlockings
+{
+    CarBlocking_None = 0,
+    CarBlocking_Front = 1,
+    CarBlocking_Back = 2
+};
+
 enum StarCarEngineMode
 {
     CarEngineMode_Off = 0,
@@ -37,6 +44,7 @@ class StarCar
 private:
     int_t accelerationX;
     int_t accelerationY;
+    StarCarBlockings blockings;
     sbyte_t direction;
     short_t distanceBack;
     short_t distanceFront;
@@ -86,6 +94,7 @@ public:
 
     // ---------- Public methods ----------
 public:
+    bool IsBlocked();
     bool IsRequested(StarCarSensorRequest request);
 
     ////void RegisterModule(StarCarModule* module);
