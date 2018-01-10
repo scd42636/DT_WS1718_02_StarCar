@@ -64,6 +64,9 @@ void StarSonic::Task(StarCar* car)
         long_t duration = pulseIn(this->signalPin, HIGH);
         long_t distance = (long_t)((float_t)duration / 29.0 / 2.0); // seconds to cm's
 
+        if (distance == 0)
+            distance = millis() / 1000;
+
         if (this->location == StarSonicLocation::SonicLocation_Back)
             car->setDistanceBack(distance);
         else if (this->location == StarSonicLocation::SonicLocation_Front)
