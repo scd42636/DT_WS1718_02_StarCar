@@ -12,7 +12,7 @@ class ExitWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr);
+    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr, bool IBCactive = false);
 
     ~ExitWidget(){
     }
@@ -20,28 +20,26 @@ public:
 private:
 
     // QVBoxLayout
-
     QVBoxLayout     *vBox1;
 
     // QPushButton
-
     QPushButton     *pButtonBack;
     QPushButton     *pButtonRestart;
     QPushButton     *pButtonShutdown;
 
     // Method
-
     void generateLayout();
     void setupConnect();
     void generateStyle();
 
     //Thread
-
     Alert *alertThread;
 
     //IBC
-
     IBC             **IBCPointer;
+
+    //Vars
+    bool            IBCactive = false;
 
 signals:
 

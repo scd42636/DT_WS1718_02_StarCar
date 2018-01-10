@@ -15,7 +15,7 @@ Serial::Serial(std::string devicename)
         fd(-1)
 {
 
-    fd = open(devicename.c_str(),O_RDWR | O_NOCTTY /*| O_NDELAY*/); // ttyUSB0 is the connected arduino
+    fd = open(devicename.c_str(),O_RDWR | O_NOCTTY); // ttyUSB0 is the connected arduino or ACM0
                                                                         // O_RDWR Read/Write access to serial port
                                                                         // O_NOCTTY - Serial port should not kill the process is a ctrl-c is received
                                                                         // O_NDELAY - Non Blocking Mode
@@ -55,11 +55,11 @@ void Serial::config()
 
     tcgetattr(fd, &SerialPortSettings);             // Get the current attributes of the Serial port
 
-    cfsetispeed(&SerialPortSettings,B115200);        // Set Read Speed as 57600
-    cfsetospeed(&SerialPortSettings,B115200);        // Set Write Speed as 57600
+    cfsetispeed(&SerialPortSettings,B115200);        // Set Read Speed as 115200
+    cfsetospeed(&SerialPortSettings,B115200);        // Set Write Speed as 115200
 
     SerialPortSettings.c_cflag &= ~PARENB;          // Disables the Parity Enable bit(PARENB),So No Parity
-    SerialPortSettings.c_cflag &= ~CSTOPB;          // CSTOPB = 2 Stop bits,here it is cleared so 1 Stop bit
+    SerialPortSettings.c_cflag &= ~CSTOPB;          // CSTOPB = 2 Stop bits, here it is cleared so 1 Stop bit
     SerialPortSettings.c_cflag &= ~CSIZE;           // Clears the mask for setting the data size ... enables set own data bits... see next line
     SerialPortSettings.c_cflag |=  CS8;             // Set the data bits = 8
     SerialPortSettings.c_cflag |= (CREAD | CLOCAL); // Enable receiver,Ignore Modem Control lines
