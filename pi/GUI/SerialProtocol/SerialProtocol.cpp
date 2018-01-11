@@ -1,7 +1,7 @@
 // Copyright Victor Hurdugaci (http://victorhurdugaci.com). All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-#include <SerialProtocol.h>
+#include "SerialProtocol.h"
 
 /* Message format:
     Header        (1 byte)           - Header Byte

@@ -3,7 +3,7 @@
 
 #ifndef ARDUINO
 
-#include <StreamSerialProtocol.h>
+#include "StreamSerialProtocol.h"
 
 StreamSerialProtocol::StreamSerialProtocol(int serial, uint8_t* payload, uint8_t payloadSize)
     :SerialProtocol(payload, payloadSize)
