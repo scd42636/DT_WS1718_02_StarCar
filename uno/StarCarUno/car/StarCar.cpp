@@ -86,7 +86,7 @@ short_t StarCar::getDistanceBack()
 }
 StarCar* StarCar::setDistanceBack(short_t value)
 {
-    if (value < 15) {
+    if (value < this->CalculateCrashPreventionDistance()) {
         if (this->speed < 0)
             this->speed = 0;
 
@@ -112,7 +112,7 @@ short_t StarCar::getDistanceFront()
 }
 StarCar* StarCar::setDistanceFront(short_t value)
 {
-    if (value < 15) {
+    if (value < this->CalculateCrashPreventionDistance()) {
         if (this->speed > 0)
             this->speed = 0;
 
@@ -197,7 +197,7 @@ sbyte_t StarCar::getSpeed()
 }
 StarCar* StarCar::setSpeed(sbyte_t value)
 {
-    if (this->IsBlocked()) {
+    if ((value < 0 && this->IsBackBlocked(/*exclusive*/true)) || (value > 0 && this->IsFrontBlocked(/*exclusive*/true))) {
         this->speed = 0;
     }
     else {
@@ -208,6 +208,20 @@ StarCar* StarCar::setSpeed(sbyte_t value)
 }
 
 // ---------- Public methods ----------
+
+sbyte_t StarCar::CalculateCrashPreventionDistance()
+{
+    sbyte_t distance = 15;
+    float_t speedValue = this->speed;
+
+    if (speedValue < 0)
+        speedValue *= (-1);
+
+    ////distance += (sbyte_t)((float_t)speedValue * 0.25);
+    distance = ((speedValue / 10.0) * (speedValue / 10.0)) / 2.0;
+
+    return distance + 5;
+}
 
 bool StarCar::IsBlocked()
 {
