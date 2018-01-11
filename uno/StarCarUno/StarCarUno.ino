@@ -65,10 +65,10 @@ StarSonic sonicBack(SonicBack_Pin, StarSonicLocation::SonicLocation_Back);
 
 StarCarModule* modules[] = {
     &board,
-    //&accelerometer,
-    //&magnetometer,
-    &sonicBack,
-    &sonicFront,
+    &accelerometer, // Works only if battery is connected!
+    &magnetometer,  // Works only if battery is connected!
+    &sonicBack,     // Works only if battery is connected!
+    &sonicFront,    // Works only if battery is connected!
     &controller,
     &watch,
     &servo,
