@@ -8,6 +8,8 @@
 
 #include "IBC_Inbox.hpp"
 
+#include <QDebug>
+
 using namespace std::chrono_literals;
 
 Transceiver::Transceiver(std::string device,const Rule & rule)
@@ -84,6 +86,8 @@ void Transceiver::body()
 
 		//actual sending and receiving stuff begins here
 
+        /*
+
 		uint8_t message_header[2] = {0};
 
 		message_header[0] = next->id();
@@ -93,6 +97,13 @@ void Transceiver::body()
 		recv_intern(&sstat, 1);
 
 		send_intern(&mstat, 1);
+
+        */
+
+        uint8_t id = next->id();
+
+
+        send_intern(&id, 1);
 
 		//determine a possible padding
 		int padding = 0;
@@ -108,7 +119,9 @@ void Transceiver::body()
 
 		//send data over
 		send_intern(next->content(), next->contentsize());
-		//and the corresponding hash
+
+        /*
+        //and the corresponding hash
 		{
 			uint8_t dh = datahash(next->content(), next->contentsize(), 0);
 
@@ -127,16 +140,22 @@ void Transceiver::body()
 		}
 
 		recv_intern(&sstat, 1);
+        */
+
 
 		uint8_t * res_buffer = new uint8_t [rule.answersize(next->id())];
 		recv_intern(res_buffer, rule.answersize(next->id()));
 
-		uint8_t datahash;
+        /*
+        uint8_t datahash;
 		recv_intern(&datahash, 1);
-
+        */
 
 		//create packet and store it
 		std::shared_ptr<const Packet> p (new Packet(next->id(), rule.answersize(next->id()), res_buffer));
+
+        qDebug()
+
 		store(p);
 		//std::cout << "Stored : " << *p << '\n';
 		tosend.pop();
@@ -171,6 +190,13 @@ void Transceiver::recv_intern(uint8_t * data, uint8_t torecv)
 		{
 			std::this_thread::sleep_for(IBC_TRANSCEIVER_IDLE_TIME);
 		}
+        else
+        {
+            for (int i=0; i<received ; i++)
+            {
+                qDebug() << 'r' << data[i] << '(' << i << ")\n";
+            }
+        }
         torecv -= received;
 		data += received;
 	}
@@ -200,6 +226,13 @@ void Transceiver::send_intern(uint8_t* data, uint8_t tosend)
 			{
 				std::this_thread::sleep_for(IBC_TRANSCEIVER_IDLE_TIME);
 			}
+            else
+            {
+                for (int i=0; i<sent ; i++)
+                {
+                    qDebug() << 's' << data[i] << '(' << i << ")\n";
+                }
+            }
 			tosend -= sent;
 			data += sent;
 		}
