@@ -63,12 +63,19 @@ void StarBoard::Task(StarCar* car)
     if (this->previousEngineMode != currentEngineMode
         && currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
 
-        this->Blink(/*times:*/ 5, /*interval:*/ 100);
+        this->Blink(StarBoardLedPanels::BoardLedPanel_All, /*times:*/ 5, /*interval:*/ 100);
     }
 
     if (currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
         if (car->IsBlocked()) {
-            this->Blink(/*times:*/ 10, /*interval:*/ 50);
+            StarBoardLedPanels panels = StarBoardLedPanels::BoardLedPanel_All;
+
+            if (car->IsFrontBlocked(/*exclusive*/ true))
+                panels = StarBoardLedPanels::BoardLedPanel_Front;
+            else if (car->IsBackBlocked(/*exclusive*/ true))
+                panels = StarBoardLedPanels::BoardLedPanel_Back;
+
+            this->Blink(panels, /*times:*/ 3, /*interval:*/ 50);
         }
         else {
             sbyte_t speed = car->getSpeed();
@@ -119,19 +126,35 @@ byte_t StarBoard::InitCore()
 
 // ---------- Private methods ----------
 
-void StarBoard::Blink(short_t times, short_t interval)
+void StarBoard::Blink(StarBoardLedPanels panels, short_t times, short_t interval)
 {
     for (int_t index = 0; index < times; index++) {
-        this->SwitchLed(&this->frontLedIsOn, true, this->frontLedPin);
-        this->SwitchLed(&this->backLedIsOn, true, this->backLedPin);
-        this->SwitchLed(&this->rightLedOn, true, this->rightLedPin);
-        this->SwitchLed(&this->leftLedOn, true, this->leftLedPin);
+        if ((panels & StarBoardLedPanels::BoardLedPanel_Front) == StarBoardLedPanels::BoardLedPanel_Front)
+            this->SwitchLed(&this->frontLedIsOn, true, this->frontLedPin);
+
+        if ((panels & StarBoardLedPanels::BoardLedPanel_Back) == StarBoardLedPanels::BoardLedPanel_Back)
+            this->SwitchLed(&this->backLedIsOn, true, this->backLedPin);
+
+        if ((panels & StarBoardLedPanels::BoardLedPanel_Right) == StarBoardLedPanels::BoardLedPanel_Right)
+            this->SwitchLed(&this->rightLedOn, true, this->rightLedPin);
+
+        if ((panels & StarBoardLedPanels::BoardLedPanel_Left) == StarBoardLedPanels::BoardLedPanel_Left)
+            this->SwitchLed(&this->leftLedOn, true, this->leftLedPin);
+
         delay(interval);
 
-        this->SwitchLed(&this->frontLedIsOn, false, this->frontLedPin);
-        this->SwitchLed(&this->backLedIsOn, false, this->backLedPin);
-        this->SwitchLed(&this->rightLedOn, false, this->rightLedPin);
-        this->SwitchLed(&this->leftLedOn, false, this->leftLedPin);
+        if ((panels & StarBoardLedPanels::BoardLedPanel_Front) == StarBoardLedPanels::BoardLedPanel_Front)
+            this->SwitchLed(&this->frontLedIsOn, false, this->frontLedPin);
+
+        if ((panels & StarBoardLedPanels::BoardLedPanel_Back) == StarBoardLedPanels::BoardLedPanel_Back)
+            this->SwitchLed(&this->backLedIsOn, false, this->backLedPin);
+
+        if ((panels & StarBoardLedPanels::BoardLedPanel_Right) == StarBoardLedPanels::BoardLedPanel_Right)
+            this->SwitchLed(&this->rightLedOn, false, this->rightLedPin);
+
+        if ((panels & StarBoardLedPanels::BoardLedPanel_Left) == StarBoardLedPanels::BoardLedPanel_Left)
+            this->SwitchLed(&this->leftLedOn, false, this->leftLedPin);
+
         delay(interval);
     }
 }

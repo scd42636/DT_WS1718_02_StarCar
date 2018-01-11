@@ -16,6 +16,19 @@ enum StarBoardResult
     BoardResult_Failed = -1,
 };
 
+enum StarBoardLedPanels
+{
+    BoardLedPanel_Front = 1,
+    BoardLedPanel_Back = 2,
+    BoardLedPanel_Left = 4,
+    BoardLedPanel_Right = 8,
+    BoardLedPanel_All
+    = BoardLedPanel_Front
+    | BoardLedPanel_Back
+    | BoardLedPanel_Left
+    | BoardLedPanel_Right
+};
+
 class StarBoard : public StarCarModule
 {
     // ---------- Private fields ----------
@@ -59,6 +72,6 @@ protected:
 
     // ---------- Private methods ----------
 private:
-    void Blink(short_t times, short_t interval);
+    void Blink(StarBoardLedPanels panels, short_t times, short_t interval);
     void SwitchLed(bool* current, bool target, pin_t pin);
 };
