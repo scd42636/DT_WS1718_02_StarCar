@@ -95,6 +95,10 @@ public:
     // ---------- Public methods ----------
 public:
     bool IsBlocked();
+
+    bool IsBackBlocked(bool exclusive);
+    bool IsFrontBlocked(bool exclusive);
+
     bool IsRequested(StarCarSensorRequest request);
 
     ////void RegisterModule(StarCarModule* module);

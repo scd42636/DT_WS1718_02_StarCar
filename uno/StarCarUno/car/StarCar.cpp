@@ -37,7 +37,6 @@ int_t StarCar::getAccelerationX()
 StarCar* StarCar::setAccelerationX(int_t value)
 {
     this->accelerationX = value;
-    //EEPROM.put(9, value);
 
     if (value < 0) {
         EEPROM.write(EEPROM_ACCELEROMETER_X_PARITY, 1);
@@ -58,7 +57,6 @@ int_t StarCar::getAccelerationY()
 StarCar* StarCar::setAccelerationY(int_t value)
 {
     this->accelerationY = value;
-    //EEPROM.put(10, value);
 
     if (value < 0) {
         EEPROM.write(EEPROM_ACCELEROMETER_Y_PARITY, 1);
@@ -88,8 +86,9 @@ short_t StarCar::getDistanceBack()
 }
 StarCar* StarCar::setDistanceBack(short_t value)
 {
-    if (this->speed < 0 && value < 15) {
-        this->speed = 0;
+    if (value < 15) {
+        if (this->speed < 0)
+            this->speed = 0;
 
         this->blockings = (StarCarBlockings)
             (this->blockings
@@ -113,8 +112,9 @@ short_t StarCar::getDistanceFront()
 }
 StarCar* StarCar::setDistanceFront(short_t value)
 {
-    if (this->speed > 0 && value < 15) {
-        this->speed = 0;
+    if (value < 15) {
+        if (this->speed > 0)
+            this->speed = 0;
 
         this->blockings = (StarCarBlockings)
             (this->blockings
@@ -212,6 +212,22 @@ StarCar* StarCar::setSpeed(sbyte_t value)
 bool StarCar::IsBlocked()
 {
     return this->blockings != StarCarBlockings::CarBlocking_None;
+}
+
+bool StarCar::IsBackBlocked(bool exclusive)
+{
+    if (exclusive)
+        return this->blockings == StarCarBlockings::CarBlocking_Back;
+
+    return (this->blockings & StarCarBlockings::CarBlocking_Back) == StarCarBlockings::CarBlocking_Back;
+}
+
+bool StarCar::IsFrontBlocked(bool exclusive)
+{
+    if (exclusive)
+        return this->blockings == StarCarBlockings::CarBlocking_Front;
+
+    return (this->blockings & StarCarBlockings::CarBlocking_Front) == StarCarBlockings::CarBlocking_Front;
 }
 
 bool StarCar::IsRequested(StarCarSensorRequest request)
