@@ -25,12 +25,12 @@ void InitStarCar::startProcess(){
 
     *serialPort = new SerialPort("/dev/ttyUSB0");
     (*serialPort)->config();
-    int fd = (*serialPort)->fd;
+    //int fd = (*serialPort)->fd;
 
-    *protocol = new StreamSerialProtocol(fd, (uint8_t*)*msg, sizeof(*msg));
-    *msg = new message();
-    (*msg)->Mode = 0;
-    (*protocol)->send();
+    //*protocol = new StreamSerialProtocol(fd, (uint8_t*)*msg, sizeof(*msg));
+    //*msg = new message();
+    //(*msg)->Mode = 0;
+    //(*protocol)->send();
 /*
     struct payload
     {

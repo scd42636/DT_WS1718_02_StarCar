@@ -125,7 +125,7 @@ void HomeWindow::slotShowSensorValuesWidget(){
 #ifndef IBCNOTWORKING
     sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl" ,this-> IBCPointer);
 #else
-     sensorValuesWidget = new SensorValuesWidget(this->msg, this, this->alertThread, "Zurück zur Moduswahl", this->protocol);
+     sensorValuesWidget = new SensorValuesWidget(this->msg, this, this->alertThread, "Zurück zur Moduswahl", this->protocol, this->serialPort);
 #endif
 
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
@@ -137,7 +137,7 @@ void HomeWindow::slotShowSensorValuesWidgetAfterControlMode(){
 #ifndef IBCNOTWORKING
     sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung",  this->IBCPointer);
 #else
-     sensorValuesWidget = new SensorValuesWidget(this->msg, this, this->alertThread, "Zurück zur Steuerung", this->protocol);
+     sensorValuesWidget = new SensorValuesWidget(this->msg, this, this->alertThread, "Zurück zur Steuerung", this->protocol, this->serialPort);
 #endif
 
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));

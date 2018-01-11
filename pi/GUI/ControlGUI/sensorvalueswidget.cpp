@@ -1,5 +1,24 @@
 #include "sensorvalueswidget.h"
 
+struct payload_t
+{
+    uint8_t Mode;
+    uint8_t Request;
+
+    uint32_t DistanceFront;
+    uint32_t DistanceBack;
+
+    uint8_t DirectionParity;
+    uint32_t DirectionValue;
+
+    uint8_t AccelerationXParity;
+    uint32_t AccelerationXValue;
+
+    uint8_t AccelerationYParity;
+    uint32_t AccelerationYValue;
+
+} __attribute__((packed)) messagetest;
+
 #ifndef IBCNOTWORKING
 
 typedef uint8_t InoByte_t;
@@ -40,12 +59,13 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
 }
 
 SensorValuesWidget::SensorValuesWidget(message *msg, QWidget *parent, Alert *alertThread, QString pButtonGoBackText
-                                       , StreamSerialProtocol *protocol) : QWidget(parent)
+                                       , StreamSerialProtocol *protocol, SerialPort *serialPort) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->pButtonGoBackText = pButtonGoBackText;
     this->protocol = protocol;
     this->msg = msg;
+    this->serialPort = serialPort;
 
     generateLayout();
     setupConnects();
@@ -198,7 +218,7 @@ void SensorValuesWidget::slotQuerySensorValues(){
 #ifdef Q_OS_LINUX
 
     /*    iUltraBack->fetch();
-        iUltraFront->fetch();
+        iUltraFront->fetch();#include <starcar.h>
         iCompass->fetch();
         iAcceleration->fetch();
 
@@ -214,24 +234,27 @@ void SensorValuesWidget::slotQuerySensorValues(){
         iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
 */
 
+    int fd = serialPort->fd;
+    StreamSerialProtocol test = StreamSerialProtocol(fd,(uint8_t*)&messagetest, sizeof(messagetest));
+
     uint8_t receiveState;
 
-    this->msg->Request = 1;
-    this->msg->Mode = 2;
-    protocol->send();
-     protocol->send();
-      protocol->send();
+    messagetest.Request = 1;
+    messagetest.Mode = 2;
+    test.send();
+    test.send();
+    test.send();
 
     //receiveState =  protocol->receive();
 
 
     if(receiveState == ProtocolState::SUCCESS ){
 
-        lblUltraFrontValue->setText(QString::number((int)msg->DistanceFront));
-        lblUltraBackValue->setText(QString::number((int)msg->DistanceBack));
-        lblcompassValue->setText(QString::number((int)msg->DirectionValue));
-        lblaccelerationValue->setText("X: " + QString::number((int)msg->AccelerationXValue)
-                                      + "Y: " + QString::number((int)msg->AccelerationYValue));
+        lblUltraFrontValue->setText(QString::number((int)messagetest.DistanceFront));
+        lblUltraBackValue->setText(QString::number((int)messagetest.DistanceBack));
+        lblcompassValue->setText(QString::number((int)messagetest.DirectionValue));
+        lblaccelerationValue->setText("X: " + QString::number((int)messagetest.AccelerationXValue)
+                                      + "Y: " + QString::number((int)messagetest.AccelerationYValue));
     }
 
 

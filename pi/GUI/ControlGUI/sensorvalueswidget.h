@@ -14,8 +14,9 @@
 #include <QDir>
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
-#include <starcar.h>
 #include <../SerialProtocol/StreamSerialProtocol.h>
+#include <../SerialProtocol/SerialPort.hpp>
+#include <starcar.h>
 #include <threadlidar.h>
 
 class SensorValuesWidget : public QWidget
@@ -30,7 +31,7 @@ public:
 
     explicit SensorValuesWidget(message *msg, QWidget *parent = nullptr, Alert *alertThread = nullptr,
                                 QString pButtonGoBackText = "Zurück zur Moduswahl",
-                                StreamSerialProtocol *protocol = nullptr);
+                                StreamSerialProtocol *protocol = nullptr, SerialPort *serialPort = nullptr);
 
 signals:
 
@@ -121,6 +122,7 @@ private:
     IBC             *IBCPointer;
 
     StreamSerialProtocol *protocol;
+    SerialPort *serialPort;
     message *msg;
 
 #endif
