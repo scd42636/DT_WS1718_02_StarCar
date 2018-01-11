@@ -9,6 +9,10 @@
 #include "../StarCar.h"
 #include "../../drivers/IbcDriver.h"
 
+#if SERIAL_MODE == SERIAL_MODE_LIBRARY
+#include <ArduinoSerialProtocol.h>
+#endif
+
 
 enum StarBoardResult
 {
@@ -29,6 +33,26 @@ enum StarBoardLedPanels
     | BoardLedPanel_Right
 };
 
+#if SERIAL_MODE == SERIAL_MODE_LIBRARY
+typedef struct StarBoardExchangeData_t
+{
+    StarCarMode Mode;
+    StarCarSensorRequest Request;
+
+    int_t DistanceFront;
+    int_t DistanceBack;
+
+    byte_t DirectionParity;
+    int_t DirectionValue;
+
+    byte_t AccelerationXParity;
+    int_t AccelerationXValue;
+
+    byte_t AccelerationYParity;
+    int_t AccelerationYValue;
+} StarBoardExchangeData;
+#endif
+
 class StarBoard : public StarCarModule
 {
     // ---------- Private fields ----------
@@ -48,6 +72,11 @@ private:
     pin_t rightLedPin;
 
     StarCarEngineMode previousEngineMode;
+
+    #if SERIAL_MODE == SERIAL_MODE_LIBRARY
+    StarBoardExchangeData payload;
+    ArduinoSerialProtocol* protocol;
+    #endif
 
     // ---------- Public constructors ----------
 public:

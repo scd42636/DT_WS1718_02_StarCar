@@ -93,10 +93,12 @@ void setup()
     Serial.println("----------");
     #endif
 
+    #if SERIAL_MODE != SERIAL_MODE_LIBRARY
     car.setRequest((StarCarSensorRequest)(
         StarCarSensorRequest::CarSensorRequest_Sonic
         | StarCarSensorRequest::CarSensorRequest_Accelerator
         | StarCarSensorRequest::CarSensorRequest_Magnet));
+    #endif
 
     //car.setMode(StarCarMode::CarMode_Watch);
     car.setEngineMode(StarCarEngineMode::CarEngineMode_On);

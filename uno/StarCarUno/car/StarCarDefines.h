@@ -43,6 +43,13 @@ typedef XBOXUSB XBoxController;
 #define PIN_DISCONNECTED -1
 
 
+#define SERIAL_MODE_ARDUINO 0
+#define SERIAL_MODE_IBC 1
+#define SERIAL_MODE_LIBRARY 2
+
+#define SERIAL_MODE SERIAL_MODE_LIBRARY
+
+
 #define EEPROM_SONIC_FRONT_VALUE        0
 #define EEPROM_SONIC_BACK_VALUE         1
 
