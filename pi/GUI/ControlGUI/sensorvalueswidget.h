@@ -2,6 +2,7 @@
 #define SENSORVALUESWIDGET_H
 
 #define PI
+#define IBCNOTWORKING
 
 #include <QObject>
 #include <QWidget>
@@ -13,7 +14,7 @@
 #include <QDir>
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
-#include <../SerialProtocol/SerialPort.hpp>
+#include <starcar.h>
 #include <../SerialProtocol/StreamSerialProtocol.h>
 #include <threadlidar.h>
 
@@ -26,6 +27,10 @@ public:
     explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
                                 QString pButtonGoBackText = "Zurück zur Moduswahl",
                                 IBC *IBCPointer = nullptr);
+
+    explicit SensorValuesWidget(message *msg, QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                                QString pButtonGoBackText = "Zurück zur Moduswahl",
+                                StreamSerialProtocol *protocol = nullptr);
 
 signals:
 
@@ -74,47 +79,14 @@ private:
     // QString
     QString         pButtonGoBackText;
 
-    // IBC
-    IBC             *IBCPointer;
-    SerialPort      *serial;
-    StreamSerialProtocol *protocol;
-
-    enum StarCarMode
-    {
-        CarMode_None = 0,
-        CarMode_Controller = 1,
-        CarMode_Watch = 2
-    };
-
-    enum StarCarSensorRequest
-    {
-        CarSensorRequest_None = 0,
-        CarSensorRequest_Sonic = 1,
-        CarSensorRequest_Magnet = 2,
-        CarSensorRequest_Accelerator = 4,
-        CarSensorRequest_All = 7
-    };
-
-    struct payload
-    {
-        StarCarMode Mode;
-        StarCarSensorRequest Request;
-
-        uint16_t DistanceFront;
-        uint16_t DistanceBack;
-
-        uint8_t DirectionParity;
-        uint16_t DirectionValue;
-
-        uint8_t AccelerationXParity;
-        uint16_t AccelerationXValue;
-
-        uint8_t AccelerationYParity;
-        uint16_t AccelerationYValue;
-    } __attribute__((packed)) message;
-
     // QTimer
     QTimer          *lidarTimer;
+    QTimer          *QuerySensorValuesTimer;
+
+    // Method
+    void generateLayout();
+    void setupConnects();
+    void generateStyle();
 
 #ifdef Q_OS_LINUX
 
@@ -132,15 +104,6 @@ private:
     Inbox           *iUWB;
     Inbox           *test;
 
-#endif
-
-    //QTimer
-    QTimer          *QuerySensorValuesTimer;
-
-    // Method
-    void generateLayout();
-    void setupConnects();
-    void generateStyle();
 
     QString getMesureValue(Inbox *inbox);
 
@@ -154,6 +117,14 @@ private:
 
         memcpy(data, packet.content(), dataSize);
     }
+
+    IBC             *IBCPointer;
+
+    StreamSerialProtocol *protocol;
+    message *msg;
+
+#endif
+
 };
 
 #endif // SENSORVALUESWIDGET_H

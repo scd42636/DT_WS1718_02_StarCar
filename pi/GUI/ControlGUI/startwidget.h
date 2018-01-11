@@ -1,6 +1,8 @@
 #ifndef STARTWIDGET_H
 #define STARTWIDGET_H
 
+#define IBCNOTWORKING
+
 #include <QObject>
 #include <QWidget>
 #include <QProgressBar>
@@ -13,6 +15,10 @@
 #include <alert.h>
 #include <initstarcar.h>
 #include "../../IBP/IBC.hpp"
+#include <../SerialProtocol/StreamSerialProtocol.h>
+#include <../SerialProtocol/SerialPort.hpp>
+#include <starcar.h>
+#include <starcar.h>
 
 class StartWidget : public QWidget
 {
@@ -21,7 +27,8 @@ class StartWidget : public QWidget
 public:
 
     explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr);
-
+    explicit StartWidget(message *msg, QWidget *parent = nullptr, Alert *alertThread = nullptr, SerialPort **serialPort = nullptr
+                         , StreamSerialProtocol **protocol = nullptr);
     ~StartWidget();
 
 private:
@@ -42,9 +49,13 @@ private:
     Alert           *alertThread;
     InitStarCar     *initStarCar;
 
-    // IBC
 
     IBC             **IBCPointer;
+
+    SerialPort **serialPort;
+    StreamSerialProtocol **protocol;
+    message *msg;
+
 
     // Methods
     void generateLayout();

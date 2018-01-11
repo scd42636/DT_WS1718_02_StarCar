@@ -6,11 +6,30 @@ InitStarCar::InitStarCar(Alert *alertThread, IBC **IBCPointer)
     this->IBCPointer = IBCPointer;
 }
 
+InitStarCar::InitStarCar(Alert *alertThread, SerialPort **serialPort, StreamSerialProtocol **protocol, message *msg)
+{
+    this->alertThread = alertThread;
+    this->serialPort = serialPort;
+    this->protocol = protocol;
+    this->msg = msg;
+}
+
 void InitStarCar::startProcess(){
 
 #ifdef Q_OS_LINUX
 
-    //*IBCPointer = new IBC("/dev/ttyUSB0","/home/pi/DT_WS1718_02_StarCar/pi/IBP/IBC_config.cfg");
+#ifndef IBCNOTWORKING
+
+    *IBCPointer = new IBC("/dev/ttyUSB0","/home/pi/DT_WS1718_02_StarCar/pi/IBP/IBC_config.cfg");
+#else
+
+    *serialPort = new SerialPort("/dev/ttyUSB0");
+    (*serialPort)->config();
+    int fd = (*serialPort)->fd;
+
+    *protocol = new StreamSerialProtocol(fd, (uint8_t*)msg, sizeof(msg));
+
+#endif
 
 #endif
 

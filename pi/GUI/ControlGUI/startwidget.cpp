@@ -17,6 +17,21 @@ StartWidget::StartWidget(QWidget *parent, Alert *alertThread, IBC **IBCPointer) 
     this->IBCPointer = IBCPointer;
 }
 
+StartWidget::StartWidget(message *msg,QWidget *parent, Alert *alertThread, SerialPort **serialPort
+                         , StreamSerialProtocol **protocol) : QWidget(parent)
+{
+    generateLayout();
+    setupProgressBar();
+    setupConnects();
+    generateStyle();
+
+    this->alertThread = alertThread;
+    this->serialPort = serialPort;
+    this->protocol = protocol;
+    this->msg = msg;
+
+}
+
 void StartWidget::generateLayout(){
 
     vBox1           = new QVBoxLayout(this);
@@ -78,7 +93,11 @@ void StartWidget::initializeStarCar(){
     pButtonStart->setEnabled(false);
 
     QThread *thread = new QThread;
+#ifndef IBCNOTWORKING
     initStarCar     = new InitStarCar(alertThread, IBCPointer);
+#else
+    initStarCar     = new InitStarCar(alertThread, serialPort, protocol, msg);
+#endif
     initStarCar->moveToThread(thread);
 
     connect(thread, SIGNAL(started()), initStarCar, SLOT(startProcess()));

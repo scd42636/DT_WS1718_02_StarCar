@@ -1,5 +1,7 @@
 #include "sensorvalueswidget.h"
 
+#ifndef IBCNOTWORKING
+
 typedef uint8_t InoByte_t;
 typedef int16_t InoInt_t;
 
@@ -24,6 +26,7 @@ typedef struct StarCarAccelerationData_t
     InoInt_t  YValue;
 
 } StarCarAccelerationData;
+#endif
 
 SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
 {
@@ -34,59 +37,19 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     generateLayout();
     setupConnects();
     generateStyle();
+}
 
-    QDir SensorOutputFolder("/home/pi/SensorOutput");
-    SensorOutputFolder.setFilter(QDir::NoDotAndDotDot | QDir::Files);
-    foreach (QString SensorOutputItem, SensorOutputFolder.entryList()){
-        SensorOutputFolder.remove(SensorOutputItem);
-    }
+SensorValuesWidget::SensorValuesWidget(message *msg, QWidget *parent, Alert *alertThread, QString pButtonGoBackText
+                                       , StreamSerialProtocol *protocol) : QWidget(parent)
+{
+    this->alertThread = alertThread;
+    this->pButtonGoBackText = pButtonGoBackText;
+    this->protocol = protocol;
+    this->msg = msg;
 
-#ifdef Q_OS_LINUX
-/*
-        iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
-        iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
-        iCompass        = new Inbox(this->IBCPointer->getInbox(182));
-        iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
-        iUWB            = new Inbox(this->IBCPointer->getInbox(184));
-
-
-        packetUltrafront    = new Packet(180,2);
-        packetUltraback     = new Packet(181,2);
-        packetCompass       = new Packet(182,3);
-        packetAcceleration  = new Packet(183,6);
-        packetUWB           = new Packet(184,6);
-*/
-
-#ifdef PI
-
-    QThread *thread = new QThread;
-    threadLidar     = new ThreadLidar(alertThread);
-
-    threadLidar->moveToThread(thread);
-
-    connect(thread, SIGNAL(started()), threadLidar, SLOT(startProcess()));
-    connect(threadLidar, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(threadLidar, SIGNAL(finished()), threadLidar, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-
-    thread->start();
-
-    lidarTimer                = new QTimer();
-    connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
-    lidarTimer->start(50000);
-
-#endif
-
-    QuerySensorValuesTimer = new QTimer();
-    connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
-    QuerySensorValuesTimer->start(1000);
-
-#endif
-
-   serial = new SerialPort("/dev/ttyUSB0");
-   serial->config();
-   protocol = new StreamSerialProtocol(serial->fd, (uint8_t*)&message, sizeof(message));
-
+    generateLayout();
+    setupConnects();
+    generateStyle();
 }
 
 void SensorValuesWidget::generateLayout(){
@@ -144,6 +107,54 @@ void SensorValuesWidget::generateLayout(){
 void SensorValuesWidget::setupConnects(){
 
     connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(slotpButtonGoBackPushed()));
+
+    QDir SensorOutputFolder("/home/pi/SensorOutput");
+    SensorOutputFolder.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+    foreach (QString SensorOutputItem, SensorOutputFolder.entryList()){
+        SensorOutputFolder.remove(SensorOutputItem);
+    }
+
+#ifdef Q_OS_LINUX
+/*
+        iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
+        iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
+        iCompass        = new Inbox(this->IBCPointer->getInbox(182));
+        iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
+        iUWB            = new Inbox(this->IBCPointer->getInbox(184));
+
+
+        packetUltrafront    = new Packet(180,2);
+        packetUltraback     = new Packet(181,2);
+        packetCompass       = new Packet(182,3);
+        packetAcceleration  = new Packet(183,6);
+        packetUWB           = new Packet(184,6);
+*/
+
+#ifdef PI
+
+    QThread *thread = new QThread;
+    threadLidar     = new ThreadLidar(alertThread);
+
+    threadLidar->moveToThread(thread);
+
+    connect(thread, SIGNAL(started()), threadLidar, SLOT(startProcess()));
+    connect(threadLidar, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(threadLidar, SIGNAL(finished()), threadLidar, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    thread->start();
+
+    lidarTimer                = new QTimer();
+    connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
+    lidarTimer->start(50000);
+
+#endif
+
+    QuerySensorValuesTimer = new QTimer();
+    connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
+    QuerySensorValuesTimer->start(1000);
+
+#endif
 }
 
 void SensorValuesWidget::generateStyle(){
@@ -205,8 +216,8 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
     uint8_t receiveState;
 
-    message.Request = CarSensorRequest_All;
-    message.Mode = CarMode_None;
+    msg->Request = CarSensorRequest_All;
+    msg->Mode = CarMode_None;
     protocol->send();
 
     receiveState =  protocol->receive();
@@ -214,11 +225,11 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
     if(receiveState == ProtocolState::SUCCESS ){
 
-        lblUltraFrontValue->setText(QString::number((int)message.DistanceFront));
-        lblUltraBackValue->setText(QString::number((int)message.DistanceBack));
-        lblcompassValue->setText(QString::number((int)message.DirectionValue));
-        lblaccelerationValue->setText("X: " + QString::number((int)message.AccelerationXValue)
-                                      + "Y: " + QString::number((int)message.AccelerationYValue));
+        lblUltraFrontValue->setText(QString::number((int)msg->DistanceFront));
+        lblUltraBackValue->setText(QString::number((int)msg->DistanceBack));
+        lblcompassValue->setText(QString::number((int)msg->DirectionValue));
+        lblaccelerationValue->setText("X: " + QString::number((int)msg->AccelerationXValue)
+                                      + "Y: " + QString::number((int)msg->AccelerationYValue));
     }
 
 

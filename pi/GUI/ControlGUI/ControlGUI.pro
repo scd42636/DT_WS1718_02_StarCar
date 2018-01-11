@@ -120,7 +120,8 @@ RESOURCES += \
 HEADERS += \
     ../SerialProtocol/SerialPort.hpp \
     ../SerialProtocol/SerialProtocol.h \
-    ../SerialProtocol/StreamSerialProtocol.h
+    ../SerialProtocol/StreamSerialProtocol.h \
+    starcar.h
 
 SOURCES += \
     ../SerialProtocol/SerialPort.cpp \

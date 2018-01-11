@@ -9,6 +9,16 @@ ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertTh
     setupWidget();
 }
 
+ClockControllModeWidget::ClockControllModeWidget(message *msg, QWidget *parent, Alert *alertThread
+                                                 , StreamSerialProtocol *protocol) : QWidget(parent)
+{
+    this->alertThread = alertThread;
+    this->protocol = protocol;
+    this->msg = msg;
+
+    setupWidget();
+}
+
 ClockControllModeWidget::~ClockControllModeWidget(){
 
 }
@@ -191,8 +201,14 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
+#ifndef IBCNOTWORKING
     Packet ClockPacket(101,0);
     IBCPointer->send(ClockPacket);
+#else
+    this->msg->Mode = CarMode_Controller;
+    this->msg->Request = CarSensorRequest_None;
+    protocol->send();
+#endif
 
 #endif
     createControllAnimation();

@@ -1,6 +1,8 @@
 #ifndef CONTROLLERCONTROLMODEWIDGET_H
 #define CONTROLLERCONTROLMODEWIDGET_H
 
+#define IBCNOTWORKING
+
 #include <QObject>
 #include <QWidget>
 #include "alert.h"
@@ -11,6 +13,9 @@
 #include <../../IBP/IBC_Packet.hpp>
 #include <../../IBP/Serial.hpp>
 
+#include <../SerialProtocol/StreamSerialProtocol.h>
+#include <starcar.h>
+
 class ControllerControlModeWidget : public QWidget
 {
     Q_OBJECT
@@ -18,6 +23,8 @@ class ControllerControlModeWidget : public QWidget
 public:
 
     explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+    explicit ControllerControlModeWidget(message *msg, QWidget *parent = nullptr, Alert *alertThread = nullptr
+            , StreamSerialProtocol *protocol = nullptr);
     ~ControllerControlModeWidget();
 
 signals:
@@ -72,8 +79,12 @@ private:
     // QTimer
     QTimer          *blinkTimer;
 
-    // IBC
+
     IBC             *IBCPointer;
+
+    StreamSerialProtocol *protocol;
+    message *msg;
+
 
     // Vars
     double fontSize = 10;
