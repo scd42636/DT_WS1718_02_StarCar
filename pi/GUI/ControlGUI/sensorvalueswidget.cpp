@@ -216,11 +216,13 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
     uint8_t receiveState;
 
-    this->msg->Request = CarSensorRequest_Sonic;
-    this->msg->Mode = CarMode_None;
+    this->msg->Request = 1;
+    this->msg->Mode = 2;
     protocol->send();
+     protocol->send();
+      protocol->send();
 
-    receiveState =  protocol->receive();
+    //receiveState =  protocol->receive();
 
 
     if(receiveState == ProtocolState::SUCCESS ){

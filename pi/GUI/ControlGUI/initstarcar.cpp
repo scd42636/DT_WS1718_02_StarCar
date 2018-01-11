@@ -27,7 +27,7 @@ void InitStarCar::startProcess(){
     (*serialPort)->config();
     int fd = (*serialPort)->fd;
 
-    *protocol = new StreamSerialProtocol(fd, (uint8_t*)msg, sizeof(msg));
+    *protocol = new StreamSerialProtocol(fd, (uint8_t*)*msg, sizeof(*msg));
     *msg = new message();
     (*msg)->Mode = 0;
     (*protocol)->send();
