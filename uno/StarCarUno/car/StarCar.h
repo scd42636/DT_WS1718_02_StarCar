@@ -94,6 +94,8 @@ public:
 
     // ---------- Public methods ----------
 public:
+    sbyte_t CalculateCrashPreventionDistance();
+
     bool IsBlocked();
 
     bool IsBackBlocked(bool exclusive);
