@@ -23,8 +23,8 @@ void InitStarCar::startProcess(){
     *IBCPointer = new IBC("/dev/ttyUSB0","/home/pi/DT_WS1718_02_StarCar/pi/IBP/IBC_config.cfg");
 #else
 
-    *serialPort = new SerialPort("/dev/ttyUSB0");
-    (*serialPort)->config();
+    //*serialPort = new SerialPort("/dev/ttyUSB0");
+    //(*serialPort)->config();
     //int fd = (*serialPort)->fd;
 
     //*protocol = new StreamSerialProtocol(fd, (uint8_t*)*msg, sizeof(*msg));

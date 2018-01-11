@@ -1,24 +1,5 @@
 #include "sensorvalueswidget.h"
 
-struct payload_t
-{
-    uint8_t Mode;
-    uint8_t Request;
-
-    uint32_t DistanceFront;
-    uint32_t DistanceBack;
-
-    uint8_t DirectionParity;
-    uint32_t DirectionValue;
-
-    uint8_t AccelerationXParity;
-    uint32_t AccelerationXValue;
-
-    uint8_t AccelerationYParity;
-    uint32_t AccelerationYValue;
-
-} __attribute__((packed)) messagetest;
-
 #ifndef IBCNOTWORKING
 
 typedef uint8_t InoByte_t;
@@ -66,6 +47,13 @@ SensorValuesWidget::SensorValuesWidget(message *msg, QWidget *parent, Alert *ale
     this->protocol = protocol;
     this->msg = msg;
     this->serialPort = serialPort;
+
+    this->testSerialPort = new SerialPort("/dev/ttyUSB0");
+    this->testSerialPort->config();
+    int fd = testSerialPort->fd;
+
+    this->testprotocol = new StreamSerialProtocol(fd, (uint8_t *)&testmsg, sizeof(testmsg));
+
 
     generateLayout();
     setupConnects();
@@ -234,27 +222,22 @@ void SensorValuesWidget::slotQuerySensorValues(){
         iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
 */
 
-    int fd = serialPort->fd;
-    StreamSerialProtocol test = StreamSerialProtocol(fd,(uint8_t*)&messagetest, sizeof(messagetest));
-
     uint8_t receiveState;
 
-    messagetest.Request = 1;
-    messagetest.Mode = 2;
-    test.send();
-    test.send();
-    test.send();
+    testmsg.Request = 1;
+    testmsg.Mode = 2;
+    testprotocol->send();
 
-    //receiveState =  protocol->receive();
+    receiveState =  testprotocol->receive();
 
 
     if(receiveState == ProtocolState::SUCCESS ){
 
-        lblUltraFrontValue->setText(QString::number((int)messagetest.DistanceFront));
-        lblUltraBackValue->setText(QString::number((int)messagetest.DistanceBack));
-        lblcompassValue->setText(QString::number((int)messagetest.DirectionValue));
-        lblaccelerationValue->setText("X: " + QString::number((int)messagetest.AccelerationXValue)
-                                      + "Y: " + QString::number((int)messagetest.AccelerationYValue));
+        lblUltraFrontValue->setText(QString::number((int)testmsg.DistanceFront));
+        lblUltraBackValue->setText(QString::number((int)testmsg.DistanceBack));
+        lblcompassValue->setText(QString::number((int)testmsg.DirectionValue));
+        lblaccelerationValue->setText("X: " + QString::number((int)testmsg.AccelerationXValue)
+                                      + "Y: " + QString::number((int)testmsg.AccelerationYValue));
     }
 
 

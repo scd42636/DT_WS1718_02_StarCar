@@ -122,8 +122,13 @@ private:
     IBC             *IBCPointer;
 
     StreamSerialProtocol *protocol;
+    StreamSerialProtocol *testprotocol;
+
     SerialPort *serialPort;
+    SerialPort *testSerialPort;
+
     message *msg;
+    message testmsg;
 
 #endif
 
