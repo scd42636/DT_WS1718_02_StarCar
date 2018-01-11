@@ -20,7 +20,7 @@ class InitStarCar : public QObject {
 public:
 
     InitStarCar(Alert *alertThread, IBC **IBCPointer);
-    InitStarCar(Alert *alertThread, SerialPort **serialPort, StreamSerialProtocol **protocol, message *msg);
+    InitStarCar(Alert *alertThread, SerialPort **serialPort, StreamSerialProtocol **protocol, message **msg);
     ~InitStarCar();
 
 public slots:
@@ -44,7 +44,7 @@ private:
 
     SerialPort  **serialPort;
     StreamSerialProtocol **protocol;
-    message         *msg;
+    message         **msg;
 
 };
 

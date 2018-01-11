@@ -27,7 +27,7 @@ class StartWidget : public QWidget
 public:
 
     explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr);
-    explicit StartWidget(message *msg, QWidget *parent = nullptr, Alert *alertThread = nullptr, SerialPort **serialPort = nullptr
+    explicit StartWidget(message **msg, QWidget *parent = nullptr, Alert *alertThread = nullptr, SerialPort **serialPort = nullptr
                          , StreamSerialProtocol **protocol = nullptr);
     ~StartWidget();
 
@@ -54,7 +54,7 @@ private:
 
     SerialPort **serialPort;
     StreamSerialProtocol **protocol;
-    message *msg;
+    message **msg;
 
 
     // Methods

@@ -6,7 +6,7 @@ InitStarCar::InitStarCar(Alert *alertThread, IBC **IBCPointer)
     this->IBCPointer = IBCPointer;
 }
 
-InitStarCar::InitStarCar(Alert *alertThread, SerialPort **serialPort, StreamSerialProtocol **protocol, message *msg)
+InitStarCar::InitStarCar(Alert *alertThread, SerialPort **serialPort, StreamSerialProtocol **protocol, message **msg)
 {
     this->alertThread = alertThread;
     this->serialPort = serialPort;
@@ -28,7 +28,8 @@ void InitStarCar::startProcess(){
     int fd = (*serialPort)->fd;
 
     *protocol = new StreamSerialProtocol(fd, (uint8_t*)msg, sizeof(msg));
-    msg->Mode = CarMode_None;
+    *msg = new message();
+    (*msg)->Mode = 0;
     (*protocol)->send();
 /*
     struct payload

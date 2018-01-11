@@ -102,7 +102,7 @@ private:
 
     SerialPort              *serialPort;
     StreamSerialProtocol    *protocol;
-    message                 msg;
+    message                 *msg;
 
 #endif
     // Vars

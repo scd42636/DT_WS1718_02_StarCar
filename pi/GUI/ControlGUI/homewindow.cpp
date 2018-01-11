@@ -125,7 +125,7 @@ void HomeWindow::slotShowSensorValuesWidget(){
 #ifndef IBCNOTWORKING
     sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl" ,this-> IBCPointer);
 #else
-     sensorValuesWidget = new SensorValuesWidget(&this->msg, this, this->alertThread, "Zurück zur Moduswahl", this->protocol);
+     sensorValuesWidget = new SensorValuesWidget(this->msg, this, this->alertThread, "Zurück zur Moduswahl", this->protocol);
 #endif
 
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
@@ -137,7 +137,7 @@ void HomeWindow::slotShowSensorValuesWidgetAfterControlMode(){
 #ifndef IBCNOTWORKING
     sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung",  this->IBCPointer);
 #else
-     sensorValuesWidget = new SensorValuesWidget(&this->msg, this, this->alertThread, "Zurück zur Steuerung", this->protocol);
+     sensorValuesWidget = new SensorValuesWidget(this->msg, this, this->alertThread, "Zurück zur Steuerung", this->protocol);
 #endif
 
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
@@ -149,7 +149,7 @@ void HomeWindow::slotShowClockControlModeWidget(){
 #ifndef IBCNOTWORKING
     clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread, this->IBCPointer);
 #else
-    clockcontrolModeWidget = new ClockControllModeWidget(&this->msg, this, this->alertThread, this->protocol);
+    clockcontrolModeWidget = new ClockControllModeWidget(this->msg, this, this->alertThread, this->protocol);
 #endif
 
     connect(clockcontrolModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
@@ -162,7 +162,7 @@ void HomeWindow::slotShowControllerControlModeWidget(){
 #ifndef IBCNOTWORKING
     controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread, this->IBCPointer);
 #else
-    controllercontrolModeWidget = new ControllerControlModeWidget(&this->msg, this, this->alertThread, this->protocol);
+    controllercontrolModeWidget = new ControllerControlModeWidget(this->msg, this, this->alertThread, this->protocol);
 #endif
 
 

@@ -17,7 +17,7 @@ StartWidget::StartWidget(QWidget *parent, Alert *alertThread, IBC **IBCPointer) 
     this->IBCPointer = IBCPointer;
 }
 
-StartWidget::StartWidget(message *msg,QWidget *parent, Alert *alertThread, SerialPort **serialPort
+StartWidget::StartWidget(message **msg, QWidget *parent, Alert *alertThread, SerialPort **serialPort
                          , StreamSerialProtocol **protocol) : QWidget(parent)
 {
     generateLayout();
