@@ -1,7 +1,7 @@
 #ifndef STARCAR
 #define STARCAR
 
-enum StarCarMode
+/*enum StarCarMode
 {
     CarMode_None = 0,
     CarMode_Controller = 1,
@@ -16,7 +16,7 @@ enum StarCarSensorRequest
     CarSensorRequest_Accelerator = 4,
     CarSensorRequest_All = 7
 };
-
+*/
 typedef struct payload
 {
     uint8_t Mode;

@@ -18,6 +18,7 @@
 #include <../SerialProtocol/SerialPort.hpp>
 #include <starcar.h>
 #include <threadlidar.h>
+#include <starcarprotocol.h>
 
 class SensorValuesWidget : public QWidget
 {
@@ -122,13 +123,11 @@ private:
     IBC             *IBCPointer;
 
     StreamSerialProtocol *protocol;
-    StreamSerialProtocol *testprotocol;
-
     SerialPort *serialPort;
-    SerialPort *testSerialPort;
-
     message *msg;
-    message testmsg;
+
+    StarCarProtocol     *starcarProtocol;
+
 
 #endif
 

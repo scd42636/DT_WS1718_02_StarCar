@@ -205,8 +205,8 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
     Packet ClockPacket(101,0);
     IBCPointer->send(ClockPacket);
 #else
-    this->msg->Mode = CarMode_Controller;
-    this->msg->Request = CarSensorRequest_None;
+    //this->msg->Mode = CarMode_Controller;
+    //this->msg->Request = CarSensorRequest_None;
     protocol->send();
 #endif
 

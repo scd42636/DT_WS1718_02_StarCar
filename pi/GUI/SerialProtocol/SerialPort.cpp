@@ -73,3 +73,8 @@ void SerialPort::config()
 
         sleep(3);   // Wait until Arduino restarts !!
 }
+
+int SerialPort::getFD(){
+
+    return this->fd;
+}

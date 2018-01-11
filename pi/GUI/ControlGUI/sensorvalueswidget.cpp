@@ -48,16 +48,11 @@ SensorValuesWidget::SensorValuesWidget(message *msg, QWidget *parent, Alert *ale
     this->msg = msg;
     this->serialPort = serialPort;
 
-    this->testSerialPort = new SerialPort("/dev/ttyUSB0");
-    this->testSerialPort->config();
-    int fd = testSerialPort->fd;
-
-    this->testprotocol = new StreamSerialProtocol(fd, (uint8_t *)&testmsg, sizeof(testmsg));
-
-
     generateLayout();
     setupConnects();
     generateStyle();
+
+    this->starcarProtocol = new StarCarProtocol();
 }
 
 void SensorValuesWidget::generateLayout(){
@@ -222,7 +217,7 @@ void SensorValuesWidget::slotQuerySensorValues(){
         iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
 */
 
-    uint8_t receiveState;
+    /*uint8_t receiveState;
 
     testmsg.Request = 1;
     testmsg.Mode = 2;
@@ -240,6 +235,15 @@ void SensorValuesWidget::slotQuerySensorValues(){
                                       + "Y: " + QString::number((int)testmsg.AccelerationYValue));
     }
 
+*/
+    starcarProtocol->setMode(CarMode_Controller);
+    starcarProtocol->setRequest(CarSensorRequest_Sonic);
+
+    starcarProtocol->send();
+
+    int debug = starcarProtocol->receive();
+
+    qDebug("%d", debug);
 
 
 #endif

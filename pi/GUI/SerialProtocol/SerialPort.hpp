@@ -5,7 +5,9 @@
 
 class SerialPort
 {
-public:
+
+private:
+
 	int fd;
 
 public:
@@ -13,6 +15,7 @@ public:
     SerialPort(std::string);
     ~SerialPort();
     void config();
+    int getFD();
 };
 
 #endif /* SERIALPORT */
