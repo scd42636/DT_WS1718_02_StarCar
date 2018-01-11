@@ -163,7 +163,7 @@ void StarMotor::Task(StarCar* car)
 
     if (car->getEngineMode() == StarCarEngineMode::CarEngineMode_On) {
         sbyte_t acceleration = car->getSpeed();
-        short_t speed = (-1) * ((float_t)1000 * ((float_t)acceleration / 100));
+        short_t speed = (-1) * ((float_t)500 * ((float_t)acceleration / 100));
 
         if (this->currentSpeed != speed) {
             #if TEST
