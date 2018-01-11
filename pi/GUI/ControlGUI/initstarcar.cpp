@@ -28,8 +28,36 @@ void InitStarCar::startProcess(){
     int fd = (*serialPort)->fd;
 
     *protocol = new StreamSerialProtocol(fd, (uint8_t*)msg, sizeof(msg));
-    msg->Mode = CarMode_Controller;
+    msg->Mode = CarMode_None;
+    (*protocol)->send();
+/*
+    struct payload
+    {
+        uint8_t Mode;
+        uint8_t Request;
 
+        uint32_t DistanceFront;
+        uint32_t DistanceBack;
+
+        uint8_t DirectionParity;
+        uint32_t DirectionValue;
+
+        uint8_t AccelerationXParity;
+        uint32_t AccelerationXValue;
+
+        uint8_t AccelerationYParity;
+        uint32_t AccelerationYValue;
+    } __attribute__((packed)) mess;
+
+    SerialPort serial = SerialPort("/dev/ttyUSB0");
+    serial.config();
+    int fd = serial.fd;
+    StreamSerialProtocol prot = StreamSerialProtocol(fd,(uint8_t*)&mess,
+                                                     sizeof(mess));
+    prot.send();
+    prot.send();
+    prot.send();
+*/
 #endif
 
 #endif

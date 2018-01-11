@@ -19,20 +19,21 @@ enum StarCarSensorRequest
 
 typedef struct payload
 {
-    StarCarMode Mode;
-    StarCarSensorRequest Request;
+    uint8_t Mode;
+    uint8_t Request;
 
-    uint16_t DistanceFront;
-    uint16_t DistanceBack;
+    uint32_t DistanceFront;
+    uint32_t DistanceBack;
 
     uint8_t DirectionParity;
-    uint16_t DirectionValue;
+    uint32_t DirectionValue;
 
     uint8_t AccelerationXParity;
-    uint16_t AccelerationXValue;
+    uint32_t AccelerationXValue;
 
     uint8_t AccelerationYParity;
-    uint16_t AccelerationYValue;
+    uint32_t AccelerationYValue;
+
 } __attribute__((packed)) message;
 
 #endif // STARCAR
