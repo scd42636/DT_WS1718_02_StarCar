@@ -12,7 +12,7 @@ TARGET = ControlGUI
 TEMPLATE = app
 CONFIG += c++14
 !win32{
-LIBS+=-lurg_c
+#LIBS+=-lurg_c
 }
 
 # The following define makes your compiler emit warnings if you use
@@ -116,3 +116,13 @@ DISTFILES += \
 
 RESOURCES += \
     paths.qrc
+
+HEADERS += \
+    ../SerialProtocol/SerialPort.hpp \
+    ../SerialProtocol/SerialProtocol.h \
+    ../SerialProtocol/StreamSerialProtocol.h
+
+SOURCES += \
+    ../SerialProtocol/SerialPort.cpp \
+    ../SerialProtocol/SerialProtocol.cpp \
+    ../SerialProtocol/StreamSerialProtocol.cpp

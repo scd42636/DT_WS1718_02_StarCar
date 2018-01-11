@@ -1,6 +1,8 @@
 #ifndef SENSORVALUESWIDGET_H
 #define SENSORVALUESWIDGET_H
 
+#define PI
+
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
@@ -11,6 +13,8 @@
 #include <QDir>
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
+#include <../SerialProtocol/SerialPort.hpp>
+#include <../SerialProtocol/StreamSerialProtocol.h>
 #include <threadlidar.h>
 
 class SensorValuesWidget : public QWidget
@@ -72,6 +76,42 @@ private:
 
     // IBC
     IBC             *IBCPointer;
+    SerialPort      *serial;
+    StreamSerialProtocol *protocol;
+
+    enum StarCarMode
+    {
+        CarMode_None = 0,
+        CarMode_Controller = 1,
+        CarMode_Watch = 2
+    };
+
+    enum StarCarSensorRequest
+    {
+        CarSensorRequest_None = 0,
+        CarSensorRequest_Sonic = 1,
+        CarSensorRequest_Magnet = 2,
+        CarSensorRequest_Accelerator = 4,
+        CarSensorRequest_All = 7
+    };
+
+    struct payload
+    {
+        StarCarMode Mode;
+        StarCarSensorRequest Request;
+
+        uint16_t DistanceFront;
+        uint16_t DistanceBack;
+
+        uint8_t DirectionParity;
+        uint16_t DirectionValue;
+
+        uint8_t AccelerationXParity;
+        uint16_t AccelerationXValue;
+
+        uint8_t AccelerationYParity;
+        uint16_t AccelerationYValue;
+    } __attribute__((packed)) message;
 
     // QTimer
     QTimer          *lidarTimer;

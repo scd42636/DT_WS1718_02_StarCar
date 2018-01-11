@@ -1,8 +1,5 @@
 #include "sensorvalueswidget.h"
 
-#define PI
-//#define IBCTEST
-
 typedef uint8_t InoByte_t;
 typedef int16_t InoInt_t;
 
@@ -45,14 +42,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     }
 
 #ifdef Q_OS_LINUX
-
-    #ifdef IBCTEST
-        test            = new Inbox(this->IBCPointer->getInbox(254));
-        char buff[4] = "ddd";
-        packetTest          = new Packet(254,4,(uint8_t * )buff);
-
-    #else
-
+/*
         iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
         iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
         iCompass        = new Inbox(this->IBCPointer->getInbox(182));
@@ -65,8 +55,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
         packetCompass       = new Packet(182,3);
         packetAcceleration  = new Packet(183,6);
         packetUWB           = new Packet(184,6);
-    #endif
-
+*/
 
 #ifdef PI
 
@@ -93,6 +82,10 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     QuerySensorValuesTimer->start(1000);
 
 #endif
+
+   serial = new SerialPort("/dev/ttyUSB0");
+   serial->config();
+   protocol = new StreamSerialProtocol(serial->fd, (uint8_t*)&message, sizeof(message));
 
 }
 
@@ -193,12 +186,7 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
 #ifdef Q_OS_LINUX
 
-    #ifdef IBCTEST
-        test->fetch();
-        IBCPointer->send(*packetTest);
-        test->empty()          ? alertThread->fireWarning("Test kein Wert!") : lblUltraFrontValue->setText(getMesureValue(test));
-    #else
-        iUltraBack->fetch();
+    /*    iUltraBack->fetch();
         iUltraFront->fetch();
         iCompass->fetch();
         iAcceleration->fetch();
@@ -213,8 +201,27 @@ void SensorValuesWidget::slotQuerySensorValues(){
         iCompass->empty()      ? alertThread->fireWarning("Kompass kein Wert!") : lblcompassValue->setText(getMesureValue(iCompass));
         iAcceleration->empty() ? alertThread->fireWarning("Beschleunigung kein Wert!") : lblaccelerationValue->setText(getMesureValue(iAcceleration));
         iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
+*/
 
-    #endif
+    uint8_t receiveState;
+
+    message.Request = CarSensorRequest_All;
+    message.Mode = CarMode_None;
+    protocol->send();
+
+    receiveState =  protocol->receive();
+
+
+    if(receiveState == ProtocolState::SUCCESS ){
+
+        lblUltraFrontValue->setText(QString::number((int)message.DistanceFront));
+        lblUltraBackValue->setText(QString::number((int)message.DistanceBack));
+        lblcompassValue->setText(QString::number((int)message.DirectionValue));
+        lblaccelerationValue->setText("X: " + QString::number((int)message.AccelerationXValue)
+                                      + "Y: " + QString::number((int)message.AccelerationYValue));
+    }
+
+
 
 #endif
 }
@@ -222,7 +229,7 @@ void SensorValuesWidget::slotQuerySensorValues(){
 QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 
 #ifdef Q_OS_LINUX
-
+/*
     QString resultValue;
 
     Packet tempPacket = *inbox->back();
@@ -328,8 +335,9 @@ QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 
     inbox->pop_front();
     return resultValue;
-
+*/
 #endif
+
 }
 
 
