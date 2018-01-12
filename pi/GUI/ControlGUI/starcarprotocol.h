@@ -30,8 +30,8 @@ public:
     explicit StarCarProtocol();
     ~StarCarProtocol();
 
-    void setMode(StarCarMode mode);
-    void setRequest(StarCarSensorRequest request);
+    void setMode(int mode);
+    void setRequest(int request);
     void send();
     int receive();
 
@@ -52,8 +52,8 @@ private:
 
     struct payload
     {
-        StarCarMode Mode = CarMode_None;
-        StarCarSensorRequest Request = CarSensorRequest_None;
+        uint8_t Mode = 0;
+        uint8_t Request = 0;
 
         uint32_t DistanceFront = 0;
         uint32_t DistanceBack = 0;

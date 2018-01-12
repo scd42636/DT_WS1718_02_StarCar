@@ -236,12 +236,14 @@ void SensorValuesWidget::slotQuerySensorValues(){
     }
 
 */
-    starcarProtocol->setMode(CarMode_Controller);
-    starcarProtocol->setRequest(CarSensorRequest_Sonic);
-
-    starcarProtocol->send();
+    starcarProtocol->setMode(1);
+    starcarProtocol->setRequest(1);
 
     int debug = starcarProtocol->receive();
+
+    lblUltraFrontValue->setText(QString::number((int)starcarProtocol->getDistanceFront()));
+
+    starcarProtocol->send();
 
     qDebug("%d", debug);
 

@@ -2,8 +2,8 @@
 
 StarCarProtocol::StarCarProtocol()
 {
-    message.Mode = CarMode_None;
-    message.Request = CarSensorRequest_None;
+    message.Mode = 0;
+    message.Request = 0;
 
     message.DistanceFront = 0;
     message.DistanceBack = 0;
@@ -39,7 +39,7 @@ void StarCarProtocol::initProtocol(){
     this->protocol = new StreamSerialProtocol(this->fd, (uint8_t *)&this->message, sizeof(message));
 }
 
-void StarCarProtocol::setMode(StarCarMode mode){
+void StarCarProtocol::setMode(int mode){
 
     this->message.Mode = mode;
 }
@@ -49,7 +49,7 @@ int StarCarProtocol::getMode(){
     return message.Mode;
 }
 
-void StarCarProtocol::setRequest(StarCarSensorRequest request){
+void StarCarProtocol::setRequest(int request){
 
     this->message.Request = request;
 }
