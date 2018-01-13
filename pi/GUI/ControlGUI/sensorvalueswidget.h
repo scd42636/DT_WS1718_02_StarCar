@@ -80,8 +80,6 @@ private:
     void setupConnects();
     void generateStyle();
 
-    QString getMesureValue();
-
     StarCarProtocol         *starcarprotocol;
 };
 

@@ -36,7 +36,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
 
     lidarTimer                = new QTimer();
     connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
-    //lidarTimer->start(500);
+    lidarTimer->start(500);
 
 #endif
 
@@ -158,13 +158,3 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
 #endif
 }
-
-
-QString SensorValuesWidget::getMesureValue(){
-
-}
-
-
-
-
-
