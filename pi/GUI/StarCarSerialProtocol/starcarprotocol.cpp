@@ -61,12 +61,34 @@ void StarCarProtocol::receive(){
     serial->recv(&message,sizeof(message));
 }
 
+void StarCarProtocol::writetoFile(QString filePath, QString value){
+
+    QFile file(filePath);
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Append)){
+
+        QTextStream stream (&file);
+        stream << value << endl;
+        file.close();
+
+    }else{
+
+        printf("Konnte file nicht öffnen...");
+        //alertThread->fireError("Could not open File" + filePath);
+    }
+
+}
+
 int StarCarProtocol::getDistanceFront(){
+
+    writetoFile("/home/pi/SensorOutput/UltraVorne.txt", QString::number((int)message.DistanceFront));
 
     return message.DistanceFront;
 }
 
 int StarCarProtocol::getDistanceBack(){
+
+    writetoFile("/home/pi/SensorOutput/UltraHinten.txt", QString::number((int)message.DistanceBack));
 
     return message.DistanceBack;
 }
@@ -75,10 +97,12 @@ int StarCarProtocol::getCompass(){
 
     if(message.DirectionParity == 1)
     {
+        writetoFile("/home/pi/SensorOutput/Compass.txt", QString::number(-(int)message.DirectionValue));
         return -(message.DirectionValue);
 
     }else{
 
+        writetoFile("/home/pi/SensorOutput/Compass.txt", QString::number((int)message.DirectionValue));
         return message.DirectionValue;
     }
 }
@@ -87,10 +111,12 @@ int StarCarProtocol::getAccelerationX(){
 
     if(message.AccelerationXParity == 1)
     {
+        writetoFile("/home/pi/SensorOutput/BeschleunigungX.txt", QString::number(-(int)message.AccelerationXValue));
         return -(message.AccelerationXValue);
 
     }else{
 
+        writetoFile("/home/pi/SensorOutput/BeschleunigungX.txt", QString::number((int)message.AccelerationXValue));
         return message.AccelerationXValue;
     }
 }
@@ -99,10 +125,12 @@ int StarCarProtocol::getAccelerationY(){
 
     if(message.AccelerationYParity == 1)
     {
+        writetoFile("/home/pi/SensorOutput/BeschleunigungY.txt", QString::number(-(int)message.AccelerationYValue));
         return -(message.AccelerationYValue);
 
     }else{
 
+        writetoFile("/home/pi/SensorOutput/BeschleunigungY.txt", QString::number((int)message.AccelerationYValue));
         return message.AccelerationYValue;
     }
 }

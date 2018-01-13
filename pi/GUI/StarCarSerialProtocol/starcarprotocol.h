@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include "Serial.hpp"
+#include <QFile>
+#include <QTextStream>
 
 enum StarCarMode
 {
@@ -68,6 +70,7 @@ private:
 
     }__attribute__((packed))  message;
 
+    void writetoFile(QString filePath, QString value);
 };
 
 #endif // STARCARPROTOCOL_H
