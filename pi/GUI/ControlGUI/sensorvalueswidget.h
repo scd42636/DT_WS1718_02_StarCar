@@ -12,6 +12,7 @@
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
 #include <threadlidar.h>
+#include "starcarprotocol.h"
 
 class SensorValuesWidget : public QWidget
 {
@@ -114,6 +115,8 @@ private:
 
         memcpy(data, packet.content(), dataSize);
     }
+
+    StarCarProtocol         *protocol;
 };
 
 #endif // SENSORVALUESWIDGET_H

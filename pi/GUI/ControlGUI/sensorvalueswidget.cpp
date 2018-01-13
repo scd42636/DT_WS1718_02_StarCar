@@ -52,7 +52,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
         packetTest          = new Packet(254,4,(uint8_t * )buff);
 
     #else
-
+/*
         iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
         iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
         iCompass        = new Inbox(this->IBCPointer->getInbox(182));
@@ -64,7 +64,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
         packetUltraback     = new Packet(181,2);
         packetCompass       = new Packet(182,3);
         packetAcceleration  = new Packet(183,6);
-        packetUWB           = new Packet(184,6);
+        packetUWB           = new Packet(184,6);*/
     #endif
 
 
@@ -84,7 +84,9 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
 
     lidarTimer                = new QTimer();
     connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
-    lidarTimer->start(50000);
+    //lidarTimer->start(500);
+
+    protocol = new StarCarProtocol();
 
 #endif
 
@@ -198,7 +200,7 @@ void SensorValuesWidget::slotQuerySensorValues(){
         IBCPointer->send(*packetTest);
         test->empty()          ? alertThread->fireWarning("Test kein Wert!") : lblUltraFrontValue->setText(getMesureValue(test));
     #else
-        iUltraBack->fetch();
+     /*   iUltraBack->fetch();
         iUltraFront->fetch();
         iCompass->fetch();
         iAcceleration->fetch();
@@ -213,8 +215,14 @@ void SensorValuesWidget::slotQuerySensorValues(){
         iCompass->empty()      ? alertThread->fireWarning("Kompass kein Wert!") : lblcompassValue->setText(getMesureValue(iCompass));
         iAcceleration->empty() ? alertThread->fireWarning("Beschleunigung kein Wert!") : lblaccelerationValue->setText(getMesureValue(iAcceleration));
         iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
-
+*/
     #endif
+
+        protocol->setMode(1);
+        protocol->send();
+        int d = protocol->receive();
+        qDebug("%d\n",d);
+        lblUltraFrontValue->setText(QString::number((int)protocol->getDistanceFront()));
 
 #endif
 }

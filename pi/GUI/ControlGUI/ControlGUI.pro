@@ -116,3 +116,13 @@ DISTFILES += \
 
 RESOURCES += \
     paths.qrc
+
+HEADERS += \
+    ../SerialProtocol/SerialProtocol.h \
+    ../SerialProtocol/StreamSerialProtocol.h \
+    ../SerialProtocol/starcarprotocol.h
+
+SOURCES += \
+    ../SerialProtocol/SerialProtocol.cpp \
+    ../SerialProtocol/StreamSerialProtocol.cpp \
+    ../SerialProtocol/starcarprotocol.cpp
