@@ -236,6 +236,7 @@ void SensorValuesWidget::slotQuerySensorValues(){
     }
 
 */
+    //test
     starcarProtocol->setMode(1);
     starcarProtocol->setRequest(1);
 
