@@ -218,16 +218,21 @@ void SensorValuesWidget::slotQuerySensorValues(){
 */
     #endif
 
-        protocol->setMode(1);
-        protocol->setRequest(1);
+        //protocol->setMode(1);
+        //protocol->setRequest(1);
         protocol->send();
-        int d = protocol->receive();
-        qDebug("%d\n",d);
+
+        protocol->receive();
+
+        //int d = protocol->receive();
+        //qDebug("%d\n", protocol->getMode());
+        //qDebug("%d\n",d);
+
         lblUltraFrontValue->setText(QString::number((int)protocol->getDistanceFront()));
         lblUltraBackValue->setText(QString::number((int)protocol->getDistanceBack()));
         lblcompassValue->setText(QString::number((int)protocol->getCompass()));
         lblaccelerationValue->setText("X: " + QString::number((int)protocol->getAccelerationX()) +
-                                      "Y: " + QString::number((int)protocol->getAccelerationY()));
+                                      " Y: " + QString::number((int)protocol->getAccelerationY()));
 
     /*uint8_t receiveState;
 

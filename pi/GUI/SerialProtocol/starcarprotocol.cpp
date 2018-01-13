@@ -18,45 +18,30 @@ StarCarProtocol::StarCarProtocol()
     message.AccelerationYValue = 0;
 
     initSerialPort();
-    initProtocol();
+    //initProtocol();
 
 }
 
 StarCarProtocol::~StarCarProtocol(){
 
     //delete this->serialPort;
+    delete this->serial;
 }
 
 void StarCarProtocol::initSerialPort(){
 
-    int serial = open("/dev/ttyUSB0",O_RDWR | O_NOCTTY | O_NDELAY);
-
-    if (serial == -1){
-
-        printf("Failed to open serial port.\n");
-   }
-
-   struct termios options;
-
-    tcgetattr(serial, &options);
-    options.c_cflag = B115200 | CS8 | CLOCAL | CREAD;
-    options.c_iflag = IGNPAR;
-    options.c_oflag = 0;
-    options.c_lflag = 0;
-    tcflush(serial, TCIFLUSH);
-    tcsetattr(serial, TCSANOW, &options);
-
-
-    protocol =  new StreamSerialProtocol(serial, (uint8_t*)&message, sizeof(message));
-
-    /*this->serialPort = new SerialPort("/dev/ttyUSB0");
+    /*
+    this->serialPort = new SerialPort("/dev/ttyUSB0");
     this->serialPort->config();
-    this->fd = this->serialPort->getFD();*/
+    this->fd = this->serialPort->getFD();
+    */
+
+    this->serial = new Serial("/dev/ttyUSB0");
 }
 
 void StarCarProtocol::initProtocol(){
 
-    //this->protocol = new StreamSerialProtocol(this->fd, (uint8_t *)&this->message, sizeof(message));
+    this->protocol = new StreamSerialProtocol(this->fd, (uint8_t *)&this->message, sizeof(message));
 }
 
 void StarCarProtocol::setMode(int mode){
@@ -81,12 +66,16 @@ int StarCarProtocol::getRequest(){
 
 void StarCarProtocol::send(){
 
-    this->protocol->send();
+    //this->protocol->send();
+    uint8_t data = 55;
+    serial->send(&data,sizeof(data));
 }
 
 int StarCarProtocol::receive(){
 
-    uint8_t receiveState = this->protocol->receive();
+    /*uint8_t receiveState = this->protocol->receive();
+
+    qDebug("%d \n",receiveState);
 
     if (receiveState == ProtocolState::SUCCESS){
 
@@ -104,7 +93,12 @@ int StarCarProtocol::receive(){
        time(&lastPackage);
    }
 
-    return (int)receiveState;
+    return (int)receiveState;*/
+
+    uint8_t buffer;
+
+    serial->recv(&buffer,sizeof(message));
+    memcpy(&message,buffer,sizeof(message));
 }
 
 int StarCarProtocol::getDistanceFront(){

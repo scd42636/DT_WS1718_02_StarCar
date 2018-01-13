@@ -120,9 +120,11 @@ RESOURCES += \
 HEADERS += \
     ../SerialProtocol/SerialProtocol.h \
     ../SerialProtocol/StreamSerialProtocol.h \
-    ../SerialProtocol/starcarprotocol.h
+    ../SerialProtocol/starcarprotocol.h \
+    ../SerialProtocol/SerialPort.hpp
 
 SOURCES += \
     ../SerialProtocol/SerialProtocol.cpp \
     ../SerialProtocol/StreamSerialProtocol.cpp \
-    ../SerialProtocol/starcarprotocol.cpp
+    ../SerialProtocol/starcarprotocol.cpp \
+    ../SerialProtocol/SerialPort.cpp
