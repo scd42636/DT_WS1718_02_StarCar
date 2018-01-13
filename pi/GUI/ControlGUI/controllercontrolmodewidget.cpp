@@ -205,7 +205,7 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    starcarprotocol->setMode(CarMode_Controller);
+    starcarprotocol->setRequest(CarMode_Controller);
     starcarprotocol->send();
 
 #endif

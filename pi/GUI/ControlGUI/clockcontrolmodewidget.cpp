@@ -190,7 +190,7 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    starcarprotocol->setMode(CarMode_Watch);
+    starcarprotocol->setRequest(CarMode_Watch);
     starcarprotocol->send();
 
 #endif

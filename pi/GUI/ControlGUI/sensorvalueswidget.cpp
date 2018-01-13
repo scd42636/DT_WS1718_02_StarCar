@@ -42,7 +42,7 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
 
     QuerySensorValuesTimer = new QTimer();
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
-    QuerySensorValuesTimer->start(1000);
+    QuerySensorValuesTimer->start(500);
 
 #endif
 
@@ -162,106 +162,6 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
 QString SensorValuesWidget::getMesureValue(){
 
-#ifdef Q_OS_LINUX
-/*
-    QString resultValue;
-
-    int ID = (int)tempPacket.id();
-
-    QString filePath;
-
-    switch (ID){
-
-        case 180:
-        {
-            filePath = "/home/pi/SensorOutput/UltraVorne.txt";
-
-            StarCarSonicData sonicFrontData;
-            ReadData<StarCarSonicData>(&sonicFrontData, tempPacket);
-
-            resultValue = QString::number((int)sonicFrontData.Value);
-            break;
-        }
-
-        case 181:
-        {
-            filePath = "/home/pi/SensorOutput/UltraHinten.txt";
-
-            StarCarSonicData sonicBackData;
-            ReadData<StarCarSonicData>(&sonicBackData, tempPacket);
-
-            resultValue = QString::number((int)sonicBackData.Value);
-            break;
-        }
-
-        case 182:
-        {
-            filePath = "/home/pi/SensorOutput/Compass.txt";
-
-            StarCarMagnetData magnetData;
-            ReadData<StarCarMagnetData>(&magnetData, tempPacket);
-
-            int value = (int)magnetData.Value;
-
-            if (magnetData.Parity == 1)
-                value *= -1;
-
-            resultValue = QString::number(value);
-            break;
-        }
-
-        case 183:
-        {
-            filePath = "/home/pi/SensorOutput/Beschleunigung.txt";
-
-            StarCarAccelerationData acceleratorData;
-            ReadData<StarCarAccelerationData>(&acceleratorData, tempPacket);
-
-            int xValue = (int)acceleratorData.XValue;
-
-            if (acceleratorData.ParityOfXValue == 1)
-                xValue *= -1;
-
-            resultValue = "X= " + QString::number(xValue);
-
-            int yValue = (int)acceleratorData.YValue;
-
-            if (acceleratorData.ParityOfYValue == 1)
-                yValue *= -1;
-
-            resultValue += ", Y= " + QString::number(yValue);
-            break;
-        }
-
-        case 184:
-        {
-            filePath = "/home/pi/SensorOutput/UWB.txt";
-            break;
-        }
-
-        default:
-        {
-            break;
-        }
-
-    }
-
-    QFile file(filePath);
-
-    if(file.open(QIODevice::WriteOnly | QIODevice::Append)){
-
-        QTextStream stream (&file);
-        stream << resultValue << endl;
-        file.close();
-
-    }else{
-
-        alertThread->fireError("Could not open File" + filePath);
-    }
-
-    return resultValue;
-*/
-#endif
 }
 
 

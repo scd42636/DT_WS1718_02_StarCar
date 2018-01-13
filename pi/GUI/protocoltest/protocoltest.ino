@@ -94,21 +94,24 @@ void setup()
 }
 void loop()
 {
-
-  for(int i = 0; i < 15){
-    if(Serial.availeble()){
-    
-      StarBoardExchangeData[i++] = Serial.read();
-    }
-  }
   
   if (Serial.available() > 0) {
 
     int incomingByte = Serial.read();
 
+    if(incomingByte == 2){
+    
+      digitalWrite(LED_BUILTIN, LOW);
+    }
+    
+    if(incomingByte == 1){
+    
+      digitalWrite(LED_BUILTIN, HIGH);
+    }
+
     if(incomingByte == 7){
 
-      digitalWrite(LED_BUILTIN, LOW);
+      
 
       StarBoardExchangeData.Mode += 1;
       StarBoardExchangeData.Request += 1;
