@@ -7,7 +7,7 @@ StarCarProtocol::StarCarProtocol()
 
     message.DistanceFront = 0;
     message.DistanceBack = 0;
-/*
+
     message.DirectionParity = 0;
     message.DirectionValue = 0;
 
@@ -16,33 +16,22 @@ StarCarProtocol::StarCarProtocol()
 
     message.AccelerationYParity = 0;
     message.AccelerationYValue = 0;
-*/
+
     initSerialPort();
-    //initProtocol();
 
 }
 
 StarCarProtocol::~StarCarProtocol(){
 
-    //delete this->serialPort;
     delete this->serial;
 }
 
 void StarCarProtocol::initSerialPort(){
 
-    /*
-    this->serialPort = new SerialPort("/dev/ttyUSB0");
-    this->serialPort->config();
-    this->fd = this->serialPort->getFD();
-    */
 
     this->serial = new Serial("/dev/ttyUSB0");
 }
 
-void StarCarProtocol::initProtocol(){
-
-    this->protocol = new StreamSerialProtocol(this->fd, (uint8_t *)&this->message, sizeof(message));
-}
 
 void StarCarProtocol::setMode(int mode){
 
@@ -66,38 +55,12 @@ int StarCarProtocol::getRequest(){
 
 void StarCarProtocol::send(){
 
-    //this->protocol->send();
     uint8_t data = 55;
     serial->send(&data,sizeof(data));
 }
 
 int StarCarProtocol::receive(){
 
-    /*uint8_t receiveState = this->protocol->receive();
-
-    qDebug("%d \n",receiveState);
-
-    if (receiveState == ProtocolState::SUCCESS){
-
-        time(&lastPackage);
-    }
-
-   time(&now);
-
-   if (difftime(now, lastPackage) > 5){
-
-       printf("Retrying the last package...\n");
-
-       // If something went bad, retry the last package
-       protocol->send();
-       time(&lastPackage);
-   }
-
-    return (int)receiveState;*/
-
-    qDebug("%d",sizeof(message));
-    qDebug("%d",sizeof(uint8_t));
-    qDebug("%d",sizeof(uint16_t));
     serial->recv(&message,sizeof(message));
 }
 

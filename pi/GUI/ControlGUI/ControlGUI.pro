@@ -118,13 +118,7 @@ RESOURCES += \
     paths.qrc
 
 HEADERS += \
-    ../SerialProtocol/SerialProtocol.h \
-    ../SerialProtocol/StreamSerialProtocol.h \
-    ../SerialProtocol/starcarprotocol.h \
-    ../SerialProtocol/SerialPort.hpp
+    ../SerialProtocol/starcarprotocol.h
 
 SOURCES += \
-    ../SerialProtocol/SerialProtocol.cpp \
-    ../SerialProtocol/StreamSerialProtocol.cpp \
-    ../SerialProtocol/starcarprotocol.cpp \
-    ../SerialProtocol/SerialPort.cpp
+    ../SerialProtocol/starcarprotocol.cpp

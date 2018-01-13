@@ -2,13 +2,6 @@
 #define STARCARPROTOCOL_H
 
 #include <QObject>
-#include "StreamSerialProtocol.h"
-#include "SerialPort.hpp"
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <termios.h>
-#include <time.h>
 #include "../../IBP/Serial.hpp"
 
 enum StarCarMode
@@ -36,6 +29,8 @@ public:
     explicit StarCarProtocol();
     ~StarCarProtocol();
 
+    void initSerialPort();
+
     void setMode(int mode);
     void setRequest(int request);
     void send();
@@ -52,14 +47,7 @@ public:
 
 private:
 
-    StreamSerialProtocol        *protocol;
-    SerialPort                  *serialPort;
     Serial                      *serial;
-
-    time_t lastPackage = time(NULL);
-    time_t now;
-
-    int                         fd = -1;
 
     struct payload
     {
@@ -80,9 +68,6 @@ private:
 
     }__attribute__((packed))  message;
 
-
-    void initSerialPort();
-    void initProtocol();
 };
 
 #endif // STARCARPROTOCOL_H
