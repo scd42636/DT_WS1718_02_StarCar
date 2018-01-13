@@ -11,6 +11,7 @@ void InitStarCar::startProcess(){
 #ifdef Q_OS_LINUX
 
     *starcarprotocol = new StarCarProtocol();
+    (*starcarprotocol)->initSerialPort();
 
 #endif
 

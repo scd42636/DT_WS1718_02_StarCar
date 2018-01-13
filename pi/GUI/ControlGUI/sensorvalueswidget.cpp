@@ -145,9 +145,9 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
 #ifdef Q_OS_LINUX
 
+    starcarprotocol->setRequest(CarSensorRequest_All);
     starcarprotocol->send();
     starcarprotocol->receive();
-
 
     lblUltraFrontValue->setText(QString::number((int)starcarprotocol->getDistanceFront()));
     lblUltraBackValue->setText(QString::number((int)starcarprotocol->getDistanceBack()));

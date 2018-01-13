@@ -53,8 +53,7 @@ int StarCarProtocol::getRequest(){
 
 void StarCarProtocol::send(){
 
-    uint8_t data = 55;
-    serial->send(&data,sizeof(data));
+    serial->send(&message.Request,sizeof(message.Request));
 }
 
 void StarCarProtocol::receive(){
