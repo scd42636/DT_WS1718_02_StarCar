@@ -1,8 +1,6 @@
 #ifndef HOMEWINDOW_H
 #define HOMEWINDOW_H
 
-#define IBCNOTWORKING
-
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -21,17 +19,7 @@
 #include "clockcontrolmodewidget.h"
 #include "controllercontrolmodewidget.h"
 #include "sensorvalueswidget.h"
-#include "starcar.h"
-
-#ifndef IBCNOTWORKING
-
-    #include "../../IBP/IBC.hpp"
-
-#else
-    #include <../SerialProtocol/StreamSerialProtocol.h>
-    #include <../SerialProtocol/SerialPort.hpp>
-#endif
-
+#include "../../IBP/IBC.hpp"
 
 namespace Ui {
 class HomeWindow;
@@ -94,17 +82,9 @@ private:
     // Label
     QLabel          *lblHeadline;
 
-#ifndef IBCNOTWORKING
-
+    // IBC
     IBC             *IBCPointer;
 
-#else
-
-    SerialPort              *serialPort;
-    StreamSerialProtocol    *protocol;
-    message                 *msg;
-
-#endif
     // Vars
     bool            IBCactive = false;
 

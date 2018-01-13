@@ -1,15 +1,11 @@
 #ifndef EXITWIDGET_H
 #define EXITWIDGET_H
 
-#define IBCNOTWORKING
-
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <alert.h>
 #include <../../IBP/IBC.hpp>
-#include <../SerialProtocol/SerialPort.hpp>
-
 
 class ExitWidget : public QWidget
 {
@@ -17,8 +13,6 @@ class ExitWidget : public QWidget
 
 public:
     explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr, bool IBCactive = false);
-    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, SerialPort **serialPort = nullptr
-            , bool IBCactive = false);
 
     ~ExitWidget(){
     }
@@ -43,8 +37,6 @@ private:
 
     //IBC
     IBC             **IBCPointer;
-
-    SerialPort      **serialPort;
 
     //Vars
     bool            IBCactive = false;

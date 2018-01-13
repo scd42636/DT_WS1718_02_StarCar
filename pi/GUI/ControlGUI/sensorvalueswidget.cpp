@@ -1,6 +1,7 @@
 #include "sensorvalueswidget.h"
 
-#ifndef IBCNOTWORKING
+#define PI
+//#define IBCTEST
 
 typedef uint8_t InoByte_t;
 typedef int16_t InoInt_t;
@@ -26,7 +27,6 @@ typedef struct StarCarAccelerationData_t
     InoInt_t  YValue;
 
 } StarCarAccelerationData;
-#endif
 
 SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
 {
@@ -37,22 +37,63 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     generateLayout();
     setupConnects();
     generateStyle();
-}
 
-SensorValuesWidget::SensorValuesWidget(message *msg, QWidget *parent, Alert *alertThread, QString pButtonGoBackText
-                                       , StreamSerialProtocol *protocol, SerialPort *serialPort) : QWidget(parent)
-{
-    this->alertThread = alertThread;
-    this->pButtonGoBackText = pButtonGoBackText;
-    this->protocol = protocol;
-    this->msg = msg;
-    this->serialPort = serialPort;
+    QDir SensorOutputFolder("/home/pi/SensorOutput");
+    SensorOutputFolder.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+    foreach (QString SensorOutputItem, SensorOutputFolder.entryList()){
+        SensorOutputFolder.remove(SensorOutputItem);
+    }
 
-    generateLayout();
-    setupConnects();
-    generateStyle();
+#ifdef Q_OS_LINUX
 
-    this->starcarProtocol = new StarCarProtocol();
+    #ifdef IBCTEST
+        test            = new Inbox(this->IBCPointer->getInbox(254));
+        char buff[4] = "ddd";
+        packetTest          = new Packet(254,4,(uint8_t * )buff);
+
+    #else
+
+        iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
+        iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
+        iCompass        = new Inbox(this->IBCPointer->getInbox(182));
+        iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
+        iUWB            = new Inbox(this->IBCPointer->getInbox(184));
+
+
+        packetUltrafront    = new Packet(180,2);
+        packetUltraback     = new Packet(181,2);
+        packetCompass       = new Packet(182,3);
+        packetAcceleration  = new Packet(183,6);
+        packetUWB           = new Packet(184,6);
+    #endif
+
+
+#ifdef PI
+
+    QThread *thread = new QThread;
+    threadLidar     = new ThreadLidar(alertThread);
+
+    threadLidar->moveToThread(thread);
+
+    connect(thread, SIGNAL(started()), threadLidar, SLOT(startProcess()));
+    connect(threadLidar, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(threadLidar, SIGNAL(finished()), threadLidar, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    thread->start();
+
+    lidarTimer                = new QTimer();
+    connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
+    lidarTimer->start(50000);
+
+#endif
+
+    QuerySensorValuesTimer = new QTimer();
+    connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
+    QuerySensorValuesTimer->start(1000);
+
+#endif
+
 }
 
 void SensorValuesWidget::generateLayout(){
@@ -110,54 +151,6 @@ void SensorValuesWidget::generateLayout(){
 void SensorValuesWidget::setupConnects(){
 
     connect(pButtonGoBack, SIGNAL(clicked(bool)), this, SLOT(slotpButtonGoBackPushed()));
-
-    QDir SensorOutputFolder("/home/pi/SensorOutput");
-    SensorOutputFolder.setFilter(QDir::NoDotAndDotDot | QDir::Files);
-    foreach (QString SensorOutputItem, SensorOutputFolder.entryList()){
-        SensorOutputFolder.remove(SensorOutputItem);
-    }
-
-#ifdef Q_OS_LINUX
-/*
-        iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
-        iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
-        iCompass        = new Inbox(this->IBCPointer->getInbox(182));
-        iAcceleration   = new Inbox(this->IBCPointer->getInbox(183));
-        iUWB            = new Inbox(this->IBCPointer->getInbox(184));
-
-
-        packetUltrafront    = new Packet(180,2);
-        packetUltraback     = new Packet(181,2);
-        packetCompass       = new Packet(182,3);
-        packetAcceleration  = new Packet(183,6);
-        packetUWB           = new Packet(184,6);
-*/
-
-#ifdef PI
-
-    QThread *thread = new QThread;
-    threadLidar     = new ThreadLidar(alertThread);
-
-    threadLidar->moveToThread(thread);
-
-    connect(thread, SIGNAL(started()), threadLidar, SLOT(startProcess()));
-    connect(threadLidar, SIGNAL(finished()), thread, SLOT(quit()));
-    connect(threadLidar, SIGNAL(finished()), threadLidar, SLOT(deleteLater()));
-    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-
-    thread->start();
-
-    lidarTimer                = new QTimer();
-    connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
-    lidarTimer->start(50000);
-
-#endif
-
-    QuerySensorValuesTimer = new QTimer();
-    connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
-    QuerySensorValuesTimer->start(1000);
-
-#endif
 }
 
 void SensorValuesWidget::generateStyle(){
@@ -200,8 +193,13 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
 #ifdef Q_OS_LINUX
 
-    /*    iUltraBack->fetch();
-        iUltraFront->fetch();#include <starcar.h>
+    #ifdef IBCTEST
+        test->fetch();
+        IBCPointer->send(*packetTest);
+        test->empty()          ? alertThread->fireWarning("Test kein Wert!") : lblUltraFrontValue->setText(getMesureValue(test));
+    #else
+        iUltraBack->fetch();
+        iUltraFront->fetch();
         iCompass->fetch();
         iAcceleration->fetch();
 
@@ -215,38 +213,8 @@ void SensorValuesWidget::slotQuerySensorValues(){
         iCompass->empty()      ? alertThread->fireWarning("Kompass kein Wert!") : lblcompassValue->setText(getMesureValue(iCompass));
         iAcceleration->empty() ? alertThread->fireWarning("Beschleunigung kein Wert!") : lblaccelerationValue->setText(getMesureValue(iAcceleration));
         iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
-*/
 
-    /*uint8_t receiveState;
-
-    testmsg.Request = 1;
-    testmsg.Mode = 2;
-    testprotocol->send();
-
-    receiveState =  testprotocol->receive();
-
-
-    if(receiveState == ProtocolState::SUCCESS ){
-
-        lblUltraFrontValue->setText(QString::number((int)testmsg.DistanceFront));
-        lblUltraBackValue->setText(QString::number((int)testmsg.DistanceBack));
-        lblcompassValue->setText(QString::number((int)testmsg.DirectionValue));
-        lblaccelerationValue->setText("X: " + QString::number((int)testmsg.AccelerationXValue)
-                                      + "Y: " + QString::number((int)testmsg.AccelerationYValue));
-    }
-
-*/
-    starcarProtocol->setMode(1);
-    starcarProtocol->setRequest(1);
-
-    int debug = starcarProtocol->receive();
-
-    lblUltraFrontValue->setText(QString::number((int)starcarProtocol->getDistanceFront()));
-
-    starcarProtocol->send();
-
-    qDebug("%d", debug);
-
+    #endif
 
 #endif
 }
@@ -254,7 +222,7 @@ void SensorValuesWidget::slotQuerySensorValues(){
 QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 
 #ifdef Q_OS_LINUX
-/*
+
     QString resultValue;
 
     Packet tempPacket = *inbox->back();
@@ -360,9 +328,8 @@ QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 
     inbox->pop_front();
     return resultValue;
-*/
-#endif
 
+#endif
 }
 
 

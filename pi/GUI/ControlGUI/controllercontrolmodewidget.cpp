@@ -10,16 +10,6 @@ ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert 
     setupWidget();
 }
 
-ControllerControlModeWidget::ControllerControlModeWidget(message *msg, QWidget *parent, Alert *alertThread
-                                                         ,StreamSerialProtocol *protocol) : QWidget(parent)
-{
-    this->alertThread = alertThread;
-    this->msg = msg;
-    this->protocol = protocol;
-
-    setupWidget();
-}
-
 ControllerControlModeWidget::~ControllerControlModeWidget(){
 
 }
@@ -214,14 +204,9 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
     delete blinkTimer;
 
 #ifdef Q_OS_LINUX
-#ifndef IBCNOTWORKING
+
     Packet ControllerPacket(100,0);
     IBCPointer->send(ControllerPacket);
-#else
-    this->msg->Mode = CarMode_Controller;
-    this->msg->Request = CarSensorRequest_None;
-    protocol->send();
-#endif
 
 #endif
 

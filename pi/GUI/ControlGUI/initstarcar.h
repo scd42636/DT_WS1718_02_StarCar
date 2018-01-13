@@ -1,17 +1,10 @@
 #ifndef INITSTARCAR_H
 #define INITSTARCAR_H
 
-#define IBCNOTWORKING
-
 #include <QObject>
 #include <QThread>
 #include <alert.h>
-
-#include "../../IBP/IBC.hpp"
-#include <../SerialProtocol/StreamSerialProtocol.h>
-#include <../SerialProtocol/SerialPort.hpp>
-#include <starcar.h>
-
+#include <../../IBP/IBC.hpp>
 
 class InitStarCar : public QObject {
 
@@ -20,7 +13,6 @@ class InitStarCar : public QObject {
 public:
 
     InitStarCar(Alert *alertThread, IBC **IBCPointer);
-    InitStarCar(Alert *alertThread, SerialPort **serialPort, StreamSerialProtocol **protocol, message **msg);
     ~InitStarCar();
 
 public slots:
@@ -38,14 +30,10 @@ private:
     // Thread
     Alert       *alertThread;
 
+    // IBC
+
     IBC         **IBCPointer;
     Serial      **SerialPortArduino;
-
-
-    SerialPort  **serialPort;
-    StreamSerialProtocol **protocol;
-    message         **msg;
-
 };
 
 #endif // INITSTARCAR_H

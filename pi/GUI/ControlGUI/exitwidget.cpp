@@ -15,17 +15,6 @@ ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, IBC **IBCPointer, bo
     generateStyle();
 }
 
-ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, SerialPort **serialPort, bool IBCactive) : QWidget(parent)
-{
-    this->alertThread = alertThread;
-    this->serialPort = serialPort;
-    this->IBCactive = IBCactive;
-
-    generateLayout();
-    setupConnect();
-    generateStyle();
-}
-
 void ExitWidget::generateLayout(){
 
     vBox1           = new QVBoxLayout(this);
@@ -83,11 +72,7 @@ void ExitWidget::slotRestartApplication(){
 
     if(IBCactive){
 
-#ifndef IBCNOTWORKING
-        delete *IBCPointer;
-#else
-        delete *serialPort;
-#endif
+            delete *IBCPointer;
     }
 
 #endif
@@ -105,11 +90,7 @@ void ExitWidget::slotShutdownPi(){
 
     if(IBCactive){
 
-#ifndef IBCNOTWORKING
-        delete *IBCPointer;
-#else
-        delete *serialPort;
-#endif
+            delete *IBCPointer;
     }
 
     #endif

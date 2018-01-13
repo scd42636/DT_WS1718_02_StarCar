@@ -1,8 +1,6 @@
 #ifndef CLOCKCONTROLMODEWIDGET_H
 #define CLOCKCONTROLMODEWIDGET_H
 
-#define IBCNOTWORKING
-
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
@@ -13,8 +11,6 @@
 #include <../../IBP/IBC.hpp>
 #include <../../IBP/IBC_Packet.hpp>
 #include <../../IBP/Serial.hpp>
-#include <../SerialProtocol/StreamSerialProtocol.h>
-#include <starcar.h>
 
 class ClockControllModeWidget : public QWidget
 {
@@ -24,9 +20,6 @@ public:
 
     explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
                                      IBC *IBCPointer = nullptr);
-
-    explicit ClockControllModeWidget(message *msg, QWidget *parent = nullptr, Alert *alertThread = nullptr,
-                                     StreamSerialProtocol *protocol = nullptr);
     ~ClockControllModeWidget();
 
 signals:
@@ -79,12 +72,9 @@ private:
     // QTimer
     QTimer          *blinkTimer;
 
-
+    // IBC
     IBC             *IBCPointer;
-
-    StreamSerialProtocol *protocol;
-    message *msg;
-
+    Serial          *SerialPortArduino;
 
     // Vars
     double fontSize = 10;
