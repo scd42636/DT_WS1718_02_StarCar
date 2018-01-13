@@ -4,11 +4,11 @@
 
 #define DEBUG
 
-ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, IBC **IBCPointer, bool IBCactive) : QWidget(parent)
+ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, StarCarProtocol **starcarprotocol, bool protocolActive) : QWidget(parent)
 {
     this->alertThread = alertThread;
-    this->IBCPointer = IBCPointer;
-    this->IBCactive = IBCactive;
+    this->starcarprotocol = starcarprotocol;
+    this->protocolActive = protocolActive;
 
     generateLayout();
     setupConnect();
@@ -70,9 +70,9 @@ void ExitWidget::slotRestartApplication(){
 
 #ifdef Q_OS_LINUX
 
-    if(IBCactive){
+    if(protocolActive){
 
-            delete *IBCPointer;
+            delete *starcarprotocol;
     }
 
 #endif
@@ -88,9 +88,9 @@ void ExitWidget::slotShutdownPi(){
 
     #ifdef Q_OS_LINUX
 
-    if(IBCactive){
+    if(protocolActive){
 
-            delete *IBCPointer;
+            delete *starcarprotocol;
     }
 
     #endif

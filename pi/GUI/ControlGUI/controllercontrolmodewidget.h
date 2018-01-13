@@ -7,9 +7,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <sensorvalueswidget.h>
-#include <../../IBP/IBC.hpp>
-#include <../../IBP/IBC_Packet.hpp>
-#include <../../IBP/Serial.hpp>
+#include <../StarCarSerialProtocol/starcarprotocol.h>
 
 class ControllerControlModeWidget : public QWidget
 {
@@ -17,7 +15,8 @@ class ControllerControlModeWidget : public QWidget
 
 public:
 
-    explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+    explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                                         StarCarProtocol *starcarprotocol = nullptr);
     ~ControllerControlModeWidget();
 
 signals:
@@ -72,8 +71,8 @@ private:
     // QTimer
     QTimer          *blinkTimer;
 
-    // IBC
-    IBC             *IBCPointer;
+    // Protocol
+    StarCarProtocol *starcarprotocol;
 
     // Vars
     double fontSize = 10;

@@ -1,16 +1,16 @@
 #include "initstarcar.h"
 
-InitStarCar::InitStarCar(Alert *alertThread, IBC **IBCPointer)
+InitStarCar::InitStarCar(Alert *alertThread, StarCarProtocol **starcarprotocol)
 {
     this->alertThread = alertThread;
-    this->IBCPointer = IBCPointer;
+    this->starcarprotocol = starcarprotocol;
 }
 
 void InitStarCar::startProcess(){
 
 #ifdef Q_OS_LINUX
 
-    //*IBCPointer = new IBC("/dev/ttyUSB0","/home/pi/DT_WS1718_02_StarCar/pi/IBP/IBC_config.cfg");
+    *starcarprotocol = new StarCarProtocol();
 
 #endif
 

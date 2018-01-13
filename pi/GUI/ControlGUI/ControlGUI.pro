@@ -38,7 +38,6 @@ SOURCES += main.cpp\
     operationmodewidget.cpp \
     initstarcar.cpp \
     clockcontrolmodewidget.cpp \
-    clockcontrollmode.cpp \
     controllercontrolmodewidget.cpp \
     sensorvalueswidget.cpp \
 
@@ -50,7 +49,6 @@ HEADERS += homewindow.h \
     operationmodewidget.h \
     initstarcar.h \
     clockcontrolmodewidget.h \
-    clockcontrolmode.h \
     controllercontrolmodewidget.h \
     sensorvalueswidget.h \
 }
@@ -66,16 +64,9 @@ SOURCES += main.cpp\
     operationmodewidget.cpp \
     initstarcar.cpp \
     clockcontrolmodewidget.cpp \
-    clockcontrollmode.cpp \
     controllercontrolmodewidget.cpp \
     sensorvalueswidget.cpp \
     threadlidar.cpp \
-    ../../IBP/IBC.cpp \
-    ../../IBP/IBC_Inbox.cpp \
-    ../../IBP/IBC_Packet.cpp \
-    ../../IBP/IBC_Rule.cpp \
-    ../../IBP/IBC_Transceiver.cpp \
-    ../../IBP/Serial.cpp \
     ../../lidar/lidar.cpp
 
 HEADERS += homewindow.h \
@@ -86,16 +77,9 @@ HEADERS += homewindow.h \
     operationmodewidget.h \
     initstarcar.h \
     clockcontrolmodewidget.h \
-    clockcontrolmode.h \
     controllercontrolmodewidget.h \
     sensorvalueswidget.h \
     threadlidar.h \
-    ../../IBP/IBC.hpp \
-    ../../IBP/IBC_Inbox.hpp \
-    ../../IBP/IBC_Packet.hpp \
-    ../../IBP/IBC_Rule.hpp \
-    ../../IBP/IBC_Transceiver.hpp \
-    ../../IBP/Serial.hpp \
     ../../lidar/lidar.h \
     ../../lidar/include/urg_connection.h \
     ../../lidar/include/urg_debug.h \
@@ -111,14 +95,13 @@ HEADERS += homewindow.h \
 
 FORMS += homewindow.ui
 
-DISTFILES += \
-    ../../IBP/IBC_config.cfg \
-
 RESOURCES += \
     paths.qrc
 
 HEADERS += \
-    ../SerialProtocol/starcarprotocol.h
+    ../StarCarSerialProtocol/Serial.hpp \
+    ../StarCarSerialProtocol/starcarprotocol.h
 
 SOURCES += \
-    ../SerialProtocol/starcarprotocol.cpp
+    ../StarCarSerialProtocol/Serial.cpp \
+    ../StarCarSerialProtocol/starcarprotocol.cpp

@@ -12,7 +12,7 @@
 #include <QMainWindow>
 #include <alert.h>
 #include <initstarcar.h>
-#include "../../IBP/IBC.hpp"
+#include "../StarCarSerialProtocol/starcarprotocol.h"
 
 class StartWidget : public QWidget
 {
@@ -20,7 +20,7 @@ class StartWidget : public QWidget
 
 public:
 
-    explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr);
+    explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, StarCarProtocol **starcarprotocol = nullptr);
 
     ~StartWidget();
 
@@ -42,9 +42,9 @@ private:
     Alert           *alertThread;
     InitStarCar     *initStarCar;
 
-    // IBC
+    // Protocol
 
-    IBC             **IBCPointer;
+    StarCarProtocol **starcarprotocol;
 
     // Methods
     void generateLayout();

@@ -5,14 +5,15 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <alert.h>
-#include <../../IBP/IBC.hpp>
+#include <../StarCarSerialProtocol/starcarprotocol.h>
 
 class ExitWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr, bool IBCactive = false);
+    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                        StarCarProtocol **starcarprotocol = nullptr, bool protocolActive = false);
 
     ~ExitWidget(){
     }
@@ -35,11 +36,11 @@ private:
     //Thread
     Alert *alertThread;
 
-    //IBC
-    IBC             **IBCPointer;
+    //Protocol
+    StarCarProtocol **starcarprotocol;
 
     //Vars
-    bool            IBCactive = false;
+    bool            protocolActive = false;
 
 signals:
 

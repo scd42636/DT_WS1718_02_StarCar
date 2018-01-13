@@ -2,7 +2,7 @@
 #define STARCARPROTOCOL_H
 
 #include <QObject>
-#include "../../IBP/Serial.hpp"
+#include "Serial.hpp"
 
 enum StarCarMode
 {
@@ -34,7 +34,7 @@ public:
     void setMode(int mode);
     void setRequest(int request);
     void send();
-    int receive();
+    void receive();
 
     int getDistanceFront();
     int getDistanceBack();

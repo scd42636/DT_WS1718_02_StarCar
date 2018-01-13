@@ -4,13 +4,11 @@
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
-#include <clockcontrolmode.h>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QTimer>
-#include <../../IBP/IBC.hpp>
-#include <../../IBP/IBC_Packet.hpp>
-#include <../../IBP/Serial.hpp>
+#include <QImage>
+#include <../StarCarSerialProtocol/starcarprotocol.h>
 
 class ClockControllModeWidget : public QWidget
 {
@@ -19,7 +17,7 @@ class ClockControllModeWidget : public QWidget
 public:
 
     explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
-                                     IBC *IBCPointer = nullptr);
+                                     StarCarProtocol *starcarprotocol = nullptr);
     ~ClockControllModeWidget();
 
 signals:
@@ -39,7 +37,6 @@ private:
 
     // Thread
     Alert             *alertThread;
-    ClockControlMode  *manualMode;
 
     // QPushButton
     QPushButton     *pButtonGoBack;
@@ -72,9 +69,8 @@ private:
     // QTimer
     QTimer          *blinkTimer;
 
-    // IBC
-    IBC             *IBCPointer;
-    Serial          *SerialPortArduino;
+    // Protocol
+    StarCarProtocol *starcarprotocol;
 
     // Vars
     double fontSize = 10;

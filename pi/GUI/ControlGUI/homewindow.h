@@ -19,7 +19,7 @@
 #include "clockcontrolmodewidget.h"
 #include "controllercontrolmodewidget.h"
 #include "sensorvalueswidget.h"
-#include "../../IBP/IBC.hpp"
+#include "../StarCarSerialProtocol/starcarprotocol.h"
 
 namespace Ui {
 class HomeWindow;
@@ -82,11 +82,11 @@ private:
     // Label
     QLabel          *lblHeadline;
 
-    // IBC
-    IBC             *IBCPointer;
+    // Protocol
+    StarCarProtocol *starcarprotocol;
 
     // Vars
-    bool            IBCactive = false;
+    bool            protocolActive = false;
 
 private:
 

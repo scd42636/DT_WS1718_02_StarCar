@@ -17,8 +17,6 @@ StarCarProtocol::StarCarProtocol()
     message.AccelerationYParity = 0;
     message.AccelerationYValue = 0;
 
-    initSerialPort();
-
 }
 
 StarCarProtocol::~StarCarProtocol(){
@@ -59,7 +57,7 @@ void StarCarProtocol::send(){
     serial->send(&data,sizeof(data));
 }
 
-int StarCarProtocol::receive(){
+void StarCarProtocol::receive(){
 
     serial->recv(&message,sizeof(message));
 }

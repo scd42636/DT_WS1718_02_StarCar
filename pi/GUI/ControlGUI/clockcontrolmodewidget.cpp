@@ -1,10 +1,9 @@
 #include "clockcontrolmodewidget.h"
-#include <QImage>
 
-ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
+ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, StarCarProtocol *starcarprotocol) : QWidget(parent)
 {
     this->alertThread = alertThread;
-    this->IBCPointer = IBCPointer;
+    this->starcarprotocol = starcarprotocol;
 
     setupWidget();
 }
@@ -191,10 +190,11 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    Packet ClockPacket(101,0);
-    IBCPointer->send(ClockPacket);
+    starcarprotocol->setMode(CarMode_Watch);
+    starcarprotocol->send();
 
 #endif
+
     createControllAnimation();
 
 }

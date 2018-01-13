@@ -1,8 +1,0 @@
-#ifndef IBC_DEFINES_HPP
-#     define IBC_DEFINES_HPP
-
-#define IBP_FAIL_MAX 1
-#define IBC_RULE_DYNAMICSIZE 255
-#define IBP_PADDING 0xAA
-#define IBP_IDLE_TIME 15ms
-#endif /* IBC_DEFINES_HPP */

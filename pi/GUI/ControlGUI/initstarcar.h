@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QThread>
 #include <alert.h>
-#include <../../IBP/IBC.hpp>
+#include <../StarCarSerialProtocol/starcarprotocol.h>
 
 class InitStarCar : public QObject {
 
@@ -12,7 +12,7 @@ class InitStarCar : public QObject {
 
 public:
 
-    InitStarCar(Alert *alertThread, IBC **IBCPointer);
+    InitStarCar(Alert *alertThread, StarCarProtocol **starcarprotocol);
     ~InitStarCar();
 
 public slots:
@@ -28,12 +28,10 @@ signals:
 private:
 
     // Thread
-    Alert       *alertThread;
+    Alert           *alertThread;
 
     // IBC
-
-    IBC         **IBCPointer;
-    Serial      **SerialPortArduino;
+    StarCarProtocol **starcarprotocol;
 };
 
 #endif // INITSTARCAR_H

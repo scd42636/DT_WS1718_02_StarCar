@@ -9,10 +9,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
-#include <../../IBP/IBC.hpp>
-#include <../../IBP/IBC_Packet.hpp>
 #include <threadlidar.h>
-#include "../SerialProtocol/starcarprotocol.h"
+#include <../StarCarSerialProtocol/starcarprotocol.h>
 
 class SensorValuesWidget : public QWidget
 {
@@ -22,7 +20,7 @@ public:
 
     explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
                                 QString pButtonGoBackText = "Zurück zur Moduswahl",
-                                IBC *IBCPointer = nullptr);
+                                StarCarProtocol *starcarprotocol = nullptr);
 
 signals:
 
@@ -71,29 +69,8 @@ private:
     // QString
     QString         pButtonGoBackText;
 
-    // IBC
-    IBC             *IBCPointer;
-
     // QTimer
     QTimer          *lidarTimer;
-
-#ifdef Q_OS_LINUX
-
-    Packet          *packetUltrafront;
-    Packet          *packetUltraback;
-    Packet          *packetCompass;
-    Packet          *packetAcceleration;
-    Packet          *packetUWB;
-    Packet          *packetTest;
-
-    Inbox           *iUltraFront;
-    Inbox           *iUltraBack;
-    Inbox           *iCompass;
-    Inbox           *iAcceleration;
-    Inbox           *iUWB;
-    Inbox           *test;
-
-#endif
 
     //QTimer
     QTimer          *QuerySensorValuesTimer;
@@ -103,20 +80,9 @@ private:
     void setupConnects();
     void generateStyle();
 
-    QString getMesureValue(Inbox *inbox);
+    QString getMesureValue();
 
-    template<typename TData>
-    void ReadData(TData* data, Packet packet)
-    {
-        size_t dataSize = sizeof(TData);
-
-        if (dataSize < packet.contentsize())
-            dataSize = packet.contentsize();
-
-        memcpy(data, packet.content(), dataSize);
-    }
-
-    StarCarProtocol         *protocol;
+    StarCarProtocol         *starcarprotocol;
 };
 
 #endif // SENSORVALUESWIDGET_H
