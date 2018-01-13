@@ -1,35 +1,175 @@
 
-\section{Serial Protocoll - IBP}
+\section{Kommunikationsprotokoll}
 Das \textbf{Inter Board Protocoll (IBP)} dient als Vereinbarung von Kommunikationsregeln über eine serielle Kommunikationsschnittstelle.
 Innerhalb dieses Projektes soll es die Kommunikation über eine serielle USB Schnittstelle erleichtern.
 
-\subsection{Konzepte}
+\subsection{Liste von Anforderungen und Konzepten}
+
+Im folgenden werden alle Anforderungen im Rahmen dieses Teilprojektes aufgelistet.\par
+Manche Anforderungen wurden erst später im Entwicklungsprozess entdeckt oder erdacht, weshalb zu jeder Anforderung auch eine Versionsnummer des ersten Auftretens angegeben ist. Zusammen mit der Versionsübersicht kann das eine Zeitliche Einschätzung des Auftretens der Anforderung ermöglichen.
+
+Dadurch das die tatsächlichen Anforderungen an das Protokoll zu Beginn der Entwicklung noch nicht genau festgelegt werden konnten, wurden im mögliche Anforderungen und Features gesammelt.
 
 \begin{itemize}
-	\item Frage-Antwort Schema\\
-Auf Grund der Art einer seriellen Übertragung bildet das Protokoll eine Frage-Antwort konzeptionalität mit einem dominanten Kommunikationspartner ab, d.h. es existieren ein Master und ein Slave. Der Slave wird über Befehle vom Master zum Handeln aufgefordert und kann dann ein Antwort im Rahmen von vorher getroffener Vereinbarungen senden.
+	\item [A01] Frage-Antwort-Schema\\
+Auf Grund der Art einer seriellen Übertragung ist es vorteilhaft, wenn das Protokoll ein Frage-Antwort Konzept mit einem dominanten Kommunikationspartner abbildet.
+		Das heißt es existieren ein Master und ein Slave. Der Slave wird über Befehle vom Master zum Handeln aufgefordert und kann dann ein Antwort im Rahmen von vorher getroffener Vereinbarungen senden.
 
-	\item ID $ \rightarrow $ Anzahl verschiedener Befehle\\
+	\item [A02] ID $ \rightarrow $ Anzahl verschiedener Befehle\\
 Eine Menge von 256 verschiedenen Befehlen ist möglich. Ein Befehl kann durch eine Identifikationsnummer(ID) erkannt werden. Die Zahl 256 wird auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit)
 
-	\item Priorisierung\\
-Eine Priorität zur Übertragung mehrerer Befehle favorisiert Befehle mit kleinerer ID.
+	\item [A03] Priorisierung\\
+Eine Priorität zur Übertragung mehrerer Befehle favorisiert Befehle mit kleinerer ID. So können über das Protokoll weitere Funktionalitäten, wie Echtzeitfähigkeit, durch geschickte Wahl der ID ermöglicht werden.
 
-	\item Maximalgröße\\
-Eine Maximalgröße eines Befehls wird auf 255 Bytes auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit)
+	\item [A04] Maximalgröße\\
+Eine Maximalgröße eines Befehls wird auf 255 Bytes auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit) Diese Größenvereinbarung wäre hinsichtlich einer geplanten Speicherung oder Übertragung der Größe interessant.
 
-	\item Statische und Dynamische Größenvereinbarungen\\
-Daten- und Befehlsgrößen sind dabei standardmäßig schon vor Verbindungsaufbau statisch bekannt. Eine dynamische Datengröße ist prinzipiell möglich, aber die dynamische Art eines Befehls muss ebenfalls zu diesem Zeitpunkt bekannt sein. So ist festzuhalten : Für jeden Befehl ist eine Fragegröße(requestsize) und eine Antwortgröße(answer-/responsesize) festzulegen. Anstatt dieser Information kann auch jeweils die dynamische Natur einer Frage oder Antwort festgelegt werden.
+	\item [A05] Vereinbarung der Übertragungslängen der Payloads\\
+		Die Kommunikationspartner müssen Informationen über die Länge der Verschiedenen Übertragungen besitzen, um empfangene Daten ihrem Zweck zuweisen zu können und den Start der nächsten Sendung zu ermitteln.
+		\begin{itemize}
+			\item [A05.1]statisch
+				Eine statische Größenvereinbarung ist zu Beginn der Laufzeit bei allen Kommunikationspartnern bekannt.
+			\item [A05.2]dynamisch
+				Eine dynamische Größenvereinbarung wird bei laufender Kommunikation jedesmal neu vereinbart.
+				Die dynamische Art einer Nachricht muss jedoch statisch bekannt sein, sodass die Kommunikationspartner auf einen dynamischen Austausch einstellen können.
+		\end{itemize}
+		Hinsichtlich des Frage-Antwort-Schemas sollte also für jede Frage und Antwort jeweils eine Größe bekannt gemacht werden (Requestsize und Respnse-/Answersize).
+		Alternativ zu einer Größe soll angegeben werden können, das die Art einer Nachricht dynamisch ist. Die Größe muss dann während der Kommunikation ausgehandelt werden.
 
-	\item Korrekte Übertragung\\
-Die korrekte Übertragung wird durch entsprechende Checksummen gesichert.
+	\item [A06] Fehlererkennung\\
+		\begin{itemize}
+			\item Checksummen/Hashes helfen Fehlerhafte Übertragung durch redundante Zusatzinformation zu erkennen.	
+		\end{itemize}
 
-	\item Fehlererkennung\\
-Fehler in der Übertragung werden mittels eines Statusfeldes propagiert.\par
-Fehler auf Slave-Seite führen zu Fehlerhaften Antwortdaten. Desshalb hat der Slave die möglichkeit eine Negative Antwort (negative response)zu senden, die keine Antwortdaten mehr mitführt. Die Negative Antwort bietet jedoch wiederum Möglichkeiten verschiedene Fehler anzugeben.\par
-Von Masterseite können Fehler pragmatischer durch wiederholtes senden behandelt werden. Durch den Status kann die Kommunikationsschnittstelle hier hauptsächlich nebenbei bestimmte konfigurierungen der Schnittstelle auf den Slaves zur Laufzeit anregen. Szenarien wie ein kontrollierter Verbindungsabbruch sind denkbar.\par
+	\item [A07] Fehlerbehandlung\\
+		\begin{itemize}
+			\item Fehlerbekanntmachung\\
+				Fehler werden, wenn nötig, dem Kommunikationspartner propagiert. Um den übrigen Kommunikationsablauf dabei nicht bis wenig zu belasten, kann hierfür ein Statusfeld verwendet und mitgeschickt werden.
+			\item Negative Antwort
+				Fehler auf Slave-Seite führen zu Fehlerhaften Antwortdaten. Desshalb hat der Slave die möglichkeit eine Negative Antwort (negative response)zu senden, die keine Antwortdaten mehr mitführt. Die Negative Antwort bietet jedoch wiederum Möglichkeiten verschiedene Fehler anzugeben.\par
+			\item Von Masterseite können Fehler pragmatischer durch wiederholtes senden behandelt werden. Durch den Status kann die Kommunikationsschnittstelle hier hauptsächlich nebenbei bestimmte konfigurierungen der Schnittstelle auf den Slaves zur Laufzeit anregen. Szenarien wie ein kontrollierter Verbindungsabbruch sind denkbar.\par
+		\end{itemize}
+	
+	\item [A08] plattformspezifische Problembehandlung
+		Auf Grund der Unterschiedlichen Beschaffenheit der möglichen Zielplattformen können Implementierungen variieren. Die Möglichkeiten der Plattformen sollten dabei jeweils optimal ausgenutzt werden.
+
+	\item [A09] Benutzerfreundlichkeit
+		Der Prozess der Benutzung des Protokolls soll effizient gekapselt werden. Für den tatsächlichen Protokollablauf wird so eine Schicht erstellt, in dem störungsfrei gearbeitet werden kann, ohne das sich für die Benutzung benötigte Schnittstellen zu oft ändern würden.
 \end{itemize}
-\subsection{Aufbau}
+
+Diese Liste wurde zu beginn des Projektes erstellt.
+
+\subsection{Realisierung}
+
+Benutzte Programmiersprachen waren C++. 
+C code wurde wenn vorhanden auf C++ geportet, in dem Funktionen und Daten in Klassen gekapselt wurden.
+Für zusätzliche Tools wurde Python verwendet. (funktionieren mit Python2 und Python3)
+
+Das Protokoll wurde zum Teil iterativ Entwickelt.
+Das soll heißen es wurde wiederholt ein funktionsfähiges Produkt mit Features erstellt und integriert. Beim Auftreten neuer oder veränderter Anforderungen oder von Fehlern wurde die Komponente Kommunikationsprotokoll aber auch teils komplett neu implementiert.
+Das bedeutet aber auch, dass bestimmte Features, die in einer früheren Version vorhanden waren, in eine späteren Version jedoch vernachlässigt oder nicht mehr reimplementiert wurden.
+Im folgenden werden daher mehrere Versionen, ihre Probleme und die Reaktion auf diese Probleme aufgeführt, erklärt und begründet.
+
+Entwickelt wurden Komponenten auf beiden Benutzten Plattformen, Raspberry Pi 3 und Arduino Uno.
+
+Versionsübersicht : 
+
+Im folgenden ist eine Übersicht über die durchlaufenen Versionen während der Entwicklung zu Orientierung bereitgestellt.
+Dabei sind auch zeitlich Beginn und Ende des Entwicklunszeitraumes angegeben.
+
+\begin{tabular}{l l l l}
+	VNr. & Wesentliche Änderungen & Begin & Ende \\
+	\hline\\
+	0.0 & Erste Versuche & & \\
+	0.1 & Kontrollstrukturen und Kapselung des Prozesses
+\end{tabular}
+
+
+
+\subsubsection{Version \[V0.0\]}
+
+Anforderungen erfüllt : \[A01\]\[A02\]
+
+Diese Version is als erster minimalistischer Versuch gedacht. Sie wurde erstellt um erste Anforderungen zu testen und um eventuell übersehene Basisanforderungen zu finden.
+Die Arbeiten an dieser Version waren hauptsächlich auf dem Raspberry Pi angesiedelt.
+Die Funktionalität des Slaves wurde dabei zunächst simuliert. Daduch, dass die Benutzung der Seriellen Schnittstelle in einer Komponente bereits funktioniert hat, konnte ohne tatsächliche Integrationstests ausgekommen werden.
+Des weiteren wurde zunächst ein simpler Protokollablauf verwendet, wie folgt:
+
+%TODO Einfacher ablauf Sequenzdiagramm
+%	master					slave
+%				-mid-->
+%			--request-->
+%			<--answer--
+%
+
+In Version 0 alle benötigten Aufrufe wurden zunächst testmäßig hart codiert.
+Ein Unit-Test bestätigte die ordnungsgemäße Funktionalität.
+Keine weiteren Anforderungen kamen zum Vorschein.
+
+\subsubsection{Version \[V0.1\]}
+
+Anforderungen erfüllt : 
+
+In diese Version sollten mehr Überlegungen einfließen, kontollierende Strukturen sollen erstellt werden und der Prozess der Protokollbentzung gekapselt.
+Eine automatisiertere, benutzbare Softwarekomponente wird hier zunächst für die Masterplattform Raspberry Pi angestrebt.
+Die Implementierung auf der Slaveplattform Arduino Uno wurde zunächst vernachlässigt.
+
+Gemäß [A08] wurden zunächst die Eigenschaften des Raspberry Pi eingeschätzt. Der Raspberry Pi nimmt dabei die Rolle des Masters bei der Kommunikation ein.
+Folgende Eigenschaften waren dabei besonders interessant :
+
+\begin{itemize}
+	\item Raspberry Pi 3 wurde mit Betriebssystem ausgestattet (Rasbian) $ \rightarrow $ Raspberry ermöglicht Multitasking und -threading
+	\item Für einen Controller besitzt der Raspberry vergebend viel Arbeitsspeicher (1GB) => Das anlegen eines Buffers für Nachrichten ist nicht kritisch.
+	\item Das Raspbian Betriebssystem hat ein Filesystem $\rightarrow$ Konfigurationsdateien sind möglich.
+\end{itemize}
+
+Daher Modellidee :
+\begin{itemize}
+	\item Ein dedizierter Thread ist für das Senden und Empfangen, bzw. den Ablauf des Protokolls, zuständig.
+	\item Benutzer geben ihre Befehle an den Slave als Pakete dem Thread. Die zugehörige Softwarekomponente wird >Packet< genannt.
+	\item Eine Softwarekomponente kapselt die Funktionalität des Threads, diese wird >Transceiver< genannt.
+	\item Ein Benutzer kann mittels einer weiteren Softwarekomponente, >Inbox<, auf Antworten warten.
+	\item Informationen über die Länge der Payload eines Request oder einer Response kann über eine Configurationsdatei bewerkstelligt werden. Das einlesen der Datei und die Bereitstellung der Information wird durch die Komponente >Rule< verwaltet.
+\end{itemize}
+
+Dadurch können Anforderungen bedient werden :
+\begin{itemize}
+	\item [A01] Die Frage wird den Thread übergeben, die Antwort landet in der >Inbox<.
+	\item [A02] >Packet<en wird eine Nachrichtenart, ID, zugeschrieben.
+	\item [A03] Der Thread kann selbst entscheiden in welcher Reihenfolge angekommene >Packet<e verschickt werden. Damit ist Priorisierung umsetzbar.
+	\item [A04] >Packet<e fassen ein Maximum an Übertragungsdaten ein.
+	\item [A05.1] Eine über >Rule< eingelesene Konfigurationsdatei enthält Informationen über die Größe der Payload für eine Nachrichtenart (ID).
+	\item [A08] Raspberry Eigenschaften wurden ausgenutzt.
+\end{itemize}
+
+und erzeugt weitere Annehmlichkeiten : 
+\begin{itemize}
+	\item Benutzer können in ihren eigenen Threads arbeiten, d.h. verschiedenen Komponenten können potentiell Zugang
+	\item Tatsächliche Kommunikation läuft zentral (nicht jeder Benutzer baut eine eigene Lösung) $\rightarrow$ Kommunikation leichter zu verwalten. 
+
+Es entstehen dadurch auch neue Anforderungen:
+\begin{itemize}
+	\item	[F09] : Die Benutzung der Prokollsoftware muss auf der Zielplattform Pi von allen laufenden Threads der Software aus potentiell machbar sein.
+	\item	[F09.1] : Die Protokollsoftware auf der Zielplattform Pi ist thread-safe implementiert. (Vermeidung von Race-Conditions)
+\end{itemize}
+
+\Large Implementierung :
+
+Die Implementierung sieht für jede der besprochenen Komponenten eine Klasse vor.
+Die Klassen wurden zum größten Teil in der selben Reihenfolge implementiert.
+
+%TODO Klassendiagramm Packet , Transceiver, Inbox, 
+%TODO loock at arbeitszeiten for hints on order
+%TODO write a short description on each class
+
+
+
+
+
+\LARGE Konzeptionell
+
+\Large Aufbau
+\normalsize
 
 \large 
 Legende:\\
@@ -101,7 +241,7 @@ Request\\
 Das Statusfeld wird verwendet um den Status der Kommunikationspartner zu kommunizieren.
 Die übliche Datenübertragung kann dabei nebenher unbeeinträchtigt weiterlaufen.
 Das Statusfeld ist 4bit lang => 16 verschiedene Stati möglich.
-Die Bedeutung des Status kann je nach Art des Kommunikationspartners (Master oder Slave) variieren.
+Die Bedeutung des Status kann je nach Art des Kommunikationspartners (Master oder Slave) variieren, d.h. der Status 8 beduetet beispielsweise auf dem Master etwas anderes als auf dem Slave.
 Das Statusfeld hat im Kontrollfluss die wichtige Aufgabe, dem Master eine Möglichkeit zu geben, zwischen positiver oder negativer Antwort zu unterscheiden.
 
 \subsubsection{Master}
@@ -132,6 +272,8 @@ Bit 1, 2 und 3 werden zum Kommunizieren von Fehlern der 3 Checksummen des Protok
 	2 & Sizehash falsch \\
 	3 & Datahash falsch
 \end{tabular}
+
+\LARGE 
 
 
 
