@@ -24,7 +24,7 @@ StarCarProtocol::StarCarProtocol()
 
 StarCarProtocol::~StarCarProtocol(){
 
-    delete this->serialPort;
+    //delete this->serialPort;
 }
 
 void StarCarProtocol::initSerialPort(){
@@ -80,8 +80,6 @@ int StarCarProtocol::getRequest(){
 }
 
 void StarCarProtocol::send(){
-
-    ++message.DistanceFront;
 
     this->protocol->send();
 }

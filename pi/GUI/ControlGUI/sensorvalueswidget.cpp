@@ -218,13 +218,17 @@ void SensorValuesWidget::slotQuerySensorValues(){
 */
     #endif
 
-<<<<<<< HEAD
         protocol->setMode(1);
+        protocol->setRequest(1);
         protocol->send();
         int d = protocol->receive();
         qDebug("%d\n",d);
         lblUltraFrontValue->setText(QString::number((int)protocol->getDistanceFront()));
-=======
+        lblUltraBackValue->setText(QString::number((int)protocol->getDistanceBack()));
+        lblcompassValue->setText(QString::number((int)protocol->getCompass()));
+        lblaccelerationValue->setText("X: " + QString::number((int)protocol->getAccelerationX()) +
+                                      "Y: " + QString::number((int)protocol->getAccelerationY()));
+
     /*uint8_t receiveState;
 
     testmsg.Request = 1;
@@ -244,19 +248,6 @@ void SensorValuesWidget::slotQuerySensorValues(){
     }
 
 */
-    //test
-    starcarProtocol->setMode(1);
-    starcarProtocol->setRequest(1);
-
-    int debug = starcarProtocol->receive();
-
-    lblUltraFrontValue->setText(QString::number((int)starcarProtocol->getDistanceFront()));
-
-    starcarProtocol->send();
-
-    qDebug("%d", debug);
-
->>>>>>> 6e7cefb6a3f8f1d85fa2a29f5fdf1ef7062aecf1
 
 #endif
 }
