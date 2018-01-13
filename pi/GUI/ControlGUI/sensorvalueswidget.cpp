@@ -230,7 +230,7 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
         lblUltraFrontValue->setText(QString::number((int)protocol->getDistanceFront()));
         lblUltraBackValue->setText(QString::number((int)protocol->getDistanceBack()));
-        lblcompassValue->setText(QString::number((int)protocol->getCompass()));
+       lblcompassValue->setText(QString::number((int)protocol->getCompass()));
         lblaccelerationValue->setText("X: " + QString::number((int)protocol->getAccelerationX()) +
                                       " Y: " + QString::number((int)protocol->getAccelerationY()));
 

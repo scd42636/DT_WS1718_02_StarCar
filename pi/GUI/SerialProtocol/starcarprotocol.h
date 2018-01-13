@@ -78,13 +78,8 @@ private:
         uint8_t AccelerationYParity = 0;
         uint16_t AccelerationYValue = 0;
 
-    } message;
+    }__attribute__((packed))  message;
 
-    struct payload2 {
-
-        uint8_t test = 0;
-        uint8_t test2 = 0;
-    } message2;
 
     void initSerialPort();
     void initProtocol();

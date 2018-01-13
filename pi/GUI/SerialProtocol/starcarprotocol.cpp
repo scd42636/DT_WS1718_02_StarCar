@@ -7,7 +7,7 @@ StarCarProtocol::StarCarProtocol()
 
     message.DistanceFront = 0;
     message.DistanceBack = 0;
-
+/*
     message.DirectionParity = 0;
     message.DirectionValue = 0;
 
@@ -16,7 +16,7 @@ StarCarProtocol::StarCarProtocol()
 
     message.AccelerationYParity = 0;
     message.AccelerationYValue = 0;
-
+*/
     initSerialPort();
     //initProtocol();
 
@@ -95,10 +95,10 @@ int StarCarProtocol::receive(){
 
     return (int)receiveState;*/
 
-    uint8_t buffer;
-
-    serial->recv(&buffer,sizeof(message));
-    memcpy(&message,buffer,sizeof(message));
+    qDebug("%d",sizeof(message));
+    qDebug("%d",sizeof(uint8_t));
+    qDebug("%d",sizeof(uint16_t));
+    serial->recv(&message,sizeof(message));
 }
 
 int StarCarProtocol::getDistanceFront(){
