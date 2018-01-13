@@ -55,7 +55,7 @@ int StarCarProtocol::getRequest(){
 
 void StarCarProtocol::send(){
 
-    uint8_t data = 55;
+    uint8_t data = 7;
     serial->send(&data,sizeof(data));
 }
 

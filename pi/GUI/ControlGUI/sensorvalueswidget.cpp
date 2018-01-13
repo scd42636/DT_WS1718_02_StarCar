@@ -218,8 +218,8 @@ void SensorValuesWidget::slotQuerySensorValues(){
 */
     #endif
 
-        //protocol->setMode(1);
-        //protocol->setRequest(1);
+        protocol->setMode(1);
+        protocol->setRequest(7);
         protocol->send();
 
         protocol->receive();
