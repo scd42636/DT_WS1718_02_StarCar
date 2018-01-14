@@ -3,65 +3,7 @@
 Das \textbf{Inter Board Protocoll (IBP)} dient als Vereinbarung von Kommunikationsregeln über eine serielle Kommunikationsschnittstelle.
 Innerhalb dieses Projektes soll es die Kommunikation über eine serielle USB Schnittstelle erleichtern.
 
-\subsection{Liste von Anforderungen und Konzepten}
-
-Im folgenden werden alle Anforderungen im Rahmen dieses Teilprojektes aufgelistet.\par
-Manche Anforderungen wurden erst später im Entwicklungsprozess entdeckt oder erdacht, weshalb zu jeder Anforderung auch eine Versionsnummer des ersten Auftretens angegeben ist. Zusammen mit der Versionsübersicht kann das eine Zeitliche Einschätzung des Auftretens der Anforderung ermöglichen.
-
-Dadurch das die tatsächlichen Anforderungen an das Protokoll zu Beginn der Entwicklung noch nicht genau festgelegt werden konnten, wurden im mögliche Anforderungen und Features gesammelt.
-
-\begin{itemize}
-	\item [A01] Frage-Antwort-Schema\\
-Auf Grund der Art einer seriellen Übertragung ist es vorteilhaft, wenn das Protokoll ein Frage-Antwort Konzept mit einem dominanten Kommunikationspartner abbildet.
-		Das heißt es existieren ein Master und ein Slave. Der Slave wird über Befehle vom Master zum Handeln aufgefordert und kann dann ein Antwort im Rahmen von vorher getroffener Vereinbarungen senden.
-
-	\item [A02] ID $ \rightarrow $ Anzahl verschiedener Befehle\\
-Eine Menge von 256 verschiedenen Befehlen ist möglich. Ein Befehl kann durch eine Identifikationsnummer(ID) erkannt werden. Die Zahl 256 wird auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit)
-
-	\item [A03] Priorisierung\\
-Eine Priorität zur Übertragung mehrerer Befehle favorisiert Befehle mit kleinerer ID. So können über das Protokoll weitere Funktionalitäten, wie Echtzeitfähigkeit, durch geschickte Wahl der ID ermöglicht werden.
-
-	\item [A04] Maximalgröße\\
-Eine Maximalgröße eines Befehls wird auf 255 Bytes auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit) Diese Größenvereinbarung wäre hinsichtlich einer geplanten Speicherung oder Übertragung der Größe interessant.
-
-	\item [A05] Vereinbarung der Übertragungslängen der Payloads\\
-		Die Kommunikationspartner müssen Informationen über die Länge der Verschiedenen Übertragungen besitzen, um empfangene Daten ihrem Zweck zuweisen zu können und den Start der nächsten Sendung zu ermitteln.
-		\begin{itemize}
-			\item [A05.1]statisch
-				Eine statische Größenvereinbarung ist zu Beginn der Laufzeit bei allen Kommunikationspartnern bekannt.
-			\item [A05.2]dynamisch
-				Eine dynamische Größenvereinbarung wird bei laufender Kommunikation jedesmal neu vereinbart.
-				Die dynamische Art einer Nachricht muss jedoch statisch bekannt sein, sodass die Kommunikationspartner auf einen dynamischen Austausch einstellen können.
-		\end{itemize}
-		Hinsichtlich des Frage-Antwort-Schemas sollte also für jede Frage und Antwort jeweils eine Größe bekannt gemacht werden (Requestsize und Respnse-/Answersize).
-		Alternativ zu einer Größe soll angegeben werden können, das die Art einer Nachricht dynamisch ist. Die Größe muss dann während der Kommunikation ausgehandelt werden.
-
-	\item [A06] Fehlererkennung\\
-		\begin{itemize}
-			\item Checksummen/Hashes helfen Fehlerhafte Übertragung durch redundante Zusatzinformation zu erkennen.	
-		\end{itemize}
-
-	\item [A07] Fehlerbehandlung\\
-		\begin{itemize}
-			\item Fehlerbekanntmachung\\
-				Fehler werden, wenn nötig, dem Kommunikationspartner propagiert. Um den übrigen Kommunikationsablauf dabei nicht bis wenig zu belasten, kann hierfür ein Statusfeld verwendet und mitgeschickt werden.
-			\item Negative Antwort
-				Fehler auf Slave-Seite führen zu Fehlerhaften Antwortdaten. Desshalb hat der Slave die möglichkeit eine Negative Antwort (negative response)zu senden, die keine Antwortdaten mehr mitführt. Die Negative Antwort bietet jedoch wiederum Möglichkeiten verschiedene Fehler anzugeben.\par
-			\item Von Masterseite können Fehler pragmatischer durch wiederholtes senden behandelt werden. Durch den Status kann die Kommunikationsschnittstelle hier hauptsächlich nebenbei bestimmte konfigurierungen der Schnittstelle auf den Slaves zur Laufzeit anregen. Szenarien wie ein kontrollierter Verbindungsabbruch sind denkbar.\par
-		\end{itemize}
-	
-	\item [A08] plattformspezifische Problembehandlung
-		Auf Grund der Unterschiedlichen Beschaffenheit der möglichen Zielplattformen können Implementierungen variieren. Die Möglichkeiten der Plattformen sollten dabei jeweils optimal ausgenutzt werden.
-
-	\item [A09] Benutzerfreundlichkeit
-		Der Prozess der Benutzung des Protokolls soll effizient gekapselt werden. Für den tatsächlichen Protokollablauf wird so eine Schicht erstellt, in dem störungsfrei gearbeitet werden kann, ohne das sich für die Benutzung benötigte Schnittstellen zu oft ändern würden.
-\end{itemize}
-
-Diese Liste wurde zu beginn des Projektes erstellt.
-
-\subsection{Realisierung}
-
-Benutzte Programmiersprachen waren C++. 
+Hauptsächlich benutzte Programmiersprachen war C++. 
 C code wurde wenn vorhanden auf C++ geportet, in dem Funktionen und Daten in Klassen gekapselt wurden.
 Für zusätzliche Tools wurde Python verwendet. (funktionieren mit Python2 und Python3)
 
@@ -81,14 +23,14 @@ Dabei sind auch zeitlich Beginn und Ende des Entwicklunszeitraumes angegeben.
 	VNr. & Wesentliche Änderungen & Begin & Ende \\
 	\hline\\
 	0.0 & Erste Versuche & & \\
-	0.1 & Kontrollstrukturen und Kapselung des Prozesses
+	0.1 & Kontrollstrukturen und Kapselung des Prozesses & & \\
 \end{tabular}
 
 
 
-\subsubsection{Version \[V0.0\]}
+\subsubsection{Version [V0.0]}
 
-Anforderungen erfüllt : \[A01\]\[A02\]
+Anforderungen erfüllt : [A01][A02]
 
 Diese Version is als erster minimalistischer Versuch gedacht. Sie wurde erstellt um erste Anforderungen zu testen und um eventuell übersehene Basisanforderungen zu finden.
 Die Arbeiten an dieser Version waren hauptsächlich auf dem Raspberry Pi angesiedelt.
@@ -106,21 +48,21 @@ In Version 0 alle benötigten Aufrufe wurden zunächst testmäßig hart codiert.
 Ein Unit-Test bestätigte die ordnungsgemäße Funktionalität.
 Keine weiteren Anforderungen kamen zum Vorschein.
 
-\subsubsection{Version \[V0.1\]}
+\subsubsection{Version [V0.1]}
 
 Anforderungen erfüllt : 
 
-In diese Version sollten mehr Überlegungen einfließen, kontollierende Strukturen sollen erstellt werden und der Prozess der Protokollbentzung gekapselt.
+In diese Version sollten mehr Überlegungen einfließen, kontollierende Strukturen sollen erstellt werden und der Prozess der Protokollbenutzung gekapselt.
 Eine automatisiertere, benutzbare Softwarekomponente wird hier zunächst für die Masterplattform Raspberry Pi angestrebt.
-Die Implementierung auf der Slaveplattform Arduino Uno wurde zunächst vernachlässigt.
+ Die Implementierung auf der Slaveplattform Arduino Uno wurde zunächst vernachlässigt.
 
-Gemäß [A08] wurden zunächst die Eigenschaften des Raspberry Pi eingeschätzt. Der Raspberry Pi nimmt dabei die Rolle des Masters bei der Kommunikation ein.
+Gemäß [A08.1] wurden zunächst die Eigenschaften des Raspberry Pi eingeschätzt. Der Raspberry Pi nimmt dabei die Rolle des Masters bei der Kommunikation ein.
 Folgende Eigenschaften waren dabei besonders interessant :
 
 \begin{itemize}
 	\item Raspberry Pi 3 wurde mit Betriebssystem ausgestattet (Rasbian) $ \rightarrow $ Raspberry ermöglicht Multitasking und -threading
 	\item Für einen Controller besitzt der Raspberry vergebend viel Arbeitsspeicher (1GB) => Das anlegen eines Buffers für Nachrichten ist nicht kritisch.
-	\item Das Raspbian Betriebssystem hat ein Filesystem $\rightarrow$ Konfigurationsdateien sind möglich.
+	\item Das Raspbian Betriebssystem hat ein Filesystem $\rightarrow$ Konfigurationsdateien direkt auf der Plattform sind möglich.
 \end{itemize}
 
 Daher Modellidee :
@@ -146,7 +88,7 @@ und erzeugt weitere Annehmlichkeiten :
 \begin{itemize}
 	\item Benutzer können in ihren eigenen Threads arbeiten, d.h. verschiedenen Komponenten können potentiell Zugang
 	\item Tatsächliche Kommunikation läuft zentral (nicht jeder Benutzer baut eine eigene Lösung) $\rightarrow$ Kommunikation leichter zu verwalten. 
-
+\end{itemize}
 Es entstehen dadurch auch neue Anforderungen:
 \begin{itemize}
 	\item	[F09] : Die Benutzung der Prokollsoftware muss auf der Zielplattform Pi von allen laufenden Threads der Software aus potentiell machbar sein.
@@ -154,22 +96,289 @@ Es entstehen dadurch auch neue Anforderungen:
 \end{itemize}
 
 \Large Implementierung :
+\normalsize
 
 Die Implementierung sieht für jede der besprochenen Komponenten eine Klasse vor.
-Die Klassen wurden zum größten Teil in der selben Reihenfolge implementiert.
+Die Klassen wurden zum größten Teil in der selben Reihenfolge implementiert, wie im Folgenden dargestellt.
 
 %TODO Klassendiagramm Packet , Transceiver, Inbox, 
 %TODO loock at arbeitszeiten for hints on order
 %TODO write a short description on each class
 
 
+Als Protokollablauf wurde der triviale aus V0.0 verwendet, um zu testen.
 
+\subsubsection{Version [V0.2]}
+		Anforderungen erfüllt : [A01] [A02] [A03] [A04] [A05.1] [A05.2] [A06] [A08.1] [A09.1]
 
+	Für diese Version wurde sich dem Protokollablauf angenommen.
 
-\LARGE Konzeptionell
+	[A01] wurde der Ablauf als recht unkompliziert Frage-Antwort-Schematisch angenommen, in dem in einem Stück Daten hin und zurück gesendet werden.
 
-\Large Aufbau
+Legende:\\
 \normalsize
+\begin{center}
+\small
+\begin{tabular}{l | l}
+MID &	Identifikationsnummer der Anfrage\\
+EID &	Nummer des Fehlers bzgl. MID\\
+SIZE&	Größe einer dynamischen Payload, nicht existent bei statisch vereinbarter Übertragung!\\
+H	&	Hash \\
+Payload & Nutzdaten\\
+\end{tabular}
+\end{center}
+\normalsize
+
+\large Request\\
+\normalsize
+\begin{center}
+	\begin{bytefield}{32}
+		\bitheader{0,7,8,11,12,13,14,15,16}\\
+		\bitbox{8}{MID} & \bitbox{8}{SIZE} & \bitbox{8}{Payload} & \bitbox{8}{H}\\
+	\end{bytefield}
+\end{center}
+
+\large Response\\
+\normalsize
+\begin{center}
+	\begin{bytefield}{24}
+		\bitheader{0,3,4,5,6,7,8,15}\\
+		\bitbox{8}{SIZE} & \bitbox{8}{Payload} & \bitbox{8}{H}{} \\
+	\end{bytefield}
+\end{center}
+
+
+	[A05.2] Optional kann ein Feld für die Länge der Payload mitzusenden um dynamische Frames zu ermöglichen. Die optionale Routine würde ausgelöst werden, wenn in der Konfigurationsdatei (über >Rule< eingelesen) ein bestimmter, zu großer Wert (255) als statische Größe stünde $\rightarrow$ $ size = 255 \Rightarrow dynamisch $. Ein Benutzer kann also 255 als Größe definieren und ein >Packet< mit beliebiger Größe im Rahmen der Maximalgröße ([A04]) versenden.
+
+	%TODO Bild von Config einfügen mit 255
+
+	[A06] Eine Checksumme macht es dem Kommunikationspartner möglich die Korrektheit der übertragenen Daten festzustellen. Als Checksumme/Hash wurden dabei meistens alle gesendeten Bits effizient in einer bestimmten Schrittweite exklusiv verodert.
+
+\Large Hashing / Bildung von Checksummen
+	Verwendete Hashfunktionen wurden selbst erstell, jedoch nach einem Schema:
+		Der gesuchte Hash der Bitlänge $L_{h}$ ist praktisch immer als Potenz von 2 gewählt : $\{ L_{h} | i\in\nat : L_{h} = 2^{i} \}$ (meist 2 , 4 oder gar 8) \par
+		und die zu hashenden Daten der Bitlänge $L_{d}$ sind immer ein Vielfaches von 2 : $\{ L_{d} | i\in\nat : L_{d} = 2i \}$ (tatsächlich meist von 8 da Daten meist byteweise behandelt werden) \par
+		Nun kann die Länge $L_{d}$ in Schritten der Länge $L_{h}$ durchlaufen und exklusiv verodert werden.
+		Dabei kann ein Rest $L_{d} mod L_{h} \neq 0$ übrig bleiben. Dieser ist ein vielfaches von 2 aber kleiner $L_{h}$ und kann deshalb mehrmals nebeneinander geschrieben werdeni bis er die Bitlänge $L_{h}$ wieder erreicht, um im Letzten Schritt exklusiv verodert zu werden.
+
+%TODO Mathe
+
+		Beispiel 1:
+		\begin{center}
+		Wir Hashen 20 bit in einen 8bit hash. Zunächst werden desshalb in 8bit-Schritten die Daten exklusiv verodert, bis der Rest nicht mehr reicht.
+		$ L_{d} = 20 bit , L_{h} = 8 bit , d = 0111 0011 0000 1111 1010 $
+		Schritt 1: $ XOR(0111 0011, 0000 1111) = 0111 1100 $
+		Schritt 2: Der Rest (1010) reicht nicht aus, desshalb schreiben wir ihn mehrmals hintereinander auf und exclusiv verodern ihn daraufhin :
+		$ XOR(0111 1100 $(voriges Ergebnis)$ ,1010 1010 $(Rest 2 mal nebeneinander)$) = 1101 0110 $
+		\end{center}
+
+		Beispiel 2:
+		\begin{center}
+		$L_{d} = 26 bit ; d = 1110 1001 1111 0000 1010 1111 10$ \\
+		$L_{h} = 4 bit$ \\
+		Schritt 1 : $h = XOR(XOR(XOR(XOR(XOR(1110, 1001),1111),0000),1010),1111) = 1101$ \\
+		Schritt 2 : $XOR(1101, 1010) = 0111$ \\
+		$\rightarrow$ h = 0111;
+		\end{center}
+
+\subsubsection{Version 0.3}
+
+In dieser Version wurde sich der Entwicklung von Komponenten auf der Slaveplattform Arduino Uno angenommen.
+
+[A08.2] muss hierbei einbezogen werden. Dabei waren folgende Eigenschaften der Plattform interessant : 
+\begin{itemize}
+	\item Arduino Uno führt nur sequenziell Befehle aus, kein paraleller Ablauf von Code ist möglich. Bestimmte Aufgaben können der Hardware übergeben werde, was jedoch für das Protokoll uninteressant ist.
+	\item Arduino Uno besitzt verhältnismäßig wenig Arbeitsspeicher (2Mb). Wenn man nun die unter [A04] angesprochene Maximalgröße einer Datensendung bedenkt (255 bytes), würde das bereits $/frac{1}{8}$ des Speichers einnehmen. Das ist inaktzeptabel.
+\end{itemize}
+
+Deshalb Modellidee : 
+\begin{itemize}
+	\item Eine Komponente/Klasse >IBC< auf dem Arduino Uno stellt alle Funktionalitäten bereit.
+	\item Benutzer machen alle Aufrufe zum Senden und Empfangen des variablen Teils der Daten, welche gesendet werden, selbst. Dabei fügen sie berechnenden Code direkt hinzu.
+	\item Der übrige Teil des Protokollablaufs wird den Benutzern durch Codegeneration abgenommen.
+	\item Die Codegeneration hilft den Benutzern durch viel Kommentierung und Beispielcode.
+\end{itemize}
+
+	Dadurch können alle nötigen Befehle sequenziell in den Programmablauf direkt eingebettet werden. Das Speicherproblem wird auf den Stack verlegt, d.h. es findet kein Buffering von Nachrichten statt. Stattdessen können Daten direkt aus dem Bereits benutzten Speicher des Benutzers gesendet oder in diesen geschrieben werden.
+
+
+\Large Codegenerator
+	Der Codegenerator besitzt folgende Anforderungen:
+	\begin{itemize}
+		\item Code soll nur in einer Datei generiert werden müssen.
+		\item Generierungsparameter sind die Daten aus der selben Konfigurationsdatei wie für die masterseitige Komponente.
+		\item Generator kann wiederholt auf derselben Datei ausgeführt werden.
+		\item Generator preserviert von Benutzern geschriebenen Programmcode.
+	\end{itemize}
+
+Der Codegenerator wurde in Python erstellt. 
+\begin{itemize} 
+	\item 1 Mittels durch Code-Kommentare realisierter Tags sucht der Generator die Stelle zum generieren. 
+		\begin{center}
+			\begin{verbatim}
+/* IBC_FRAME_GENERATION_TAG_BEGIN */ 
+/* IBC_FRAME_GENERATION_TAG_END */ 
+			\end{verbatim}
+		\begin{center}
+
+	\item 2 Er sucht daraufhin alle zu erhaltenen Stellen im Ursprungsdokument. 
+
+		\begin{verbatim}
+/* IBC_PRESERVE_RECV_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+/* IBC_PRESERVE_RECV_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+/* IBC_PRESERVE_SEND_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+/* IBC_PRESERVE_SEND_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+		\end{verbatim}
+
+	\item 3 Über die Konfigurationsdatei werden nun für jede konfigurierte Nachrichtenart entsprechende Code-Fragmente erstellt. Dabei werden Eingabeparameter aus der Konfigurationsdatei berücksichtigt.
+		\begin{verbatim}
+/* IBC_MESSAGE_BEGIN 253 255 2 */
+
+/* IBC_MESSAGE_END 253 255 2 */
+		\end{verbatim}
+	\item 3.1 Dabei wird der zu kapselnde Ablaufcode außerhalb der Preservierung auf die neueste Version gebracht.
+	\item 3.2 Falls unter 2tens zu erhaltener Code gefunden wurde wird dieser wieder eingefügt und dadurch erhalten.
+	\item 3.3 Falls unter 2tens kein Code gefunden wurde wird Beispielcode generiert unter einbezug der Konfiguration generiert und eingefügt.
+
+		\begin{verbatim}
+/* IBC_PRESERVE_RECV_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			byte buffr252[4];
+			recv(buffr252,4);
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buffr252,4));
+			
+/* IBC_PRESERVE_RECV_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+/* IBC_PRESERVE_SEND_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+			byte buffs252 [8] = {1,2,3,4,5,6,7,8};
+			for(int i = 0 ; i<8;i++) {send(0);}
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buffs252, 8));
+			
+/* IBC_PRESERVE_SEND_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+		\end{verbatim}
+
+
+	\item 3.4 Unter Beachtung der Konfiguration werden erklärende und helfende Kommentare generiert.
+
+		\begin{verbatim}
+/*Send exactly 8 bytes in the following                  */
+/*If you have a dynamic size you have to send this size first!      */
+/*Also calculate their data hash along the way by                   */
+/*  xoring all bytes together once                                  */
+/*  or use the provided function createDH(..)                   */
+/* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
+/* IBC_PRESERVE_SEND_BEGIN 252 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+			
+            byte buffs252 [8] = {1,2,3,4,5,6,7,8};
+			for(int i = 0 ; i<8;i++) {send(0);}
+			
+			//DONT FORGET TO HASH
+			setDH(createDH(buffs252, 8));
+			
+/* IBC_PRESERVE_SEND_END 252 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+		\end{verbatim}
+
+	\item 4 Der Generator schlägt fehl wenn die Ursprungsdatei und die Konfiguration divergieren. Das ist gewünschtes verhalten. Nicht konfigurierte Nachrichten sollten daraufhin aus dem Code entfernt und der Generator erneut benutzt werden.
+
+Der Benutzer muss sich beim Entwickeln seiner Nachricht nun nur an folgende Regeln halten :
+\begin{itemize}
+	\item Benutzercode wird nur in den angegebenen PRESERVE Tags eingefügt
+	\item Die in der Konfigurationsdatei angegebene Anzahl an Bytes muss gesendet, bzw. empfangen werden. Generierte Kommentierung weist ausdrücklich darauf hin. Auch müssen die Daten gehasht werden und ein Hashwert gesetzt. Dieser wird dann benutzt um den letztendlichen Hash zu erstellen, der über die Leitung geht.
+\end{itemize}
+
+Output Hilfe :\\ 
+\begin{verbatim}
+pi@raspberry  ~/DT_WS1718_02_StarCar/uno $ ./Uno_ibcgeneration.py 
+
+Help for this code generator.
+This generator generates code in a correctly tagged code file in c++ style.
+
+Arguments : [Rule] [Output]
+
+    Rule    Is a file which specifies an IBC ruleset in form of numbers in a pattern [MID] [REQSIZE] [RESSIZE]
+    Output  Is a file where the output will go. It will be searched for a tags which look like this.
+            
+                /* IBC_FRAME_GENERATION_TAG_BEGIN */
+
+                /* IBC_FRAME_GENERATION_TAG_END */
+            
+            this script will not touch any lines outside these tags. This script will terminate when no tags are found in [Output]
+            This script will also preserve custom code inside of tags
+
+                /* IBC BEGIN [MID] [RECV/SEND]
+
+                /* IBC END [MID] [RECV/SEND]
+\end{verbatim}
+
+Benutzung :\\
+Rule zielt auf die Konfigurationsdatei ab.
+Output auf das File in dem generiert wird.
+
+\begin{verbatim}
+pi@raspberry  ~/DT_WS1718_02_StarCar/uno $ ./Uno_ibcgeneration.py ../pi/IBP/IBC_config.cfg IBC.cpp
+\end{verbatim}
+
+Nachdem diese Version erstellt wurde wurde auf den Zielplattformen standalone integriert und getestet, d.h. keine anderen Komponenten außer die Kommunikation liefen zu der Zeit auf den Zielplattformen.
+
+\sussubsection{Version [V0.4]}
+
+Probleme : Der in [V0.2] entwickelte Ablauf weist konzeptionelle Fehler auf.
+
+\begin{center}
+	\begin{bytefield}{32}
+		\bitheader{0,7,8,11,12,13,14,15,16}\\
+		\bitbox{8}{MID} & \bitbox{8}{SIZE} & \bitbox{8}{Payload} & \bitbox{8}{H}\\
+	\end{bytefield}
+\end{center}
+
+Bei einer fehlerhaften Übertragung von MID oder SIZE kann die Länge der Payload nicht ermittelt werden. Das bedeutet das der Empfänger keine Möglichkeit hat zu erfahren wo sich das Feld für den Hash in der Übertragun überhaupt befindet. Schlimmer : Der Empfänger kann den Beginn eines neuen Requests nicht mehr ermitteln und die Kommunikation wird bei folgenden Übertragungen immer fehlerhaft. Potentiell könnte über den Hash die fehlerhafte Übertragun erkannt werden, aber da der Empfänger nicht ermitteln kann, wo sich dieser befindet droht Desynchronisation.
+
+Ein dedizierter Header mit einem eigenen Hash und statischer Größe kann dieses Problem lösen. Idealerweise Enthält der Header die Felder \textit{MID, SIZE} und \textit{H}. Da das SIZE Feld jedoch optional ist und bei statischen Nachrichten nicht mitgeschickt werden soll würde der Header nicht mehr statische, sondern dynamische Größe haben. Deshalb wird der Header an dieser Stelle getrennt und jeder Teil selbst gehasht.
+
+
+Zusätzlich wurde in dieser Version noch Statusübertragung entwickelt.
+Das Statusfeld wird verwendet um den Status der Kommunikationspartner zu kommunizieren.
+Die übliche Datenübertragung kann dabei nebenher unbeeinträchtigt weiterlaufen.
+Das Statusfeld ist 4bit lang => 16 verschiedene Stati möglich.
+Die Bedeutung des Status kann je nach Art des Kommunikationspartners (Master oder Slave) variieren, d.h. der Status 8 beduetet beispielsweise auf dem Master etwas anderes als auf dem Slave.
+Das Statusfeld hat im Kontrollfluss die wichtige Aufgabe, dem Master eine Möglichkeit zu geben, zwischen positiver oder negativer Antwort zu unterscheiden.
+
+Masterseitig : 
+
+Bit 0 wird als STOP Befehl benutzt. Sein Versand bedeutet das Ende der Kommunikation.
+Bit 1 wird als REINIT Befehlt benutz. Sein Versand fordert eine Reinitialisierung der Kommunikation auf Slave-Seite.
+Bit 2 und 3 wird verwendet um eine erneute Sendung mit einer Nummer 0-3 zu kennzeichnen. Dies geschieht wenn eine Sendung im Vorhinein fehlgeschlagen hat. Eine Sendung kann bis zu 3 Mal wiederholt werden.
+
+\begin{tabular}{l | l}
+	bit & Zweck \\
+	\hline \hline
+	0 & STOP \\
+	1 & REINIT \\
+	2,3 & Resend counter
+\end{tabular}
+
+Slaveseitig:
+
+Bit 0 wird verwendet um einen internen Fehler am Slave zu propagieren, der zur Folge hat das dieser nicht korrekt oder gar nicht auf Befehle reagiert. Der Master kann dadurch auf den Zustand reagieren um zum Beispiel den Fehler zu loggen, den Sendevorgang für eine bestimmte Zeit einzustellen, Systeme kontrolliert herunterfahren zu lassen, etc.
+
+Bit 1, 2 und 3 werden zum Kommunizieren von Fehlern der 3 Checksummen des Protokolls wie folgt verwendet.
+
+\begin{tabular}{l | l}
+	bit & Zweck \\
+	\hline \hline
+	0 & interner Slave Fehler \\
+	1 & Headerhash falsch \\
+	2 & Sizehash falsch \\
+	3 & Datahash falsch
+\end{tabular}
+
 
 \large 
 Legende:\\
@@ -236,44 +445,85 @@ Request\\
 \end{bytefield}
 \end{center}
 
-\subsection{Status}
 
-Das Statusfeld wird verwendet um den Status der Kommunikationspartner zu kommunizieren.
-Die übliche Datenübertragung kann dabei nebenher unbeeinträchtigt weiterlaufen.
-Das Statusfeld ist 4bit lang => 16 verschiedene Stati möglich.
-Die Bedeutung des Status kann je nach Art des Kommunikationspartners (Master oder Slave) variieren, d.h. der Status 8 beduetet beispielsweise auf dem Master etwas anderes als auf dem Slave.
-Das Statusfeld hat im Kontrollfluss die wichtige Aufgabe, dem Master eine Möglichkeit zu geben, zwischen positiver oder negativer Antwort zu unterscheiden.
+Auf dem Raspberry Pi wurde zu den übrigen Komponenten ein Fassade-Muster Implementiert. Das ist eine Komponente, welche den Benutzern eine klare Benutzungsschnittstelle liefert und dabei Funktionalität, welche nicht angedacht ist vom Benutzer verwendet zu werden, versteckt. Die Komponente wurde >IBC< genannt.
 
-\subsubsection{Master}
+%TODO IBC-Komponente Klassdiagramm
 
-Bit 0 wird als STOP Befehl benutzt. Sein Versand bedeutet das Ende der Kommunikation.
-Bit 1 wird als REINIT Befehlt benutz. Sein Versand fordert eine Reinitialisierung der Kommunikation auf Slave-Seite.
-Bit 2 und 3 wird verwendet um eine erneute Sendung mit einer Nummer 0-3 zu kennzeichnen. Dies geschieht wenn eine Sendung im Vorhinein fehlgeschlagen hat. Eine Sendung kann bis zu 3 Mal wiederholt werden.
+\subsubsection{Version [V1.0]}
 
-\begin{tabular}{l | l}
-	bit & Zweck \\
-	\hline \hline
-	0 & STOP \\
-	1 & REINIT \\
-	2,3 & Resend counter
-\end{tabular}
+Diese erste volle Version wurde zum ersten mal in die übrige Projektumebung integriert.
+Alles schien zu funktionieren, Tests waren positiv, die Kollegen/Kolleginnen, welche die Komponenete in der Zukunft benutzen würden müssen, wurden in der Benutzung geschult.
 
-\subsubsection{Slave}
+Problem : Nach einiger Zeit traten Speicherzugriffsfehler (Segmentation Faults) auf. Die Fehler sind in ihrer Natur undefiniertes Verhalten, welches letztendlich zu einem Fehler führt. Ein Backtrace mittels GNU-Debugger zeigte den Programmablauf zeigte die Aufrufhierarchie vor dem Fehler an. Der Ablauf zeigte den Aufruf von protokollspezifischem Code an, welcher Aufrufe der Standardbibliothek machte um darauf bei einem Zugriff abzustürzen. Die Schuld am Absturz wurde also dem Protokollcode selbst gegeben.
 
-Bit 0 wird verwendet um einen internen Fehler am Slave zu propagieren, der zur Folge hat das dieser nicht korrekt oder gar nicht auf Befehle reagiert. Der Master kann dadurch auf den Zustand reagieren um zum Beispiel den Fehler zu loggen, den Sendevorgang für eine bestimmte Zeit einzustellen, Systeme kontrolliert herunterfahren zu lassen, etc.
+\subsubsection{Version [V1.1]}
 
-Bit 1, 2 und 3 werden zum Kommunizieren von Fehlern der 3 Checksummen des Protokolls wie folgt verwendet.
-
-\begin{tabular}{l | l}
-	bit & Zweck \\
-	\hline \hline
-	0 & interner Slave Fehler \\
-	1 & Headerhash falsch \\
-	2 & Sizehash falsch \\
-	3 & Datahash falsch
-\end{tabular}
-
-\LARGE 
+Anforderungen  erfüllt : [A01][A02][A03][A04][A05.1][A0][A0][A0]
 
 
 
+
+
+
+
+
+
+Grundsätzlich waren Versuche den Fehler zu beheben recht ratlos.
+Nach erheblichem Zeitaufwand bei der Fehlersuche wurde entschieden zu versuchen die Fehler zu vermeiden. So wurde ein Großteil des Codes Refactored um Aufrufe der C++ Standardbibliothek zu vermeiden. Dabei wurden viele bereits eingebaute Features nicht mehr neu Implementiert, da zu dem Zeitpunkt bereits klar war, dass sie nicht gebraucht werden würden. Zeit war dabei ein Thema, denn die Deadline zur ersten Ergebnisvorstellung stand bevor (1 Woche) Betroffen sind Features, welche aus den Anforderungen [A05.2] [A07.2] [A07.3]
+	hervorgehen.
+
+	Verlorene Features:
+	\begin{itemize}
+		\item [A05.2] Die Bearbeitung optionaler Payloadlängen wurde bei der Reimplementierung des Protokollablaufs nicht wieder eingebaut, da sie offenbar innerhalb des Projektes nicht benutzt werden würde und die Reimplementierung erneut Zeit gekostet hätte.
+		\item [A07.2] Ebenso wie [A05.2] wurde die negative Antwort nicht mit reimplementiert.
+		\item [A07.3] Die generelle Behandlung empfangener Fehler wurde nicht reimplementiert. Übertragungsfehler traten zu wenig häufig auf.
+	\end{itemize}
+
+Des weiteren wurde vermutet, das die Entwicklungsplattform und -umgebung des Kollegen zur Entwicklung der GUI, welche mit Qt entwickelt wurde, nicht mit der Standardbibliothek kompatibel war. Deshalb wurden alle Aufrufe der Standardbibliothek auf die sehr Umfangreiche QT-Bibliothek umgeschrieben.
+Zusätzlich kam zu der Zeit noch ein gewisser Druck mit der Deadline zur ersten Ergebnisvorstellung hinzu.
+Letztendlich wurde nach ca. 1,5 Wochen durch Zufall die falsche Benutzung eines Pointers festgestellt. Der Kollege hatte ein Objekt der Klasse >IBC< auf dem Heap angelegt und den Pointer dazu überschrieben, was zu Fehlern im Protokollcode führte, obwohl dieser korrekt war.
+
+Persönliche Einschätzung:
+Der Zeitverlust und der Verlust bereits ausgearbeiteter Features war für meinen eigenen geplanten Projektablauf ein Desaster. Tatsächlich wollte ich noch an etwas anderes als dem Protokoll arbeiten (Raumerkennung zum Beispiel, siehe Zielvereinbarungen). Nun war der Großteil der angedachten Arbeitszeit schon dafür verbraucht und das Endprodukt genügte nicht mehr meinen eigenen Vorstellungen, da nun Features fehlten, deren Reimplementierung oder Reintegrierung als zu Aufwändig, bzw. nicht mehr zweckgemäß angesehen wurden (einige Features würden offenbar von den letztendlichen Benutzern gar nicht gebraucht werden, wie zum Beispiel [A05.2]). Dadurch das das Protokoll so von zentraler Wichtigkeit für einige Kollegen war, die Daten zwischen den Controllern versenden wollten, musste das Protokoll weiter Priorisiert entwickelt werden. Im Nachhinein betrachtet war auch das weiterarbeiten auf [V1.1] ein Fehler. Stattdessen hätte auf [V0.4] zurückgerudert werden müssen, um auch die nicht gebrauchten Features zu behalten. Das wurde jedoch unterlassen um die Übersicht nach dem Fehlerchaos zu behalten (weniger aktive Features bedeutet weniger Programmiercode, der bei der Bearbeitung behindert).
+
+
+
+\subsubsection{Version [V1.2]}
+
+Diese nun durch den Fehler sehr runtergekommene Version[1.1] sollte nun etwas verbessert werden um wieder den wichtigsten Anforderungen zu genügen. Auch wurde gehofft einige verlorene Features im Nachhinein wieder einbauen zu können.
+
+Der Protokollablauf aus [V0.4] ist immernoch ungenügend. Einfaches Beispiel:
+Wir nehmen an das MID falsch Übertragen wird. Der Empfänger erkennt die falsche Übertragung anhand des Headerhashes. Der Protokollablauf sieht jedoch an dieser Stelle keinen Abbruch vor. Schlimmer : Der Master wird den Rest seiner Übertragung senden, obwohl der Slave auf Grund der fehlerhaften Übertragung wieder nicht weiß wo die Übertragung endet. Bis dato wurde in diesem Fall einfach eine bestimmte Zeit gewartet, alle bis dahin empfangenen Daten verworfen und eine negative Nachricht zurückgesendet. Da dies jetzt keine option mehr darstellt (und Wartezeit niemals eine optimale Lösung darstellt) muss der Protokollablauf wieder geändert werden.
+
+Erdacht wurde die im folgenden Sequenzdiagramm dargestellte Lösung :
+
+%TODO Sequenzdiagramm
+
+Durch den Status-Handshake kann dieser Fehler direkt behandelt werden.
+Ein Problem stellte sich bei der genaueren Entwicklung des Status-Handshakes dar. Es ist ersichtlich das das letzte übertragene Byte des Handshakes immer kritisch bleiben wird, im Falle, dass es falsch übertragen wird. Ein Beispiel :
+Handshake :
+\begin{itemize}
+	\item 1.Master sendet ID 5.
+	\item 2.Slave sendet das die ID korrekt Empfangen worden ist. OK.
+	\item 3. Master schließt des Handshake ab.
+\end{itemize}
+
+Nun ist es für den Master unwichtig, ob Schritt 3 denn tatsächlich richtig empfangen worden ist. Für den Fall der korrekten Übertragung ist alles im Rahmen, jedoch im Fall der inkorrekten Übertragung muss der Slave sich trotzdem auf die darauf kommende Flut an Daten einstellen.
+Hat der Slave in Schritt 2 nicht OK, sondern einen Fehler gemeldet, soll der Master den Ablauf neu beginnen. Dazu Signalisiert er dem Slave in Schritt 3 einen Ablaufneustart. Wieder kann der Slave in diesem Fall dieses Signal falsch erhalten und unter Umständen nicht interpretieren.
+Die Krux der Überlegungen an dieser Stelle ist vor allem, dass sie dazu verleiten im Kreis zu denken. Es gäbe 
+nahe an $100\%$ sichere Methoden an dieser Stelle, die hauptsächlich auf rekursiven Sendeaufrufen beruhen, diese sind sind jedoch für den Rahmen des Projektes nicht angemessen.(Auto ist kein Mars-Rover)
+Der Handshake wie beschrieben bietet eine Verbesserung der Situation, jedoch keine 100\% Lösung. Das soll als angemessen angesehen werden.
+
+Der Handshake und der neue Protokollablauf wurden implementiert, für die Behandlung der Fehler wurde jedoch keine Zeit gefunden.
+
+Integation auf den Plattformen fand statt.
+
+
+\subsubsection{Version [V1.3] Final}
+Problem Werte wurden von Slave auf Master oft nicht richtig übertragen. Untersuchungen des Problems fanden unerklärlicherweise Sendeaufrufe von Statusbytes, die sich später nicht im Übertragunslog fanden. Die in [V1.2] entwickelten Neuerungen wurden weitestgehend wieder zurückgebaut. Die bevorstehende Vorführung führte zu dieser Zeitsparenden Lösung.
+
+\subsubsection{Fazit}
+Zwar durfte ich bei der Entwicklung es Protokolls viele auch teils aus dem Studium bekannte Problemstellungen selbst meistern und hatte viel Spaß und Lernerfolg dabei, jedoch lief der Aufwand dieses Teilprojektes stark aus dem Ruder. Ich hätte mich gerne auch anderen Aufgaben gewidmet, aber ein nicht funktionsfähiges Kommunikationsprotokoll bedeutet auch das scheitern der Teilprojekte die von funktionierender Kommunikation abhängig sind, d.h. von Projekten von Kollegen, wofür man letztendlich natürlich nicht verantwortlich gemacht werden will, weshalb ich den Zeitverbrauch als gerechtfertigt ansehe.
+Ohne die tatsächlichen Anforderungen an meine Komponente in Vorhinein zu kennen sind weite Teile der früheren Versionen stark überdimensioniert. Es wurden erst Features erstellt und danach festgestellt, ob sie gebraucht werden. Hier hätte man viel Zeit sparen können, auch wenn die Features teils interessant zum Implementieren waren.
+Alles in allem darf ich etwas mehr Fachliche- und Projektkompetenz aus dem Fach Datenverarbeitung in der Technik mitnehmen als ich mit hineingenommen habe.

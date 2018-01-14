@@ -1,0 +1,60 @@
+\subsection{Liste von Anforderungen und Konzepten}
+
+Im folgenden werden alle Anforderungen im Rahmen dieses Teilprojektes aufgelistet.\par
+Manche Anforderungen wurden erst später im Entwicklungsprozess entdeckt oder erdacht, weshalb zu jeder Anforderung auch eine Versionsnummer des ersten Auftretens angegeben ist. Zusammen mit der Versionsübersicht kann das eine Zeitliche Einschätzung des Auftretens der Anforderung ermöglichen.
+
+Dadurch das die tatsächlichen Anforderungen an das Protokoll zu Beginn der Entwicklung noch nicht genau festgelegt werden konnten, wurden im mögliche Anforderungen und Features gesammelt.
+
+\begin{itemize}
+	\item [A01] Frage-Antwort-Schema\\
+Auf Grund der Art einer seriellen Übertragung ist es vorteilhaft, wenn das Protokoll ein Frage-Antwort Konzept mit einem dominanten Kommunikationspartner abbildet.
+		Das heißt es existieren ein Master und ein Slave. Der Slave wird über Befehle vom Master zum Handeln aufgefordert und kann dann ein Antwort im Rahmen von vorher getroffener Vereinbarungen senden.
+
+	\item [A02] ID $ \rightarrow $ Anzahl verschiedener Befehle\\
+Eine Menge von 256 verschiedenen Befehlen ist möglich. Ein Befehl kann durch eine Identifikationsnummer(ID) erkannt werden. Die Zahl 256 wird auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit)
+
+	\item [A03] Priorisierung\\
+Eine Priorität zur Übertragung mehrerer Befehle favorisiert Befehle mit kleinerer ID. So können über das Protokoll weitere Funktionalitäten, wie Echtzeitfähigkeit, durch geschickte Wahl der ID ermöglicht werden.
+
+	\item [A04] Maximalgröße\\
+Eine Maximalgröße eines Befehls wird auf 255 Bytes auf Grund von maschineller repräsentierbarkeit Festgelegt.(8bit) Diese Größenvereinbarung wäre hinsichtlich einer geplanten Speicherung oder Übertragung der Größe interessant.
+
+	\item [A05] Vereinbarung der Übertragungslängen der Payloads\\
+		Die Kommunikationspartner müssen Informationen über die Länge der Verschiedenen Übertragungen besitzen, um empfangene Daten ihrem Zweck zuweisen zu können und den Start der nächsten Sendung zu ermitteln.
+		\begin{itemize}
+			\item [A05.1]statisch
+				Eine statische Größenvereinbarung ist zu Beginn der Laufzeit bei allen Kommunikationspartnern bekannt.
+			\item [A05.2]dynamisch
+				Eine dynamische Größenvereinbarung wird bei laufender Kommunikation jedesmal neu vereinbart.
+				Die dynamische Art einer Nachricht muss jedoch statisch bekannt sein, sodass die Kommunikationspartner auf einen dynamischen Austausch einstellen können.
+		\end{itemize}
+		Hinsichtlich des Frage-Antwort-Schemas sollte also für jede Frage und Antwort jeweils eine Größe bekannt gemacht werden (Requestsize und Respnse-/Answersize).
+		Alternativ zu einer Größe soll angegeben werden können, das die Art einer Nachricht dynamisch ist. Die Größe muss dann während der Kommunikation ausgehandelt werden.
+
+	\item [A06] Fehlererkennung\\
+		\begin{itemize}
+			\item Checksummen/Hashes helfen Fehlerhafte Übertragung durch redundante Zusatzinformation zu erkennen.	
+		\end{itemize}
+
+	\item [A07] Fehlerbehandlung\\
+		\begin{itemize}
+			\item [A07.1] Fehlerbekanntmachung\\
+				Fehler werden, wenn nötig, dem Kommunikationspartner propagiert. Um den übrigen Kommunikationsablauf dabei nicht bis wenig zu belasten, kann hierfür ein Statusfeld verwendet und mitgeschickt werden.
+			\item [A07.2]Negative Antwort
+				Fehler auf Slave-Seite führen zu Fehlerhaften Antwortdaten. Desshalb hat der Slave die möglichkeit eine Negative Antwort (negative response)zu senden, die keine Antwortdaten mehr mitführt. Die Negative Antwort bietet jedoch wiederum Möglichkeiten verschiedene Fehler anzugeben.\par
+			\item [A07.3] Von Masterseite können Fehler pragmatisch durch wiederholtes senden behandelt werden. Durch den Status kann die Kommunikationsschnittstelle hier hauptsächlich nebenbei bestimmte Konfigurierungen der Schnittstelle auf den Slaves zur Laufzeit anregen. Szenarien wie ein kontrollierter Verbindungsabbruch sind denkbar.\par
+		\end{itemize}
+	
+	\item [A08] plattformspezifische Umsetzung
+		Auf Grund der Unterschiedlichen Beschaffenheit der möglichen Zielplattformen können Implementierungen variieren. Die Möglichkeiten der Plattformen sollten dabei jeweils optimal ausgenutzt werden.
+		\begin{itemize}
+			\item [A08.1] auf Raspberry Pi 3
+			\item [A08.2] auf Arduino Uno
+
+	\item [A09] Benutzerfreundlichkeit
+		Der Prozess der Benutzung des Protokolls soll effizient gekapselt werden. Für den tatsächlichen Protokollablauf wird so eine Schicht erstellt, in dem störungsfrei gearbeitet werden kann, ohne das sich für die Benutzung benötigte Schnittstellen zu oft ändern würden.
+		\begin{itemize}
+			\item [A09.1] auf Raspberry Pi 3
+			\item [A09.2] auf Arduino Uno
+		\end{itemize}
+\end{itemize}
