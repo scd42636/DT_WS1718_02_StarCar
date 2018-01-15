@@ -203,10 +203,15 @@ void SensorValuesWidget::slotQuerySensorValues(){
         iCompass->fetch();
         iAcceleration->fetch();
 
-        IBCPointer->send(*packetUltrafront);
-        IBCPointer->send(*packetUltraback);
-        IBCPointer->send(*packetCompass);
-        IBCPointer->send(*packetAcceleration);
+        Packet requestUltraFront(180,0);
+        Packet requestUltraBack(181,0);
+        Packet requestCompass(182,0);
+        Packet requestAcceleration(183,0);
+
+        IBCPointer->send(requestUltraFront);
+        IBCPointer->send(requestUltraBack);
+        IBCPointer->send(requestCompass);
+        IBCPointer->send(requestAcceleration);
 
         iUltraFront->empty()   ? alertThread->fireWarning("Ultraschall vorne kein Wert!") : lblUltraFrontValue->setText(getMesureValue(iUltraFront));
         iUltraBack->empty()    ? alertThread->fireWarning("Ultraschall hinten kein Wert!") : lblUltraBackValue->setText(getMesureValue(iUltraBack));
