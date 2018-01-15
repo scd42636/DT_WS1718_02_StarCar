@@ -77,6 +77,7 @@ private:
     bool rightLedOn;
     pin_t rightLedPin;
 
+    bool isStartupSequence;
     StarCarEngineMode previousEngineMode;
 
     // ---------- Public constructors ----------
@@ -94,6 +95,13 @@ public:
 
     // ---------- Public methods ----------
 public:
+    void Blink(StarBoardLedPanels panels, int_t times, int_t interval);
+
+    void SignalBlockings(StarCar* car);
+    void SignalEngineTurnedOn(StarCar* car);
+    void SignalMovement(StarCar* car);
+
+    void SwitchLeds(StarBoardLedPanels panels, bool target);
     virtual void Task(StarCar* car);
 
     // ---------- Protected methods ----------
@@ -102,7 +110,6 @@ protected:
 
     // ---------- Private methods ----------
 private:
-    void Blink(StarBoardLedPanels panels, int_t times, int_t interval);
     void SwitchLed(bool* current, bool target, pin_t pin);
 
     #if SERIAL_MODE == SERIAL_MODE_ARDUINO

@@ -31,6 +31,7 @@ StarBoard::StarBoard(
     this->rightLedPin = rightLedPin;
     this->rightLedOn = false;
 
+    this->isStartupSequence = false;
     this->previousEngineMode = StarCarEngineMode::CarEngineMode_Off;
 }
 
@@ -43,8 +44,28 @@ const char* StarBoard::getName()
 
 // ---------- Public methods ----------
 
+void StarBoard::SwitchLeds(StarBoardLedPanels panels, bool target)
+{
+    if (HasFlag(panels, StarBoardLedPanels::BoardLedPanel_Front))
+        this->SwitchLed(&this->frontLedIsOn, target, this->frontLedPin);
+
+    if (HasFlag(panels, StarBoardLedPanels::BoardLedPanel_Back))
+        this->SwitchLed(&this->backLedIsOn, target, this->backLedPin);
+
+    if (HasFlag(panels, StarBoardLedPanels::BoardLedPanel_Right))
+        this->SwitchLed(&this->rightLedOn, target, this->rightLedPin);
+
+    if (HasFlag(panels, StarBoardLedPanels::BoardLedPanel_Left))
+        this->SwitchLed(&this->leftLedOn, target, this->leftLedPin);
+}
+
 void StarBoard::Task(StarCar* car)
 {
+    if (this->isStartupSequence) {
+        this->isStartupSequence = false;
+        this->SwitchLeds(StarBoardLedPanels::BoardLedPanel_All, false);
+    }
+
     #if _DEBUG
     Serial.println("--> StarBoard::Task()");
     #endif
@@ -69,32 +90,14 @@ void StarBoard::Task(StarCar* car)
 
     if (this->previousEngineMode != currentEngineMode
         && currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
-
-        this->Blink(StarBoardLedPanels::BoardLedPanel_All, /*times:*/ 5, /*interval:*/ 100);
+        this->SignalEngineTurnedOn(car);
     }
 
     if (currentEngineMode == StarCarEngineMode::CarEngineMode_On) {
-        if (car->IsBlocked()) {
-            StarBoardLedPanels panels = StarBoardLedPanels::BoardLedPanel_All;
-
-            if (car->IsFrontBlocked(/*exclusive*/ true))
-                panels = StarBoardLedPanels::BoardLedPanel_Front;
-            else if (car->IsBackBlocked(/*exclusive*/ true))
-                panels = StarBoardLedPanels::BoardLedPanel_Back;
-
-            this->Blink(panels, /*times:*/ 3, /*interval:*/ 50);
-        }
-        else {
-            sbyte_t speed = car->getSpeed();
-
-            this->SwitchLed(&this->frontLedIsOn, speed > 10, this->frontLedPin);
-            this->SwitchLed(&this->backLedIsOn, speed < -10, this->backLedPin);
-
-            sbyte_t direction = car->getDirection();
-
-            this->SwitchLed(&this->rightLedOn, direction > 0, this->rightLedPin);
-            this->SwitchLed(&this->leftLedOn, direction < 0, this->leftLedPin);
-        }
+        if (car->IsBlocked())
+            this->SignalBlockings(car);
+        else
+            this->SignalMovement(car);
     }
 
     this->previousEngineMode = currentEngineMode;
@@ -104,6 +107,8 @@ void StarBoard::Task(StarCar* car)
 
 byte_t StarBoard::InitCore()
 {
+    this->isStartupSequence = true;
+
     pinMode(LED_BUILTIN, OUTPUT);
     digitalWrite(LED_BUILTIN, LOW);
 
@@ -127,6 +132,7 @@ byte_t StarBoard::InitCore()
         digitalWrite(this->rightLedPin, LOW);
     }
 
+    this->SwitchLeds(StarBoardLedPanels::BoardLedPanel_All, true);
     return StarBoardResult::BoardResult_Success;
 }
 
@@ -135,34 +141,45 @@ byte_t StarBoard::InitCore()
 void StarBoard::Blink(StarBoardLedPanels panels, int_t times, int_t interval)
 {
     for (int_t index = 0; index < times; index++) {
-        if ((panels & StarBoardLedPanels::BoardLedPanel_Front) == StarBoardLedPanels::BoardLedPanel_Front)
-            this->SwitchLed(&this->frontLedIsOn, true, this->frontLedPin);
-
-        if ((panels & StarBoardLedPanels::BoardLedPanel_Back) == StarBoardLedPanels::BoardLedPanel_Back)
-            this->SwitchLed(&this->backLedIsOn, true, this->backLedPin);
-
-        if ((panels & StarBoardLedPanels::BoardLedPanel_Right) == StarBoardLedPanels::BoardLedPanel_Right)
-            this->SwitchLed(&this->rightLedOn, true, this->rightLedPin);
-
-        if ((panels & StarBoardLedPanels::BoardLedPanel_Left) == StarBoardLedPanels::BoardLedPanel_Left)
-            this->SwitchLed(&this->leftLedOn, true, this->leftLedPin);
-
+        this->SwitchLeds(panels, true);
         delay(interval);
 
-        if ((panels & StarBoardLedPanels::BoardLedPanel_Front) == StarBoardLedPanels::BoardLedPanel_Front)
-            this->SwitchLed(&this->frontLedIsOn, false, this->frontLedPin);
-
-        if ((panels & StarBoardLedPanels::BoardLedPanel_Back) == StarBoardLedPanels::BoardLedPanel_Back)
-            this->SwitchLed(&this->backLedIsOn, false, this->backLedPin);
-
-        if ((panels & StarBoardLedPanels::BoardLedPanel_Right) == StarBoardLedPanels::BoardLedPanel_Right)
-            this->SwitchLed(&this->rightLedOn, false, this->rightLedPin);
-
-        if ((panels & StarBoardLedPanels::BoardLedPanel_Left) == StarBoardLedPanels::BoardLedPanel_Left)
-            this->SwitchLed(&this->leftLedOn, false, this->leftLedPin);
-
+        this->SwitchLeds(panels, false);
         delay(interval);
     }
+}
+
+void StarBoard::SignalBlockings(StarCar* car)
+{
+    StarBoardLedPanels panels = StarBoardLedPanels::BoardLedPanel_All;
+
+    if (car->IsFrontBlocked(/*exclusive*/ true))
+        panels = StarBoardLedPanels::BoardLedPanel_Front;
+    else if (car->IsBackBlocked(/*exclusive*/ true))
+        panels = StarBoardLedPanels::BoardLedPanel_Back;
+
+    this->Blink(panels, /*times:*/ 3, /*interval:*/ 50);
+}
+
+void StarBoard::SignalEngineTurnedOn(StarCar* car)
+{
+    this->Blink(
+        StarBoardLedPanels::BoardLedPanel_All,
+        /*times:*/ 5,
+        /*interval:*/ 100);
+}
+
+void StarBoard::SignalMovement(StarCar* car)
+{
+    sbyte_t speed = car->getSpeed();
+
+    this->SwitchLed(&this->frontLedIsOn, speed > 10, this->frontLedPin);
+    this->SwitchLed(&this->backLedIsOn, speed < -10, this->backLedPin);
+
+    sbyte_t direction = car->getDirection();
+
+    this->SwitchLed(&this->rightLedOn, direction > 0, this->rightLedPin);
+    this->SwitchLed(&this->leftLedOn, direction < 0, this->leftLedPin);
 }
 
 void StarBoard::SwitchLed(bool* current, bool target, pin_t pin)
