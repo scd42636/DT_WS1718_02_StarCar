@@ -156,7 +156,6 @@ void SensorValuesWidget::slotQuerySensorValues(){
         lblcompassValue->setText(QString::number((int)starcarprotocol->getCompass()));
         lblaccelerationValue->setText("X: " + QString::number((int)starcarprotocol->getAccelerationX()) +
                                           " Y: " + QString::number((int)starcarprotocol->getAccelerationY()));
-        lblUWBValue->setText("Mode: " + QString::number((int)starcarprotocol->getMode()));
 
     }
 
