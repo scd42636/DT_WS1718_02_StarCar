@@ -25,7 +25,7 @@ void StarCarModule::Init()
     Serial.print("...\t\t\t\t");
     #endif
 
-    short_t status = this->InitCore();
+    int_t status = this->InitCore();
 
     if (status == 0) {
         #if _DEBUG

@@ -10,7 +10,7 @@
 
 // ---------- Public constructors ----------
 
-StarCar::StarCar(StarCarModule** modules, short_t modulesLength)
+StarCar::StarCar(StarCarModule** modules, int_t modulesLength)
 {
     this->accelerationX = 0;
     this->accelerationY = 0;
@@ -20,8 +20,8 @@ StarCar::StarCar(StarCarModule** modules, short_t modulesLength)
     this->distanceFront = 0;
     this->engineMode = StarCarEngineMode::CarEngineMode_Off;
     this->mode = StarCarMode::CarMode_None;
-    this->orientation = 0;
-    this->request = StarCarSensorRequest::CarSensorRequest_None;
+    this->orientation = 0.0;
+    this->request = StarCarSensorRequest::CarSensorRequest_All;
     this->speed = 0;
 
     this->modulesLength = modulesLength;
@@ -80,11 +80,11 @@ StarCar* StarCar::setDirection(sbyte_t value)
     return this;
 }
 
-short_t StarCar::getDistanceBack()
+int_t StarCar::getDistanceBack()
 {
     return this->distanceBack;
 }
-StarCar* StarCar::setDistanceBack(short_t value)
+StarCar* StarCar::setDistanceBack(int_t value)
 {
     if (value < this->CalculateCrashPreventionDistance()) {
         if (this->speed < 0)
@@ -106,11 +106,11 @@ StarCar* StarCar::setDistanceBack(short_t value)
     return this;
 }
 
-short_t StarCar::getDistanceFront()
+int_t StarCar::getDistanceFront()
 {
     return this->distanceFront;
 }
-StarCar* StarCar::setDistanceFront(short_t value)
+StarCar* StarCar::setDistanceFront(int_t value)
 {
     if (value < this->CalculateCrashPreventionDistance()) {
         if (this->speed > 0)
@@ -252,7 +252,7 @@ bool StarCar::IsRequested(StarCarSensorRequest request)
 ////void StarCar::RegisterModule(StarCarModule* module)
 ////{
 ////    bool found = false;
-////    short_t index = 0;
+////    int_t index = 0;
 ////
 ////    for (; index < this->modulesLength; index++) {
 ////        StarCarModule* registeredModule = this->modules[index];
@@ -269,7 +269,7 @@ bool StarCar::IsRequested(StarCarSensorRequest request)
 ////
 ////void StarCar::UnregisterModule(StarCarModule* module)
 ////{
-////    short_t index = 0;
+////    int_t index = 0;
 ////
 ////    for (; index < this->modulesLength; index++) {
 ////        StarCarModule* registeredModule = this->modules[index];
@@ -283,7 +283,7 @@ bool StarCar::IsRequested(StarCarSensorRequest request)
 
 void StarCar::Init()
 {
-    for (short_t index = 0; index < this->modulesLength; index++) {
+    for (int_t index = 0; index < this->modulesLength; index++) {
         StarCarModule* module = this->modules[index];
 
         if (module != nullptr)
@@ -293,7 +293,7 @@ void StarCar::Init()
 
 void StarCar::Task()
 {
-    for (short_t index = 0; index < this->modulesLength; index++) {
+    for (int_t index = 0; index < this->modulesLength; index++) {
         StarCarModule* module = this->modules[index];
 
         if (module != nullptr)

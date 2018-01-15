@@ -46,7 +46,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\StarCarUno;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\EEPROM\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\USB_Host_Shield_Library_2.0;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SPI\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\SerialProtocol;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\Servo\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\Adafruit_Unified_Sensor;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\Adafruit_ADXL345;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\Wire\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;$(ProjectDir)..\..\..\..\..\Documents\Arduino\libraries;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\variants\mega;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\avr\;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\StarCarUno;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\EEPROM\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\USB_Host_Shield_Library_2.0;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\SPI\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\Servo\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\Adafruit_Unified_Sensor;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries\Adafruit_ADXL345;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries\Wire\src;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\libraries;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\libraries;$(ProjectDir)..\..\..\..\..\Documents\Arduino\libraries;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\arduino\avr\variants\mega;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\avr\include\avr\;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\..\..\..\..\Program Files (x86)\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>$(ProjectDir)__vm\.StarCarUno.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <PreprocessorDefinitions>__AVR_ATmega2560__;_VMDEBUG=1;F_CPU=16000000L;ARDUINO=10805;ARDUINO_AVR_MEGA2560;ARDUINO_ARCH_AVR;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -84,6 +84,7 @@
     <IncludePath>$(ProgramFiles)\Arduino\hardware\arduino\avr\cores\arduino\;$(ProgramFiles)\Arduino\hardware\arduino\avr\libraries\SoftwareSerial\src\;$(ProgramFiles)\Arduino\hardware\arduino\avr\libraries\EEPROM\src\;$(ProgramFiles)\Arduino\hardware\arduino\avr\libraries\SPI\src\;$(ProjectDir)libraries\;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
+    <None Include="car\controllers\StarWatch.cd" />
     <None Include="Overview.cd" />
     <None Include="StarCarUno.ino">
       <FileType>CppCode</FileType>
@@ -103,9 +104,6 @@
     <ClInclude Include="car\actuators\StarServo.h" />
     <ClInclude Include="car\sensors\StarSonic.h" />
     <ClInclude Include="car\controllers\StarWatch.h" />
-    <ClInclude Include="libraries\SerialProtocol\ArduinoSerialProtocol.h" />
-    <ClInclude Include="libraries\SerialProtocol\SerialProtocol.h" />
-    <ClInclude Include="libraries\SerialProtocol\StreamSerialProtocol.h" />
     <ClInclude Include="__vm\.StarCarUno.vsarduino.h" />
   </ItemGroup>
   <ItemGroup>
@@ -121,9 +119,6 @@
     <ClCompile Include="car\actuators\StarServo.cpp" />
     <ClCompile Include="car\sensors\StarSonic.cpp" />
     <ClCompile Include="car\controllers\StarWatch.cpp" />
-    <ClCompile Include="libraries\SerialProtocol\ArduinoSerialProtocol.cpp" />
-    <ClCompile Include="libraries\SerialProtocol\SerialProtocol.cpp" />
-    <ClCompile Include="libraries\SerialProtocol\StreamSerialProtocol.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -57,19 +57,11 @@
     <ClInclude Include="drivers\IbcDriver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="libraries\SerialProtocol\ArduinoSerialProtocol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\SerialProtocol\SerialProtocol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="libraries\SerialProtocol\StreamSerialProtocol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="StarCarUno.ino" />
     <None Include="Overview.cd" />
+    <None Include="car\controllers\StarWatch.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="car\actuators\StarMotor.cpp">
@@ -106,15 +98,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="drivers\IbcDriver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\SerialProtocol\ArduinoSerialProtocol.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\SerialProtocol\SerialProtocol.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="libraries\SerialProtocol\StreamSerialProtocol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -20,7 +20,7 @@ class StarServo : public StarCarModule
 {
     // ---------- Private fields ----------
 private:
-    short_t currentMicroseconds;
+    int_t currentMicroseconds;
     pin_t stepPin;
     Servo servo;
     byte_t testStepIndex;
