@@ -7,21 +7,7 @@
 //--------------------------------------------------------------------------------------------------
 
 #pragma once
-#include <Arduino.h>
-#include <EEPROM.h>
-//#include "../car/StarCar.h"
-
-#define EEPROM_SONIC_FRONT_VALUE        0
-#define EEPROM_SONIC_BACK_VALUE         1
-
-#define EEPROM_MAGNETOMETER_PARITY      3
-#define EEPROM_MAGNETOMETER_VALUE       4
-
-#define EEPROM_ACCELEROMETER_X_PARITY   5
-#define EEPROM_ACCELEROMETER_X_VALUE    6
-
-#define EEPROM_ACCELEROMETER_Y_PARITY   7
-#define EEPROM_ACCELEROMETER_Y_VALUE    8
+#include "../car/StarCar.h"
 
 
 class IbcDriver
@@ -31,7 +17,7 @@ private:
     int count = 0;
 
 public:
-    IbcDriver(int baud);
+    IbcDriver();
     void next(void* car);
 
     void send(byte* d, int length);
