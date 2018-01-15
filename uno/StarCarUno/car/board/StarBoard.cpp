@@ -32,13 +32,6 @@ StarBoard::StarBoard(
     this->rightLedOn = false;
 
     this->previousEngineMode = StarCarEngineMode::CarEngineMode_Off;
-
-    #if SERIAL_MODE == SERIAL_MODE_LIBRARY
-    this->protocol = new ArduinoSerialProtocol(
-        &Serial,
-        (uint8_t*)&this->payload,
-        sizeof(StarBoardExchangeData));
-    #endif
 }
 
 // ---------- Public properties ----------
@@ -56,61 +49,20 @@ void StarBoard::Task(StarCar* car)
     Serial.println("--> StarBoard::Task()");
     #endif
 
-    #if SERIAL_MODE == SERIAL_MODE_ARDUINO
-    if (Serial.available()) {
-        int value = Serial.read();
+    #if TEST
+    int value = millis() / 10;
 
-        if (value >= 48 && value <= 57) {
-            StarCarMode mode = (StarCarMode)(value - 48);
-            car->setMode(mode);
-        }
-    }
+    car->setAccelerationX(value)
+        ->setAccelerationY(value)
+        ->setDistanceBack(value)
+        ->setDistanceFront(value)
+        ->setOrientation(value);
+    #endif
+
+    #if SERIAL_MODE == SERIAL_MODE_ARDUINO
+    this->ProcessSerialRequests(car);
     #elif SERIAL_MODE == SERIAL_MODE_IBC
     this->ibcDriver->next(car);
-    #elif SERIAL_MODE == SERIAL_MODE_LIBRARY
-    uint8_t receiveState = this->protocol->receive();
-
-    if (receiveState == ProtocolState::SUCCESS) {
-        car->setRequest(this->payload.Request);
-        car->setMode(this->payload.Mode);
-    }
-    else {
-        this->payload.Request = car->getRequest();
-        this->payload.Mode = car->getMode();
-    }
-
-    if (car->IsRequested(StarCarSensorRequest::CarSensorRequest_Accelerator)) {
-        this->payload.AccelerationXParity = EEPROM.read(EEPROM_ACCELEROMETER_X_PARITY);
-        this->payload.AccelerationXValue = EEPROM.read(EEPROM_ACCELEROMETER_X_VALUE);
-        this->payload.AccelerationYParity = EEPROM.read(EEPROM_ACCELEROMETER_Y_PARITY);
-        this->payload.AccelerationYValue = EEPROM.read(EEPROM_ACCELEROMETER_Y_VALUE);
-    }
-    else {
-        this->payload.AccelerationXParity = 0;
-        this->payload.AccelerationXValue = 0;
-        this->payload.AccelerationYParity = 0;
-        this->payload.AccelerationYValue = 0;
-    }
-
-    if (car->IsRequested(StarCarSensorRequest::CarSensorRequest_Magnet)) {
-        this->payload.DirectionParity = EEPROM.read(EEPROM_MAGNETOMETER_PARITY);
-        this->payload.DirectionValue = EEPROM.read(EEPROM_MAGNETOMETER_VALUE);
-    }
-    else {
-        this->payload.DirectionParity = 0;
-        this->payload.DirectionValue = 0;
-    }
-
-    if (car->IsRequested(StarCarSensorRequest::CarSensorRequest_Sonic)) {
-        this->payload.DistanceFront = EEPROM.read(EEPROM_SONIC_FRONT_VALUE);
-        this->payload.DistanceBack = EEPROM.read(EEPROM_SONIC_BACK_VALUE);
-    }
-    else {
-        this->payload.DistanceFront = 0;
-        this->payload.DistanceBack = 0;
-    }
-
-    this->protocol->send();
     #endif
 
     StarCarEngineMode currentEngineMode = car->getEngineMode();
@@ -180,7 +132,7 @@ byte_t StarBoard::InitCore()
 
 // ---------- Private methods ----------
 
-void StarBoard::Blink(StarBoardLedPanels panels, short_t times, short_t interval)
+void StarBoard::Blink(StarBoardLedPanels panels, int_t times, int_t interval)
 {
     for (int_t index = 0; index < times; index++) {
         if ((panels & StarBoardLedPanels::BoardLedPanel_Front) == StarBoardLedPanels::BoardLedPanel_Front)
@@ -226,3 +178,70 @@ void StarBoard::SwitchLed(bool* current, bool target, pin_t pin)
         }
     }
 }
+
+#if SERIAL_MODE == SERIAL_MODE_ARDUINO
+void StarBoard::ProcessSerialRequests(StarCar* car)
+{
+    if (Serial.available()) {
+        int_t value = Serial.read();
+
+        if (value >= 48 && value <= 57)
+            value = value - 48;
+
+        StarBoardRequest request = (StarBoardRequest)value;
+
+        if (request > StarBoardRequest::BoardRequest_None) {
+            if (request == StarBoardRequest::BoardRequest_GetData) {
+                StarBoardData data;
+
+                data.Mode = car->getMode();
+                data.Checksum ^= data.Mode;
+
+                data.Request = car->getRequest();
+                data.Checksum ^= data.Request;
+
+                data.DistanceFront = car->getDistanceFront();
+                data.Checksum ^= data.DistanceFront;
+
+                data.DistanceBack = car->getDistanceBack();
+                data.Checksum ^= data.DistanceBack;
+
+                data.OrientationValue = car->getOrientation();
+
+                if (data.OrientationValue < 0) {
+                    data.OrientationParity = 1;
+                    data.OrientationValue = -data.OrientationValue;
+                }
+
+                data.Checksum ^= data.OrientationParity;
+                data.Checksum ^= data.OrientationValue;
+
+                data.AccelerationXValue = car->getAccelerationX();
+
+                if (data.AccelerationXValue < 0) {
+                    data.AccelerationXParity = 1;
+                    data.AccelerationXValue = -data.AccelerationXValue;
+                }
+
+                data.Checksum ^= data.AccelerationXParity;
+                data.Checksum ^= data.AccelerationXValue;
+
+                data.AccelerationYValue = car->getAccelerationY();
+
+                if (data.AccelerationYValue < 0) {
+                    data.AccelerationYParity = 1;
+                    data.AccelerationYValue = -data.AccelerationYValue;
+                }
+
+                data.Checksum ^= data.AccelerationYParity;
+                data.Checksum ^= data.AccelerationYValue;
+
+                Serial.write((const uint8_t*)&data, sizeof(StarBoardData));
+            }
+            else {
+                car->setMode((StarCarMode)value);
+            }
+        }
+    }
+}
+#endif
