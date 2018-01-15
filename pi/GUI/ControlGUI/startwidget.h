@@ -1,6 +1,8 @@
 #ifndef STARTWIDGET_H
 #define STARTWIDGET_H
 
+#define IBCNOTWORKING
+
 #include <QObject>
 #include <QWidget>
 #include <QProgressBar>
@@ -12,7 +14,16 @@
 #include <QMainWindow>
 #include <alert.h>
 #include <initstarcar.h>
-#include "../../IBP/IBC.hpp"
+
+#ifndef IBCNOTWORKING
+
+   #include "../IBP/IBC.hpp"
+
+#else
+
+   #include "../StarCarSerialProtocol/StarcarProtocol.h"
+
+#endif
 
 class StartWidget : public QWidget
 {
@@ -20,7 +31,16 @@ class StartWidget : public QWidget
 
 public:
 
-    explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr);
+
+#ifndef IBCNOTWORKING
+
+   explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr);
+
+#else
+
+   explicit StartWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, StarCarProtocol **starcarprotocol = nullptr);
+
+#endif
 
     ~StartWidget();
 
@@ -42,9 +62,17 @@ private:
     Alert           *alertThread;
     InitStarCar     *initStarCar;
 
-    // IBC
+#ifndef IBCNOTWORKING
 
+    // IBC
     IBC             **IBCPointer;
+
+#else
+
+    //Protocol
+    StarCarProtocol **starcarprotocol;
+
+#endif
 
     // Methods
     void generateLayout();
@@ -56,8 +84,6 @@ signals:
 
     void showOperationMode();
     void removeWindowformStack();
-
-public slots:
 
 private slots:
 

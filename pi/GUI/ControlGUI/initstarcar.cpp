@@ -1,18 +1,36 @@
 #include "initstarcar.h"
 
+#ifndef IBCNOTWORKING
+
 InitStarCar::InitStarCar(Alert *alertThread, IBC **IBCPointer)
 {
     this->alertThread = alertThread;
     this->IBCPointer = IBCPointer;
 }
 
-void InitStarCar::startProcess(){
+#else
 
-#ifdef Q_OS_LINUX
-
-    *IBCPointer = new IBC("/dev/ttyACM0","/home/pi/DT_WS1718_02_StarCar/pi/IBP/IBC_config.cfg");
+InitStarCar::InitStarCar(Alert *alertThread, StarCarProtocol **starcarprotocol)
+{
+    this->alertThread = alertThread;
+    this->starcarprotocol = starcarprotocol;
+}
 
 #endif
+
+
+void InitStarCar::startProcess(){
+
+    #ifndef IBCNOTWORKING
+
+       *IBCPointer = new IBC("/dev/ttyACM0","/home/pi/DT_WS1718_02_StarCar/pi/IBP/IBC_config.cfg");
+
+    #else
+
+        *starcarprotocol = new StarCarProtocol();
+        (*starcarprotocol)->initSerialPort();
+
+    #endif
 
     for(int i =0; i < 15; i++){
 

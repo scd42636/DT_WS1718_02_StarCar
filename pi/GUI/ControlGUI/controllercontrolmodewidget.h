@@ -1,15 +1,24 @@
 #ifndef CONTROLLERCONTROLMODEWIDGET_H
 #define CONTROLLERCONTROLMODEWIDGET_H
 
+#define IBCNOTWORKING
+
 #include <QObject>
 #include <QWidget>
 #include "alert.h"
 #include <QVBoxLayout>
 #include <QLabel>
 #include <sensorvalueswidget.h>
-#include <../../IBP/IBC.hpp>
-#include <../../IBP/IBC_Packet.hpp>
-#include <../../IBP/Serial.hpp>
+
+#ifndef IBCNOTWORKING
+
+   #include "../IBP/IBC.hpp"
+
+#else
+
+   #include "../StarCarSerialProtocol/StarcarProtocol.h"
+
+#endif
 
 class ControllerControlModeWidget : public QWidget
 {
@@ -17,7 +26,18 @@ class ControllerControlModeWidget : public QWidget
 
 public:
 
-    explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+
+#ifndef IBCNOTWORKING
+
+   explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+
+#else
+
+    explicit ControllerControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                                         StarCarProtocol *starcarprotocol = nullptr);
+
+#endif
+
     ~ControllerControlModeWidget();
 
 signals:
@@ -72,8 +92,17 @@ private:
     // QTimer
     QTimer          *blinkTimer;
 
+#ifndef IBCNOTWORKING
+
     // IBC
     IBC             *IBCPointer;
+
+#else
+
+    //Protocol
+    StarCarProtocol *starcarprotocol;
+
+#endif
 
     // Vars
     double fontSize = 10;

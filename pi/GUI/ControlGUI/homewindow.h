@@ -1,6 +1,8 @@
 #ifndef HOMEWINDOW_H
 #define HOMEWINDOW_H
 
+#define IBCNOTWORKING
+
 #include <QMainWindow>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -19,7 +21,16 @@
 #include "clockcontrolmodewidget.h"
 #include "controllercontrolmodewidget.h"
 #include "sensorvalueswidget.h"
-#include "../../IBP/IBC.hpp"
+
+#ifndef IBCNOTWORKING
+
+   #include "../IBP/IBC.hpp"
+
+#else
+
+   #include "../StarCarSerialProtocol/StarcarProtocol.h"
+
+#endif
 
 namespace Ui {
 class HomeWindow;
@@ -72,7 +83,7 @@ private:
     AlertWidget                 *alertWidget = nullptr;
     OperationModeWidget         *operationModeWidget;
     SensorValuesWidget          *sensorValuesWidget;
-    ClockControllModeWidget     *clockcontrolModeWidget;
+    ClockControlModeWidget      *clockcontrolModeWidget;
     ControllerControlModeWidget *controllercontrolModeWidget;
 
     // Button
@@ -82,11 +93,23 @@ private:
     // Label
     QLabel          *lblHeadline;
 
+#ifndef IBCNOTWORKING
+
     // IBC
     IBC             *IBCPointer;
 
     // Vars
     bool            IBCactive = false;
+
+#else
+
+    //Protocol
+    StarCarProtocol *starcarprotocol;
+
+#endif
+
+    // Vars
+    bool            protocolActive = false;
 
 private:
 

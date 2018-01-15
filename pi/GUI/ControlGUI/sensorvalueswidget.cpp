@@ -1,32 +1,6 @@
 #include "sensorvalueswidget.h"
 
-#define PI
-//#define IBCTEST
-
-typedef uint8_t InoByte_t;
-typedef int16_t InoInt_t;
-
-typedef struct StarCarSonicData_t
-{
-    InoInt_t Value;
-
-} StarCarSonicData;
-
-typedef struct StarCarMagnetData_t
-{
-    InoByte_t Parity;
-    InoInt_t Value;
-
-} StarCarMagnetData;
-
-typedef struct StarCarAccelerationData_t
-{
-    InoByte_t ParityOfXValue;
-    InoInt_t  XValue;
-    InoByte_t ParityOfYValue;
-    InoInt_t  YValue;
-
-} StarCarAccelerationData;
+#ifndef IBCNOTWORKING
 
 SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, IBC *IBCPointer) : QWidget(parent)
 {
@@ -46,13 +20,6 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
 
 #ifdef Q_OS_LINUX
 
-    #ifdef IBCTEST
-        test            = new Inbox(this->IBCPointer->getInbox(254));
-        char buff[4] = "ddd";
-        packetTest          = new Packet(254,4,(uint8_t * )buff);
-
-    #else
-
         iUltraFront     = new Inbox(this->IBCPointer->getInbox(180));
         iUltraBack      = new Inbox(this->IBCPointer->getInbox(181));
         iCompass        = new Inbox(this->IBCPointer->getInbox(182));
@@ -66,9 +33,6 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
         packetAcceleration  = new Packet(183,6);
         packetUWB           = new Packet(184,6);
     #endif
-
-
-#ifdef PI
 
     QThread *thread = new QThread;
     threadLidar     = new ThreadLidar(alertThread);
@@ -86,7 +50,46 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
     connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
     lidarTimer->start(50000);
 
-#endif
+    QuerySensorValuesTimer = new QTimer();
+    connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
+    QuerySensorValuesTimer->start(1000);
+}
+
+#else
+
+SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QString pButtonGoBackText, StarCarProtocol *starcarprotocol) : QWidget(parent)
+{
+    this->alertThread = alertThread;
+    this->pButtonGoBackText = pButtonGoBackText;
+    this->starcarprotocol = starcarprotocol;
+
+    generateLayout();
+    setupConnects();
+    generateStyle();
+
+    QDir SensorOutputFolder("/home/pi/SensorOutput");
+    SensorOutputFolder.setFilter(QDir::NoDotAndDotDot | QDir::Files);
+    foreach (QString SensorOutputItem, SensorOutputFolder.entryList()){
+        SensorOutputFolder.remove(SensorOutputItem);
+    }
+
+#ifdef Q_OS_LINUX
+
+    QThread *thread = new QThread;
+    threadLidar     = new ThreadLidar(alertThread);
+
+    threadLidar->moveToThread(thread);
+
+    connect(thread, SIGNAL(started()), threadLidar, SLOT(startProcess()));
+    connect(threadLidar, SIGNAL(finished()), thread, SLOT(quit()));
+    connect(threadLidar, SIGNAL(finished()), threadLidar, SLOT(deleteLater()));
+    connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+    thread->start();
+
+    lidarTimer                = new QTimer();
+    connect(lidarTimer, SIGNAL(timeout()), threadLidar, SLOT(finishLidar()),Qt::DirectConnection);
+    lidarTimer->start(500);
 
     QuerySensorValuesTimer = new QTimer();
     connect(QuerySensorValuesTimer, SIGNAL(timeout()), this, SLOT(slotQuerySensorValues()));
@@ -95,6 +98,10 @@ SensorValuesWidget::SensorValuesWidget(QWidget *parent, Alert *alertThread, QStr
 #endif
 
 }
+
+#endif
+
+
 
 void SensorValuesWidget::generateLayout(){
 
@@ -180,6 +187,7 @@ void SensorValuesWidget::generateStyle(){
 }
 
 void SensorValuesWidget::slotpButtonGoBackPushed(){
+
 #ifdef Q_OS_LINUX
 
     threadLidar->finishLidar();
@@ -187,42 +195,58 @@ void SensorValuesWidget::slotpButtonGoBackPushed(){
     emit removeWindowfromStack();
 
 #endif
+
 }
+
+
 
 void SensorValuesWidget::slotQuerySensorValues(){
 
 #ifdef Q_OS_LINUX
 
-    #ifdef IBCTEST
-        test->fetch();
-        IBCPointer->send(*packetTest);
-        test->empty()          ? alertThread->fireWarning("Test kein Wert!") : lblUltraFrontValue->setText(getMesureValue(test));
+    #ifndef IBCNOTWORKING
+
+    iUltraBack->fetch();
+    iUltraFront->fetch();
+    iCompass->fetch();
+    iAcceleration->fetch();
+
+    Packet requestUltraFront(180,0);
+    Packet requestUltraBack(181,0);
+    Packet requestCompass(182,0);
+    Packet requestAcceleration(183,0);
+
+    IBCPointer->send(requestUltraFront);
+    IBCPointer->send(requestUltraBack);
+    IBCPointer->send(requestCompass);
+    IBCPointer->send(requestAcceleration);
+
+    iUltraFront->empty()   ? alertThread->fireWarning("Ultraschall vorne kein Wert!") : lblUltraFrontValue->setText(getMesureValue(iUltraFront));
+    iUltraBack->empty()    ? alertThread->fireWarning("Ultraschall hinten kein Wert!") : lblUltraBackValue->setText(getMesureValue(iUltraBack));
+    iCompass->empty()      ? alertThread->fireWarning("Kompass kein Wert!") : lblcompassValue->setText(getMesureValue(iCompass));
+    iAcceleration->empty() ? alertThread->fireWarning("Beschleunigung kein Wert!") : lblaccelerationValue->setText(getMesureValue(iAcceleration));
+    iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
+
     #else
-        iUltraBack->fetch();
-        iUltraFront->fetch();
-        iCompass->fetch();
-        iAcceleration->fetch();
 
-        Packet requestUltraFront(180,0);
-        Packet requestUltraBack(181,0);
-        Packet requestCompass(182,0);
-        Packet requestAcceleration(183,0);
+        starcarprotocol->setRequest(3);
+        starcarprotocol->send();
+        starcarprotocol->receive();
 
-        IBCPointer->send(requestUltraFront);
-        IBCPointer->send(requestUltraBack);
-        IBCPointer->send(requestCompass);
-        IBCPointer->send(requestAcceleration);
+        if(starcarprotocol->messagevalid()){
 
-        iUltraFront->empty()   ? alertThread->fireWarning("Ultraschall vorne kein Wert!") : lblUltraFrontValue->setText(getMesureValue(iUltraFront));
-        iUltraBack->empty()    ? alertThread->fireWarning("Ultraschall hinten kein Wert!") : lblUltraBackValue->setText(getMesureValue(iUltraBack));
-        iCompass->empty()      ? alertThread->fireWarning("Kompass kein Wert!") : lblcompassValue->setText(getMesureValue(iCompass));
-        iAcceleration->empty() ? alertThread->fireWarning("Beschleunigung kein Wert!") : lblaccelerationValue->setText(getMesureValue(iAcceleration));
-        iUWB->empty()          ? alertThread->fireWarning("UWB kein Wert!") : lblUWBValue->setText(getMesureValue(iUWB));
+            lblUltraFrontValue->setText(QString::number((int)starcarprotocol->getDistanceFront()));
+            lblUltraBackValue->setText(QString::number((int)starcarprotocol->getDistanceBack()));
+            lblcompassValue->setText(QString::number((int)starcarprotocol->getCompass()));
+            lblaccelerationValue->setText("X: " + QString::number((int)starcarprotocol->getAccelerationX()) + " Y: " + QString::number((int)starcarprotocol->getAccelerationY()));
+        }
 
     #endif
 
 #endif
 }
+
+#ifndef IBCNOTWORKING
 
 QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 
@@ -337,7 +361,4 @@ QString SensorValuesWidget::getMesureValue(Inbox *inbox){
 #endif
 }
 
-
-
-
-
+#endif

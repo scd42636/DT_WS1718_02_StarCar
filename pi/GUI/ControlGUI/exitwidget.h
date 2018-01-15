@@ -1,21 +1,45 @@
 #ifndef EXITWIDGET_H
 #define EXITWIDGET_H
 
+#define IBCNOTWORKING
+
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <alert.h>
-#include <../../IBP/IBC.hpp>
+#include <QApplication>
+#include <QProcess>
+
+#ifndef IBCNOTWORKING
+
+   #include "../IBP/IBC.hpp"
+
+#else
+
+   #include "../StarCarSerialProtocol/StarcarProtocol.h"
+
+#endif
 
 class ExitWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr, bool IBCactive = false);
+
+
+#ifndef IBCNOTWORKING
+
+   explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC **IBCPointer = nullptr, bool IBCactive = false);
+
+#else
+
+    explicit ExitWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                        StarCarProtocol **starcarprotocol = nullptr, bool protocolActive = false);
+#endif
+
 
     ~ExitWidget(){
-    }
+ }
 
 private:
 
@@ -35,11 +59,24 @@ private:
     //Thread
     Alert *alertThread;
 
-    //IBC
+#ifndef IBCNOTWORKING
+
+    // IBC
     IBC             **IBCPointer;
 
     //Vars
     bool            IBCactive = false;
+
+#else
+
+    //Protocol
+    StarCarProtocol **starcarprotocol;
+
+    //Vars
+    bool            protocolActive = false;
+
+#endif
+
 
 signals:
 
