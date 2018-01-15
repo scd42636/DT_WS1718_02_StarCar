@@ -145,16 +145,20 @@ void SensorValuesWidget::slotQuerySensorValues(){
 
 #ifdef Q_OS_LINUX
 
-    starcarprotocol->setRequest(CarSensorRequest_All);
+    starcarprotocol->setRequest(3);
     starcarprotocol->send();
     starcarprotocol->receive();
 
-    lblUltraFrontValue->setText(QString::number((int)starcarprotocol->getDistanceFront()));
-    lblUltraBackValue->setText(QString::number((int)starcarprotocol->getDistanceBack()));
-    lblcompassValue->setText(QString::number((int)starcarprotocol->getCompass()));
-    lblaccelerationValue->setText("X: " + QString::number((int)starcarprotocol->getAccelerationX()) +
-                                      " Y: " + QString::number((int)starcarprotocol->getAccelerationY()));
+    if(starcarprotocol->messagevalid()){
 
+        lblUltraFrontValue->setText(QString::number((int)starcarprotocol->getDistanceFront()));
+        lblUltraBackValue->setText(QString::number((int)starcarprotocol->getDistanceBack()));
+        lblcompassValue->setText(QString::number((int)starcarprotocol->getCompass()));
+        lblaccelerationValue->setText("X: " + QString::number((int)starcarprotocol->getAccelerationX()) +
+                                          " Y: " + QString::number((int)starcarprotocol->getAccelerationY()));
+        lblUWBValue->setText("Mode: " + QString::number((int)starcarprotocol->getMode()));
+
+    }
 
 #endif
 }

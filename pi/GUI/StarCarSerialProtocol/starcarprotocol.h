@@ -47,26 +47,29 @@ public:
     int getMode();
     int getRequest();
 
+    bool messagevalid();
 private:
 
     Serial                      *serial;
 
     struct payload
     {
-        uint8_t Mode = 0;
-        uint8_t Request = 0;
+        unsigned char Mode = 0;
+        unsigned char Request = 0;
 
-        uint16_t DistanceFront = 0;
-        uint16_t DistanceBack = 0;
+        unsigned short int DistanceFront = 0;
+        unsigned short int  DistanceBack = 0;
 
-        uint8_t DirectionParity = 0;
-        uint16_t DirectionValue = 0;
+        unsigned char DirectionParity = 0;
+        unsigned short int DirectionValue = 0;
 
-        uint8_t AccelerationXParity = 0;
-        uint16_t AccelerationXValue = 0;
+        unsigned char AccelerationXParity = 0;
+        unsigned short int  AccelerationXValue = 0;
 
-        uint8_t AccelerationYParity = 0;
-        uint16_t AccelerationYValue = 0;
+        unsigned char AccelerationYParity = 0;
+        unsigned short int AccelerationYValue = 0;
+
+        unsigned short int crc = 0;
 
     }__attribute__((packed))  message;
 

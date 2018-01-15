@@ -6,7 +6,7 @@
 
 #include <SoftwareSerial.h>
 
-#include <ArduinoSerialProtocol.h>
+//#include <ArduinoSerialProtocol.h>
 
 enum StarCarMode
 {
@@ -25,20 +25,20 @@ enum StarCarSensorRequest
 
 struct StarBoardExchangeData_t
 {
-  uint8_t Mode;
-  uint8_t Request;
+  unsigned char Mode;
+  unsigned char Request;
 
-  uint16_t DistanceFront;
-  uint16_t DistanceBack;
+  signed int DistanceFront;
+  signed int DistanceBack;
 
-  uint8_t  DirectionParity;
-  uint16_t DirectionValue;
+  unsigned char  DirectionParity;
+  signed int DirectionValue;
 
-  uint8_t  AccelerationXParity;
-  uint16_t AccelerationXValue;
+  unsigned char  AccelerationXParity;
+  signed int AccelerationXValue;
 
-  uint8_t AccelerationYParity;
-  uint16_t AccelerationYValue;
+  unsigned char AccelerationYParity;
+  signed int AccelerationYValue;
 
 } 
 StarBoardExchangeData;
@@ -109,7 +109,7 @@ void loop()
       digitalWrite(LED_BUILTIN, HIGH);
     }
 
-    if(incomingByte == 7){
+    if(incomingByte == 3){
 
       
 

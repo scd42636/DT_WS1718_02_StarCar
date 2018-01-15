@@ -27,7 +27,7 @@ StarCarProtocol::~StarCarProtocol(){
 void StarCarProtocol::initSerialPort(){
 
 
-    this->serial = new Serial("/dev/ttyUSB0");
+    this->serial = new Serial("/dev/ttyACM1");
 }
 
 
@@ -59,6 +59,30 @@ void StarCarProtocol::send(){
 void StarCarProtocol::receive(){
 
     serial->recv(&message,sizeof(message));
+}
+
+bool StarCarProtocol::messagevalid(){
+
+    unsigned short int CRC = 0;
+    CRC ^= message.Mode;
+    CRC ^= message.Request;
+    CRC ^= message.DistanceFront;
+    CRC ^= message.DistanceBack;
+    CRC ^= message.DirectionParity;
+    CRC ^= message.DirectionValue;
+    CRC ^= message.AccelerationXParity;
+    CRC ^= message.AccelerationXValue;
+    CRC ^= message.AccelerationYParity;
+    CRC ^= message.AccelerationYValue;
+
+    if(CRC == message.crc)
+    {
+        return true;
+
+    }else{
+
+        return false;
+    }
 }
 
 void StarCarProtocol::writetoFile(QString filePath, QString value){
