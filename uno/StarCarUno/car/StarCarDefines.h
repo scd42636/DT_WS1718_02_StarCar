@@ -10,6 +10,8 @@
 #include <SoftwareSerial.h>
 #include <EEPROM.h>
 
+#define HasFlag(flags, bit) ((flags & bit) == bit)
+
 typedef signed char sbyte_t;
 typedef unsigned char byte_t;
 
