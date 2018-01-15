@@ -19,7 +19,7 @@ void ThreadLidar::startProcess(){
             qDebug("Lidar not working!");
         }
 
-        this->thread()->sleep(10);
+        this->thread()->sleep(1);
     }
 
     emit finished();
