@@ -67,7 +67,7 @@ SOURCES += main.cpp\
     controllercontrolmodewidget.cpp \
     sensorvalueswidget.cpp \
     threadlidar.cpp \
-    ../../lidar/lidar.cpp \
+    ../lidar/lidar.cpp \
     ../IBP/IBC.cpp \
     ../IBP/IBC_Inbox.cpp \
     ../IBP/IBC_Packet.cpp \
@@ -88,17 +88,17 @@ HEADERS += homewindow.h \
     controllercontrolmodewidget.h \
     sensorvalueswidget.h \
     threadlidar.h \
-    ../../lidar/lidar.h \
-    ../../lidar/include/urg_connection.h \
-    ../../lidar/include/urg_debug.h \
-    ../../lidar/include/urg_detect_os.h \
-    ../../lidar/include/urg_errno.h \
-    ../../lidar/include/urg_ring_buffer.h \
-    ../../lidar/include/urg_sensor.h \
-    ../../lidar/include/urg_serial.h \
-    ../../lidar/include/urg_serial_utils.h \
-    ../../lidar/include/urg_tcpclient.h \
-    ../../lidar/include/urg_utils.h \
+    ../lidar/lidar.h \
+    ../lidar/include/urg_connection.h \
+    ../lidar/include/urg_debug.h \
+    ../lidar/include/urg_detect_os.h \
+    ../lidar/include/urg_errno.h \
+    ../lidar/include/urg_ring_buffer.h \
+    ../lidar/include/urg_sensor.h \
+    ../lidar/include/urg_serial.h \
+    ../lidar/include/urg_serial_utils.h \
+    ../lidar/include/urg_tcpclient.h \
+    ../lidar/include/urg_utils.h \
     ../IBP/IBC.hpp \
     ../IBP/IBC_defines.hpp \
     ../IBP/IBC_Inbox.hpp \
