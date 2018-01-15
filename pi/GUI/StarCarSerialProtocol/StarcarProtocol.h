@@ -2,7 +2,7 @@
 #define STARCARPROTOCOL_H
 
 #include <QObject>
-#include "Serial.hpp"
+#include "SerialPort.hpp"
 #include <QFile>
 #include <QTextStream>
 
@@ -50,7 +50,7 @@ public:
     bool messagevalid();
 private:
 
-    Serial                      *serial;
+    SerialPort                      *serial;
 
     struct payload
     {

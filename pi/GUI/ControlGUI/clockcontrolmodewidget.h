@@ -1,6 +1,8 @@
 #ifndef CLOCKCONTROLMODEWIDGET_H
 #define CLOCKCONTROLMODEWIDGET_H
 
+#define IBCNOTWORKING
+
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
@@ -8,17 +10,36 @@
 #include <QLabel>
 #include <QTimer>
 #include <QImage>
-#include <../StarCarSerialProtocol/starcarprotocol.h>
 
-class ClockControllModeWidget : public QWidget
+#ifndef IBCNOTWORKING
+
+   #include "../IBP/IBC.hpp"
+
+#else
+
+   #include "../StarCarSerialProtocol/StarcarProtocol.h"
+
+#endif
+
+class ClockControlModeWidget : public QWidget
 {
     Q_OBJECT
 
 public:
 
-    explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+#ifndef IBCNOTWORKING
+
+   explicit ClockControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+
+#else
+
+    explicit ClockControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
                                      StarCarProtocol *starcarprotocol = nullptr);
-    ~ClockControllModeWidget();
+
+#endif
+
+
+    ~ClockControlModeWidget();
 
 signals:
 
@@ -69,8 +90,18 @@ private:
     // QTimer
     QTimer          *blinkTimer;
 
-    // Protocol
+
+#ifndef IBCNOTWORKING
+
+    // IBC
+    IBC             *IBCPointer;
+
+#else
+
+    //Protocol
     StarCarProtocol *starcarprotocol;
+
+#endif
 
     // Vars
     double fontSize = 10;

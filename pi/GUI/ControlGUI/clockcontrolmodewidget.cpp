@@ -1,6 +1,18 @@
 #include "clockcontrolmodewidget.h"
 
-ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertThread, StarCarProtocol *starcarprotocol) : QWidget(parent)
+#ifndef IBCNOTWORKING
+
+ClockControlModeWidget::ClockControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
+{
+    this->alertThread = alertThread;
+    this->IBCPointer = IBCPointer;
+
+    setupWidget();
+}
+
+#else
+
+ClockControlModeWidget::ClockControlModeWidget(QWidget *parent, Alert *alertThread, StarCarProtocol *starcarprotocol) : QWidget(parent)
 {
     this->alertThread = alertThread;
     this->starcarprotocol = starcarprotocol;
@@ -8,7 +20,11 @@ ClockControllModeWidget::ClockControllModeWidget(QWidget *parent, Alert *alertTh
     setupWidget();
 }
 
-ClockControllModeWidget::~ClockControllModeWidget(){
+#endif
+
+
+
+ClockControlModeWidget::~ClockControlModeWidget(){
 
 }
 
@@ -16,7 +32,7 @@ ClockControllModeWidget::~ClockControllModeWidget(){
  *                         Private Methodes                         *
  *******************************************************************/
 
-void ClockControllModeWidget::setupWidget(){
+void ClockControlModeWidget::setupWidget(){
 
     // Generate all needed UI-Elements
 
@@ -68,7 +84,7 @@ void ClockControllModeWidget::setupWidget(){
     blinkTimer->start(700);
 }
 
-void ClockControllModeWidget::createControllAnimation(){
+void ClockControlModeWidget::createControllAnimation(){
 
     hBoxImages              = new QHBoxLayout();
     hBoxImages->setAlignment(Qt::AlignHCenter);
@@ -142,7 +158,7 @@ void ClockControllModeWidget::createControllAnimation(){
     blinkTimer->start(700);
 }
 
-void ClockControllModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
+void ClockControlModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
 
     lbl->setPixmap(QPixmap("://Pics/" + path +".png"));
     lbl->setFixedHeight(25);
@@ -153,7 +169,7 @@ void ClockControllModeWidget::setArrowPicsToLabel(QLabel *lbl, QString path){
     lbl->setSizePolicy(sp_retain);
 }
 
-void ClockControllModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
+void ClockControlModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
 
     lbl->setAlignment(align);
     lbl->setStyleSheet("QLabel{color: orange;font-family: TimesNewRoman;font-style: normal;font-size: 9pt;font-weight: bold;}");
@@ -163,7 +179,7 @@ void ClockControllModeWidget::setStyletoLabel(QLabel *lbl, Qt::Alignment align){
  *                         Private SLOTS                            *
  *******************************************************************/
 
-void ClockControllModeWidget::slotpButtonNextPushed(){
+void ClockControlModeWidget::slotpButtonNextPushed(){
 
     lblInfo->setText("StarCar läuft mit der Uhrsteuerung!");
     lblInfo->setFixedHeight(20);
@@ -190,8 +206,17 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    starcarprotocol->setRequest(CarMode_Watch);
-    starcarprotocol->send();
+    #ifndef IBCNOTWORKING
+
+        Packet ClockPacket(101,0);
+        IBCPointer->send(ClockPacket);
+
+    #else
+
+        starcarprotocol->setRequest(CarMode_Watch);
+        starcarprotocol->send();
+
+    #endif
 
 #endif
 
@@ -199,17 +224,17 @@ void ClockControllModeWidget::slotpButtonNextPushed(){
 
 }
 
-void ClockControllModeWidget::slotpButtonGoBackPushed(){
+void ClockControlModeWidget::slotpButtonGoBackPushed(){
 
     emit removeWindowformStack();
 }
 
-void ClockControllModeWidget::slotShowSensorValues(){
+void ClockControlModeWidget::slotShowSensorValues(){
 
     emit showsensorvalueswidget();
 }
 
-void ClockControllModeWidget::slotBlinklblInfo(){
+void ClockControlModeWidget::slotBlinklblInfo(){
 
     QString stylesheetString;
     QString fontColor;
@@ -236,7 +261,7 @@ void ClockControllModeWidget::slotBlinklblInfo(){
    lblInfo->setStyleSheet(stylesheetString);
 }
 
-void ClockControllModeWidget::slotBlinkArrows(){
+void ClockControlModeWidget::slotBlinkArrows(){
 
     if(lblArrowUpLeft->isHidden()){
 

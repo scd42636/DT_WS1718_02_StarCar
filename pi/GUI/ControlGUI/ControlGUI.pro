@@ -67,7 +67,15 @@ SOURCES += main.cpp\
     controllercontrolmodewidget.cpp \
     sensorvalueswidget.cpp \
     threadlidar.cpp \
-    ../../lidar/lidar.cpp
+    ../../lidar/lidar.cpp \
+    ../IBP/IBC.cpp \
+    ../IBP/IBC_Inbox.cpp \
+    ../IBP/IBC_Packet.cpp \
+    ../IBP/IBC_Rule.cpp \
+    ../IBP/IBC_Transceiver.cpp \
+    ../IBP/Serial.cpp \
+    ../StarCarSerialProtocol/StarcarProtocol.cpp \
+    ../StarCarSerialProtocol/SerialPort.cpp
 
 HEADERS += homewindow.h \
     startwidget.h \
@@ -90,18 +98,19 @@ HEADERS += homewindow.h \
     ../../lidar/include/urg_serial.h \
     ../../lidar/include/urg_serial_utils.h \
     ../../lidar/include/urg_tcpclient.h \
-    ../../lidar/include/urg_utils.h
+    ../../lidar/include/urg_utils.h \
+    ../IBP/IBC.hpp \
+    ../IBP/IBC_defines.hpp \
+    ../IBP/IBC_Inbox.hpp \
+    ../IBP/IBC_Packet.hpp \
+    ../IBP/IBC_Rule.hpp \
+    ../IBP/IBC_Transceiver.hpp \
+    ../IBP/Serial.hpp \
+    ../StarCarSerialProtocol/StarcarProtocol.h \
+    ../StarCarSerialProtocol/SerialPort.hpp
 }
 
 FORMS += homewindow.ui
 
 RESOURCES += \
     paths.qrc
-
-HEADERS += \
-    ../StarCarSerialProtocol/Serial.hpp \
-    ../StarCarSerialProtocol/starcarprotocol.h
-
-SOURCES += \
-    ../StarCarSerialProtocol/Serial.cpp \
-    ../StarCarSerialProtocol/starcarprotocol.cpp

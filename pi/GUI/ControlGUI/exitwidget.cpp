@@ -1,8 +1,19 @@
 #include "exitwidget.h"
-#include <QApplication>
-#include <QProcess>
 
-#define DEBUG
+#ifndef IBCNOTWORKING
+
+ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, IBC **IBCPointer, bool IBCactive) : QWidget(parent)
+{
+    this->alertThread = alertThread;
+    this->IBCPointer = IBCPointer;
+    this->IBCactive = IBCactive;
+
+    generateLayout();
+    setupConnect();
+    generateStyle();
+}
+
+#else
 
 ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, StarCarProtocol **starcarprotocol, bool protocolActive) : QWidget(parent)
 {
@@ -14,6 +25,10 @@ ExitWidget::ExitWidget(QWidget *parent, Alert *alertThread, StarCarProtocol **st
     setupConnect();
     generateStyle();
 }
+
+#endif
+
+
 
 void ExitWidget::generateLayout(){
 
@@ -70,34 +85,51 @@ void ExitWidget::slotRestartApplication(){
 
 #ifdef Q_OS_LINUX
 
-    if(protocolActive){
+    #ifndef IBCNOTWORKING
+
+        if(IBCactive){
+
+            delete *IBCPointer;
+        }
+
+    #else
+
+        if(protocolActive){
 
             delete *starcarprotocol;
-    }
+        }
+
+    #endif
 
 #endif
 
     qApp->quit();
     QProcess::startDetached(qApp->arguments()[0], qApp->arguments());
-
 }
 
 void ExitWidget::slotShutdownPi(){
 
-#ifdef DEBUG
+#ifdef Q_OS_LINUX
 
-    #ifdef Q_OS_LINUX
+    #ifndef IBCNOTWORKING
 
-    if(protocolActive){
+        if(IBCactive){
+
+            delete *IBCPointer;
+        }
+
+    #else
+
+        if(protocolActive){
 
             delete *starcarprotocol;
-    }
+        }
 
     #endif
+
+#endif
 
     QProcess process;
     process.startDetached("shutdown -P now");
 
-
-#endif
 }

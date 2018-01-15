@@ -1,4 +1,4 @@
-#include "starcarprotocol.h"
+#include "StarcarProtocol.h"
 
 StarCarProtocol::StarCarProtocol()
 {
@@ -27,7 +27,7 @@ StarCarProtocol::~StarCarProtocol(){
 void StarCarProtocol::initSerialPort(){
 
 
-    this->serial = new Serial("/dev/ttyACM1");
+    this->serial = new SerialPort("/dev/ttyACM1");
 }
 
 

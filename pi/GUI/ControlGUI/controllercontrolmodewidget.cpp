@@ -1,6 +1,16 @@
 #include "controllercontrolmodewidget.h"
 
-//#define IBCNOTWORKING
+#ifndef IBCNOTWORKING
+
+ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, IBC *IBCPointer) : QWidget(parent)
+{
+    this->alertThread = alertThread;
+    this->IBCPointer = IBCPointer;
+
+    setupWidget();
+}
+
+#else
 
 ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert *alertThread, StarCarProtocol *starcarprotocol) : QWidget(parent)
 {
@@ -9,6 +19,8 @@ ControllerControlModeWidget::ControllerControlModeWidget(QWidget *parent, Alert 
 
     setupWidget();
 }
+
+#endif
 
 ControllerControlModeWidget::~ControllerControlModeWidget(){
 
@@ -205,8 +217,17 @@ void ControllerControlModeWidget::slotpButtonNextPushed(){
 
 #ifdef Q_OS_LINUX
 
-    starcarprotocol->setRequest(CarMode_Controller);
-    starcarprotocol->send();
+    #ifndef IBCNOTWORKING
+
+        Packet ControllerPacket(100,0);
+        IBCPointer->send(ControllerPacket);
+
+    #else
+
+        starcarprotocol->setRequest(CarMode_Controller);
+        starcarprotocol->send();
+
+    #endif
 
 #endif
 
