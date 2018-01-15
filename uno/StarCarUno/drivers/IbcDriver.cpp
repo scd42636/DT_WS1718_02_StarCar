@@ -11,7 +11,6 @@
 
 IbcDriver::IbcDriver(int baud)
 {
-    Serial.begin(baud);
     DH = 0;
 }
 
@@ -68,24 +67,30 @@ byte IbcDriver::createDH(byte* b, int length, byte in)
     return in;
 }
 
-void IbcDriver::next(StarCar* car)
+void IbcDriver::next(void* car)
 {
     /* IBC_FRAME_GENERATION_TAG_BEGIN */
     /* Generated with Uno_ibcgeneration.py */
-    /* Code inside IBC BEGIN/END MID RECV/SEND tags will be preserved */
-
-    char sstat = 0x00;
+    
+    //char sstat = 0x00;
 
     char mid = recv();
+
+    //Serial.print("Rmid : ");
+    //Serial.println((int)mid);
 
     if (mid == -1)
         return;
 
-    char midstat = recv(/*block*/ true);
+    
 
-    send(sstat);
+    //char midstat = recv(/*block*/ true);
 
-    char mstat = recv(/*block*/ true);
+    //send(sstat);
+
+    
+
+    //char mstat = recv(/*block*/ true);
 
     switch ((unsigned char)mid) {
 
@@ -110,8 +115,8 @@ void IbcDriver::next(StarCar* car)
 
             /* IBC_PRESERVE_RECV_END 0 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 0 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -140,15 +145,15 @@ void IbcDriver::next(StarCar* car)
             /*      or use the provided function                                    */
             /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
             /* IBC_PRESERVE_RECV_BEGIN 100 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-            car->setMode(StarCarMode::CarMode_Controller);
+            //car->setMode(StarCarMode::CarMode_Controller);
 
             //DONT FORGET TO HASH
             setDH(0);
 
             /* IBC_PRESERVE_RECV_END 100 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 0 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -173,7 +178,7 @@ void IbcDriver::next(StarCar* car)
             /*      or use the provided function                                    */
             /*   Make the hash public to the IBC by setDH(Your DATAHASH HERE)   */
             /* IBC_PRESERVE_RECV_BEGIN 101 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
-            car->setMode(StarCarMode::CarMode_Watch);
+            //car->setMode(StarCarMode::CarMode_Watch);
 
             byte buffr101[0];
             recv(buffr101, 0, /*block*/ true);
@@ -183,8 +188,8 @@ void IbcDriver::next(StarCar* car)
 
             /* IBC_PRESERVE_RECV_END 101 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 0 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -219,8 +224,8 @@ void IbcDriver::next(StarCar* car)
 
             /* IBC_PRESERVE_RECV_END 180 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 2 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -228,11 +233,20 @@ void IbcDriver::next(StarCar* car)
             /*  or use the provided function createDH(..)                   */
             /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
             /* IBC_PRESERVE_SEND_BEGIN 180 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+           
+            
             int SonicFront = EEPROM.read(EEPROM_SONIC_FRONT_VALUE);
             byte * bpSF = (byte*)&SonicFront;
             send(bpSF, sizeof(int));
 
+            
+       
+
             //DONT FORGET TO HASH
+            //
+            
+            
+            
             setDH(createDH(bpSF, sizeof(int)));
             /* IBC_PRESERVE_SEND_END 180 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
         }
@@ -258,8 +272,8 @@ void IbcDriver::next(StarCar* car)
 
             /* IBC_PRESERVE_RECV_END 181 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 2 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -295,8 +309,8 @@ void IbcDriver::next(StarCar* car)
 
             /* IBC_PRESERVE_RECV_END 182 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 3 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -336,8 +350,8 @@ void IbcDriver::next(StarCar* car)
 
             /* IBC_PRESERVE_RECV_END 183 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 6 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -395,8 +409,8 @@ void IbcDriver::next(StarCar* car)
 
             /* IBC_PRESERVE_RECV_END 254 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 8 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -405,7 +419,7 @@ void IbcDriver::next(StarCar* car)
             /* Make the hash public to the IBC by setDH(Your DATAHASH HERE) */
             /* IBC_PRESERVE_SEND_BEGIN 254 vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 
-            byte buff254[8] = { 1,2,3,4,5,6,7,count };
+            byte buff254[8] = { 1,2,3,4,5,6,7,8 };
 
             send(buff254, 8);
 
@@ -443,8 +457,8 @@ void IbcDriver::next(StarCar* car)
 
             /* IBC_PRESERVE_RECV_END 253 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-            char datahash = recv();
-            send(sstat);
+            //char datahash = recv();
+            //send(sstat);
 
             /*Send exactly 4 bytes in the following                  */
             /*Also calculate their data hash along the way by                   */
@@ -464,7 +478,7 @@ void IbcDriver::next(StarCar* car)
         break;
         /* IBC_MESSAGE_END 253 16 4 */
     }
-    send(DH);
+    //send(DH);
     /* IBC_FRAME_GENERATION_TAG_END */
 
     //  byte sstat = 0x00;
