@@ -34,7 +34,7 @@ UsbDriver usbDriver;
 UsbController usbController(&usb, &usbDriver);
 XBoxController xboxController(&usb);
 
-IbcDriver ibcDriver(115200);
+IbcDriver ibcDriver;
 
 #define Board_FrontLedPin           6
 #define Board_BackLedPin            7
@@ -80,6 +80,8 @@ StarCar car(modules, sizeof(modules) / sizeof(StarCarModule*));
 
 void setup()
 {
+    Serial.begin(115200);
+
     #if _DEBUG
     Serial.println("----------");
     Serial.println("-> setup()");
@@ -91,13 +93,6 @@ void setup()
 
     #if _DEBUG
     Serial.println("----------");
-    #endif
-
-    #if SERIAL_MODE != SERIAL_MODE_LIBRARY
-    car.setRequest((StarCarSensorRequest)(
-        StarCarSensorRequest::CarSensorRequest_Sonic
-        | StarCarSensorRequest::CarSensorRequest_Accelerator
-        | StarCarSensorRequest::CarSensorRequest_Magnet));
     #endif
 
     //car.setMode(StarCarMode::CarMode_Watch);
