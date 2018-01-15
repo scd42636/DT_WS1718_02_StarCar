@@ -61,7 +61,7 @@ void StarController::Task(StarCar* car)
 
             sbyte_t oldDirectionValue = car->getDirection();
 
-            short_t leftX = this->xboxController->getAnalogHat(AnalogHatEnum::LeftHatX);
+            int_t leftX = this->xboxController->getAnalogHat(AnalogHatEnum::LeftHatX);
             sbyte_t newDirectionValue = ((float_t)leftX / 32768.0) * 100;
 
             if (oldDirectionValue != newDirectionValue) {
@@ -74,7 +74,7 @@ void StarController::Task(StarCar* car)
             if (this->mode == StarControllerMode::Hat) {
                 sbyte_t oldSpeedValue = car->getSpeed();
 
-                short_t rightY = this->xboxController->getAnalogHat(AnalogHatEnum::RightHatY);
+                int_t rightY = this->xboxController->getAnalogHat(AnalogHatEnum::RightHatY);
                 sbyte_t newSpeedValue = ((float_t)rightY / 32768.0) * 100;
 
                 if (oldSpeedValue != newSpeedValue) {
@@ -87,7 +87,7 @@ void StarController::Task(StarCar* car)
             else {
                 sbyte_t oldSpeedValue = car->getDirection();
 
-                short_t rightY = this->xboxController->getButtonPress(ButtonEnum::R2);
+                int_t rightY = this->xboxController->getButtonPress(ButtonEnum::R2);
                 rightY += -this->xboxController->getButtonPress(ButtonEnum::L2);
 
                 sbyte_t newSpeedValue = ((float_t)rightY / 255.0) * 100;

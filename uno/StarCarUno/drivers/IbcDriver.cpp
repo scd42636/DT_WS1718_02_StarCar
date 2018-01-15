@@ -9,7 +9,7 @@
 #include "IbcDriver.h"
 
 
-IbcDriver::IbcDriver(int baud)
+IbcDriver::IbcDriver()
 {
     DH = 0;
 }

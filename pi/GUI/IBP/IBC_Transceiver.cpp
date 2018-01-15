@@ -154,8 +154,6 @@ void Transceiver::body()
 		//create packet and store it
 		std::shared_ptr<const Packet> p (new Packet(next->id(), rule.answersize(next->id()), res_buffer));
 
-        qDebug()
-
 		store(p);
 		//std::cout << "Stored : " << *p << '\n';
 		tosend.pop();

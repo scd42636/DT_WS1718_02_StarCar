@@ -46,7 +46,7 @@ enum AccessPointCommandCode : byte_t
 {
     AP_CMD_GetStatus = 0x00,
     AP_CMD_Reset = 0x01,
-    AP_CMD_StartSimplicti = 0x07,
+    AP_CMD_StartSimpliciti = 0x07,
     AP_CMD_GetSimplicitiData = 0x08,
     AP_CMD_StopSimpliciti = 0x09,
 };
@@ -54,13 +54,13 @@ enum AccessPointCommandCode : byte_t
 enum AccessPointStatusCode : byte_t
 {
     AP_STA_Idle = 0x00,
-    AP_STA_SimplicitStopped = 0x01,
-    AP_STA_SimplicitTryingToLink = 0x02,
-    AP_STA_SimplicitLinked = 0x03,
+    AP_STA_SimplicitiStopped = 0x01,
+    AP_STA_SimplicitiTryingToLink = 0x02,
+    AP_STA_SimplicitiLinked = 0x03,
     AP_STA_Error = 0x05,
     AP_STA_NoError = 0x06,
     AP_STA_NotConnected = 0x07,
-    AP_STA_SimplicitLinkTimeout = 0x08,
+    AP_STA_SimplicitiLinkTimeout = 0x08,
 };
 
 #define AP_PacketStartMarker    0xFF
@@ -82,31 +82,31 @@ typedef struct AP_Response_t
 
 
 
-typedef struct AP_OnRequest_t : AP_Request
+typedef struct AP_OnRequest_t : AP_Request_t
 {
     AP_OnRequest_t()
     {
-        Command = AccessPointCommandCode::AP_CMD_StartSimplicti;
+        Command = AccessPointCommandCode::AP_CMD_StartSimpliciti;
     }
 } AP_OnRequest;
-typedef struct AP_OnResponse_t : AP_Response
+typedef struct AP_OnResponse_t : AP_Response_t
 {
 } AP_OnResponse;
 
 
-typedef struct AP_OffRequest_t : AP_Request
+typedef struct AP_OffRequest_t : AP_Request_t
 {
     AP_OffRequest_t()
     {
         Command = AccessPointCommandCode::AP_CMD_StopSimpliciti;
     }
 } AP_OffRequest;
-typedef struct AP_OffResponse_t : AP_Response
+typedef struct AP_OffResponse_t : AP_Response_t
 {
 } AP_OffResponse;
 
 
-typedef struct AP_GetStatusRequest_t : AP_Request
+typedef struct AP_GetStatusRequest_t : AP_Request_t
 {
     AccessPointStatusCode Status = (AccessPointStatusCode)0;
 
@@ -116,7 +116,7 @@ typedef struct AP_GetStatusRequest_t : AP_Request
         Length += 1; // Status
     }
 } AP_GetStatusRequest;
-typedef struct AP_GetStatusResponse_t : AP_Response
+typedef struct AP_GetStatusResponse_t : AP_Response_t
 {
     AccessPointStatusCode Status = (AccessPointStatusCode)0;
 
@@ -127,7 +127,7 @@ typedef struct AP_GetStatusResponse_t : AP_Response
 } AP_GetStatusResponse;
 
 
-typedef struct AP_ResetRequest_t : AP_Request
+typedef struct AP_ResetRequest_t : AP_Request_t
 {
     byte_t Reserved = 0;
 
@@ -137,7 +137,7 @@ typedef struct AP_ResetRequest_t : AP_Request
         Length += 1; // Reserved
     }
 } AP_ResetRequest;
-typedef struct AP_ResetResponse_t : AP_Response
+typedef struct AP_ResetResponse_t : AP_Response_t
 {
     byte_t Reserved = 0;
 
@@ -163,7 +163,7 @@ typedef struct AP_SimplicitiData_t
     byte_t AccelerationZ;
     StarWatchDevice Device;
 } AP_SimplicitiData;
-typedef struct AP_GetSimplicitiDataRequest_t : AP_Request
+typedef struct AP_GetSimplicitiDataRequest_t : AP_Request_t
 {
     union RequestData
     {
@@ -179,7 +179,7 @@ typedef struct AP_GetSimplicitiDataRequest_t : AP_Request
         memset(&this->Data, 0, sizeof(RequestData));
     }
 } AP_GetSimplicitiDataRequest;
-typedef struct AP_GetSimplicitiDataResponse_t : AP_Response
+typedef struct AP_GetSimplicitiDataResponse_t : AP_Response_t
 {
     union ResponseData
     {
@@ -235,6 +235,6 @@ private:
 
     bool SendAndReceive(AP_Request* request, AP_Response* response);
 
-    bool ReceiveFrame(byte_t* frame, ushort_t* length);
-    bool TransmitFrame(byte_t* frame, ushort_t length);
+    bool ReceiveFrame(byte_t* frame, uint_t* length);
+    bool TransmitFrame(byte_t* frame, uint_t length);
 };

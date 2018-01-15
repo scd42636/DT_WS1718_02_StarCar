@@ -35,7 +35,11 @@ enum StarCarSensorRequest
     CarSensorRequest_None = 0,
     CarSensorRequest_Sonic = 1,
     CarSensorRequest_Magnet = 2,
-    CarSensorRequest_Accelerator = 4
+    CarSensorRequest_Accelerator = 4,
+    CarSensorRequest_All
+    = CarSensorRequest_Sonic
+    | CarSensorRequest_Magnet
+    | CarSensorRequest_Accelerator
 };
 
 class StarCar
@@ -46,19 +50,19 @@ private:
     int_t accelerationY;
     StarCarBlockings blockings;
     sbyte_t direction;
-    short_t distanceBack;
-    short_t distanceFront;
+    int_t distanceBack;
+    int_t distanceFront;
     StarCarEngineMode engineMode;
     StarCarMode mode;
     StarCarModule** modules;
-    short_t modulesLength;
+    int_t modulesLength;
     float_t orientation;
     StarCarSensorRequest request;
     sbyte_t speed;
 
     // ---------- Public constructors ----------
 public:
-    StarCar(StarCarModule** modules, short_t modulesLength);
+    StarCar(StarCarModule** modules, int_t modulesLength);
 
     // ---------- Public properties ----------
 public:
@@ -71,11 +75,11 @@ public:
     sbyte_t getDirection();
     StarCar* setDirection(sbyte_t value);
 
-    short_t getDistanceBack();
-    StarCar* setDistanceBack(short_t value);
+    int_t getDistanceBack();
+    StarCar* setDistanceBack(int_t value);
 
-    short_t getDistanceFront();
-    StarCar* setDistanceFront(short_t value);
+    int_t getDistanceFront();
+    StarCar* setDistanceFront(int_t value);
 
     StarCarMode getMode();
     StarCar* setMode(StarCarMode value);

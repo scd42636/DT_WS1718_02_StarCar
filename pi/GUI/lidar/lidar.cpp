@@ -49,7 +49,7 @@ int lidar::get_measurement(const char *file_name)
 	for(int i=0; i < length_data_size; ++i)
 	{
 		double radian;
-		long length, x, y;
+        long length;
 
 		radian = urg_index2rad(&urg, i);
 		length = length_data[i];

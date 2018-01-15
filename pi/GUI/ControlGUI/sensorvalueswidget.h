@@ -1,6 +1,8 @@
 #ifndef SENSORVALUESWIDGET_H
 #define SENSORVALUESWIDGET_H
 
+#define IBCNOTWORKING
+
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
@@ -9,9 +11,17 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDir>
-#include <../../IBP/IBC.hpp>
-#include <../../IBP/IBC_Packet.hpp>
 #include <threadlidar.h>
+
+#ifndef IBCNOTWORKING
+
+   #include "../IBP/IBC.hpp"
+
+#else
+
+   #include "../StarCarSerialProtocol/StarcarProtocol.h"
+
+#endif
 
 class SensorValuesWidget : public QWidget
 {
@@ -19,9 +29,19 @@ class SensorValuesWidget : public QWidget
 
 public:
 
+#ifndef IBCNOTWORKING
+
+    explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                                    QString pButtonGoBackText = "Zurück zur Moduswahl",
+                                    IBC *IBCPointer = nullptr);
+
+#else
+
     explicit SensorValuesWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
                                 QString pButtonGoBackText = "Zurück zur Moduswahl",
-                                IBC *IBCPointer = nullptr);
+                                StarCarProtocol *starcarprotocol = nullptr);
+#endif
+
 
 signals:
 
@@ -70,13 +90,41 @@ private:
     // QString
     QString         pButtonGoBackText;
 
-    // IBC
-    IBC             *IBCPointer;
-
     // QTimer
     QTimer          *lidarTimer;
 
-#ifdef Q_OS_LINUX
+    //QTimer
+    QTimer          *QuerySensorValuesTimer;
+
+#ifndef IBCNOTWORKING
+
+    typedef uint8_t InoByte_t;
+    typedef int16_t InoInt_t;
+
+    typedef struct StarCarSonicData_t
+    {
+        InoInt_t Value;
+
+    } StarCarSonicData;
+
+    typedef struct StarCarMagnetData_t
+    {
+        InoByte_t Parity;
+        InoInt_t Value;
+
+    } StarCarMagnetData;
+
+    typedef struct StarCarAccelerationData_t
+    {
+        InoByte_t ParityOfXValue;
+        InoInt_t  XValue;
+        InoByte_t ParityOfYValue;
+        InoInt_t  YValue;
+
+    } StarCarAccelerationData;
+
+    // IBC
+    IBC             *IBCPointer;
 
     Packet          *packetUltrafront;
     Packet          *packetUltraback;
@@ -92,16 +140,6 @@ private:
     Inbox           *iUWB;
     Inbox           *test;
 
-#endif
-
-    //QTimer
-    QTimer          *QuerySensorValuesTimer;
-
-    // Method
-    void generateLayout();
-    void setupConnects();
-    void generateStyle();
-
     QString getMesureValue(Inbox *inbox);
 
     template<typename TData>
@@ -114,6 +152,19 @@ private:
 
         memcpy(data, packet.content(), dataSize);
     }
+
+#else
+
+    //Protocol
+    StarCarProtocol *starcarprotocol;
+
+#endif
+
+    // Method
+    void generateLayout();
+    void setupConnects();
+    void generateStyle();
+
 };
 
 #endif // SENSORVALUESWIDGET_H

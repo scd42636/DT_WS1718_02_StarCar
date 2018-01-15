@@ -16,14 +16,11 @@ typedef unsigned char byte_t;
 typedef unsigned short word_t;
 typedef unsigned int dword_t;
 
-typedef int16_t short_t;
-typedef uint16_t ushort_t;
+typedef signed int int_t;
+typedef unsigned int uint_t;
 
-typedef int32_t int_t;
-typedef uint32_t uint_t;
-
-typedef int64_t long_t;
-typedef uint64_t ulong_t;
+typedef signed long long_t;
+typedef unsigned long ulong_t;
 
 typedef float float_t;
 typedef double double_t;
@@ -45,9 +42,8 @@ typedef XBOXUSB XBoxController;
 
 #define SERIAL_MODE_ARDUINO 0
 #define SERIAL_MODE_IBC 1
-#define SERIAL_MODE_LIBRARY 2
 
-#define SERIAL_MODE SERIAL_MODE_LIBRARY
+#define SERIAL_MODE SERIAL_MODE_ARDUINO
 
 
 #define EEPROM_SONIC_FRONT_VALUE        0

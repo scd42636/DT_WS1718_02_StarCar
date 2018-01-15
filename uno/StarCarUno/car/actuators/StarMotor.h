@@ -113,12 +113,12 @@ class StarMotor : public StarCarModule
 {
     // ---------- Public const fields ----------
 public:
-    const short_t MinSpeed = 0;
-    const short_t MaxSpeed = 3200;
+    const int_t MinSpeed = 0;
+    const int_t MaxSpeed = 3200;
 
     // ---------- Private fields ----------
 private:
-    short_t currentSpeed;
+    int_t currentSpeed;
     pin_t errorPin;
     bool isStopped;
     pin_t receivePin;
@@ -142,15 +142,15 @@ public:
 
     // ---------- Public methods ----------
 public:
-    StarMotorResult ChangeSpeed(short_t speed);
-    StarMotorResult ChangeSpeed(short_t speed, StarMotorDirection direction);
+    StarMotorResult ChangeSpeed(int_t speed);
+    StarMotorResult ChangeSpeed(int_t speed, StarMotorDirection direction);
 
-    StarMotorResult ChangeLimit(StarMotorLimit limit, ushort_t value);
+    StarMotorResult ChangeLimit(StarMotorLimit limit, uint_t value);
 
-    short_t ReadCurrentSpeed();
-    short_t ReadTargetSpeed();
+    int_t ReadCurrentSpeed();
+    int_t ReadTargetSpeed();
 
-    StarMotorResult ReadVariable(StarMotorVariable variable, ushort_t* value);
+    StarMotorResult ReadVariable(StarMotorVariable variable, uint_t* value);
 
     void Stop();
 

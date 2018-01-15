@@ -42,7 +42,7 @@ void StarServo::Task(StarCar* car)
     Serial.println("--> StarServo::Task()");
     #endif
 
-    short_t ms = SERVO_CENTER;
+    int_t ms = SERVO_CENTER;
 
     if (car->getMode() != StarCarMode::CarMode_None) {
         int8_t dir = car->getDirection();

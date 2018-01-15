@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include "alert.h"
-#include "../../lidar/lidar.h"
+#include "../lidar/lidar.h"
 
 class ThreadLidar : public QObject{
 
