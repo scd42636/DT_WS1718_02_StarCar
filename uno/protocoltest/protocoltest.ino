@@ -39,6 +39,8 @@ struct StarBoardExchangeData_t
 
   unsigned char AccelerationYParity;
   signed int AccelerationYValue;
+  
+  unsigned int crc;
 
 } 
 StarBoardExchangeData;
@@ -76,7 +78,8 @@ void setup()
   StarBoardExchangeData.AccelerationXParity = 1;
   StarBoardExchangeData.AccelerationXValue = 2000;
   StarBoardExchangeData.AccelerationYParity = 1;
-  StarBoardExchangeData. AccelerationYValue = 3500;
+  StarBoardExchangeData.AccelerationYValue = 3500;
+  StarBoardExchangeData.crc = 0;
 
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH );
@@ -122,9 +125,24 @@ void loop()
       StarBoardExchangeData.AccelerationXParity = 1;
       StarBoardExchangeData.AccelerationXValue += 1;
       StarBoardExchangeData.AccelerationYParity = 1;
-      StarBoardExchangeData. AccelerationYValue += 1;
+      StarBoardExchangeData.AccelerationYValue += 1;
+      
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.Mode;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.Request;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.DistanceFront;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.DistanceBack;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.DirectionParity;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.DirectionValue;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.AccelerationXParity;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.AccelerationXValue;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.AccelerationYParity;
+      StarBoardExchangeData.crc ^= StarBoardExchangeData.AccelerationYValue;
+      
+      
 
       Serial.write((const uint8_t *)&StarBoardExchangeData, sizeof(StarBoardExchangeData));
+      
+      StarBoardExchangeData.crc = 0;
     }
   }
   /*

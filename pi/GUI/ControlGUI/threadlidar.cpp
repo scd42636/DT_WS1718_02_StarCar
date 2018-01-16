@@ -19,7 +19,7 @@ void ThreadLidar::startProcess(){
             qDebug("Lidar not working!");
         }
 
-        this->thread()->sleep(1);
+        this->thread()->sleep(0.5);
     }
 
     emit finished();
@@ -33,5 +33,5 @@ void ThreadLidar::finishLidar(){
 ThreadLidar::~ThreadLidar(){
 
     delete Lidar;
-    this->alertThread->fireWarning("Lidar finished");
+    //this->alertThread->fireWarning("Lidar finished");
 }

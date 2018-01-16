@@ -16,9 +16,6 @@ StarCarProtocol::StarCarProtocol()
 
     message.AccelerationYParity = 0;
     message.AccelerationYValue = 0;
-
-    readThread = std::thread(&StarCarProtocol::threadReceive, this);
-    sendThread = std::thread(&StarCarProtocol::threadSend, this);
 }
 
 StarCarProtocol::~StarCarProtocol(){
@@ -29,7 +26,7 @@ StarCarProtocol::~StarCarProtocol(){
 void StarCarProtocol::initSerialPort(){
 
 
-    this->serial = new SerialPort("/dev/ttyUSB0");
+    this->serial = new SerialPort("/dev/ttyACM1");
 }
 
 
@@ -55,33 +52,12 @@ int StarCarProtocol::getRequest(){
 
 void StarCarProtocol::send(){
 
-    runSend = true;
+    serial->send(&message.Request,sizeof(message.Request));
 }
 
 void StarCarProtocol::receive(){
 
-    runReceive = true;
-}
-
-void StarCarProtocol::threadSend(){
-
-    if(runSend){
-
-        serial->send(&message.Request,sizeof(message.Request));
-
-        runSend = false;
-    }
-
-}
-
-void StarCarProtocol::threadReceive(){
-
-    if(runReceive){
-
-        serial->recv(&message,sizeof(message));
-
-        runReceive = false;
-    }
+    serial->recv(&message,sizeof(message));
 }
 
 bool StarCarProtocol::messagevalid(){

@@ -77,15 +77,6 @@ private:
     }__attribute__((packed))  message;
 
     void writetoFile(QString filePath, QString value);
-
-    bool runReceive = false;
-    bool runSend = false;
-
-    std::thread readThread;
-    std::thread sendThread;
-
-    void threadSend();
-    void threadReceive();
 };
 
 #endif // STARCARPROTOCOL_H
