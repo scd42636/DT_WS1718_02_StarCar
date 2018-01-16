@@ -76,7 +76,9 @@ sbyte_t StarCar::getDirection()
 }
 StarCar* StarCar::setDirection(sbyte_t value)
 {
-    this->direction = value;
+    if (value >= -100 && value <= 100)
+        this->direction = value;
+
     return this;
 }
 
@@ -197,11 +199,14 @@ sbyte_t StarCar::getSpeed()
 }
 StarCar* StarCar::setSpeed(sbyte_t value)
 {
-    if ((value < 0 && this->IsBackBlocked(/*exclusive*/true)) || (value > 0 && this->IsFrontBlocked(/*exclusive*/true))) {
-        this->speed = 0;
-    }
-    else {
-        this->speed = value;
+    if (value >= -100 && value <= 100) {
+        if ((value < 0 && this->IsBackBlocked(/*exclusive*/true))
+            || (value > 0 && this->IsFrontBlocked(/*exclusive*/true))) {
+            this->speed = 0;
+        }
+        else {
+            this->speed = value;
+        }
     }
 
     return this;
