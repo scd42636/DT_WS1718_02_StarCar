@@ -19,7 +19,6 @@ StarCarProtocol::StarCarProtocol()
 
     readThread = std::thread(&StarCarProtocol::threadReceive, this);
     sendThread = std::thread(&StarCarProtocol::threadSend, this);
-
 }
 
 StarCarProtocol::~StarCarProtocol(){
@@ -30,7 +29,7 @@ StarCarProtocol::~StarCarProtocol(){
 void StarCarProtocol::initSerialPort(){
 
 
-    this->serial = new SerialPort("/dev/ttyACM1");
+    this->serial = new SerialPort("/dev/ttyUSB0");
 }
 
 
