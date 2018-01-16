@@ -5,6 +5,8 @@
 #include "SerialPort.hpp"
 #include <QFile>
 #include <QTextStream>
+#include <QThread>
+#include <thread>
 
 enum StarCarMode
 {
@@ -48,6 +50,7 @@ public:
     int getRequest();
 
     bool messagevalid();
+
 private:
 
     SerialPort                      *serial;
@@ -74,6 +77,15 @@ private:
     }__attribute__((packed))  message;
 
     void writetoFile(QString filePath, QString value);
+
+    bool runReceive = false;
+    bool runSend = false;
+
+    std::thread readThread;
+    std::thread sendThread;
+
+    void threadSend();
+    void threadReceive();
 };
 
 #endif // STARCARPROTOCOL_H
