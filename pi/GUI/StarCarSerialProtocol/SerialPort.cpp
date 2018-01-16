@@ -63,6 +63,7 @@ void SerialPort::config()
     SerialPortSettings.c_cflag &= ~CSIZE;           // Clears the mask for setting the data size ... enables set own data bits... see next line
     SerialPortSettings.c_cflag |=  CS8;             // Set the data bits = 8
     SerialPortSettings.c_cflag |= (CREAD | CLOCAL); // Enable receiver,Ignore Modem Control lines
+    SerialPortSettings.c_cc[VTIME] = 10;
 
     cfmakeraw(&SerialPortSettings);                 // Setup Raw-Mode automatically
 
