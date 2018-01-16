@@ -20,22 +20,6 @@ enum StarWatchState
     WatchState_AccessPoint_Listening = 2,
 };
 
-enum StarWatchButton : byte_t
-{
-    WatchButton_Unkown = 0,
-    WatchButton_None = 1,
-    WatchButton_TopLeft = 17,
-    WatchButton_TopRight = 49,
-    WatchButton_BottomLeft = 33,
-};
-
-enum StarWatchDevice : byte_t
-{
-    WatchDevice_Unkown = 0,
-    WatchDevice_DirectionWheel = 10,
-    WatchDevice_SpeedWheel = 11
-};
-
 enum StarWatchResult
 {
     WatchResult_Success = 0,
@@ -151,17 +135,16 @@ typedef struct AP_ResetResponse_t : AP_Response_t
 typedef union AP_SimplicitiRawData_t
 {
     dword_t Value;
-    byte_t Values[5];
+    byte_t Values[4];
 } AP_SimplicitiRawData;
 
 
 typedef struct AP_SimplicitiData_t
 {
-    StarWatchButton Button;
-    byte_t AccelerationX;
-    byte_t AccelerationY;
-    byte_t AccelerationZ;
-    StarWatchDevice Device;
+    byte_t DataProcessed;
+    byte_t DataReceived;
+    byte_t DirectionValue;
+    byte_t SpeedValue;
 } AP_SimplicitiData;
 typedef struct AP_GetSimplicitiDataRequest_t : AP_Request_t
 {
@@ -225,13 +208,12 @@ private:
     void ActivateAccessPoint();
     void InitializeAccessPoint();
 
+    sbyte_t CalculateControlValue(float_t value);
     void UpdateState();
 
     bool RequestControlValue(
-        StarWatchDevice* device,
-        StarWatchButton* button,
-        sbyte_t* controlValue,
-        sbyte_t* positionValue);
+        sbyte_t* directionValue,
+        sbyte_t* speedValue);
 
     bool SendAndReceive(AP_Request* request, AP_Response* response);
 
