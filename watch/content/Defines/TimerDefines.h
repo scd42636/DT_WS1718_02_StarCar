@@ -1,21 +1,22 @@
 // -------------------------------------------------------------------------------------------------
-// <copyright file="Program.c" company="OTH Regensburg">
+// <copyright file="TimerDefines.h" company="OTH Regensburg">
 //     Copyright (c) OTH Regensburg, Algorithmen für Sensornetze. All rights reserved.
 // </copyright>
 // <autor>Dominik Scharnagl (MatNr. 3054541)</autor>
 // -------------------------------------------------------------------------------------------------
 
-#include "Firmware.h"
+#ifndef TIMERDEFINES_H
+#define TIMERDEFINES_H
+
+#include "Defines.h"
 
 
-int main()
+typedef struct TimerInfo_t
 {
-    // Initialize MCU and prepare firmware.
-    Firmware_Setup();
+    // Timer0_A3 periodic delay
+    u16 Ticks;
+} TimerInfo;
 
-    // Run firmware loop until an unexpected error occurs.
-    while (Firmware_Loop());
+extern TimerInfo SystemTimer;
 
-    // Shut down firmware and try to exit as clean as possible.
-    Firmware_Exit();
-}
+#endif
