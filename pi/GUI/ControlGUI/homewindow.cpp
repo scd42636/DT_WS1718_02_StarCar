@@ -122,21 +122,48 @@ void HomeWindow::removeActiveWidget(){
 
 void HomeWindow::slotShowSensorValuesWidget(){
 
-    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl" ,this-> IBCPointer);
+#ifndef IBCNOTWORKING
+
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl",  this->IBCPointer);
+
+#else
+
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Moduswahl",  this->starcarprotocol);
+
+#endif
+
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
 void HomeWindow::slotShowSensorValuesWidgetAfterControlMode(){
 
+#ifndef IBCNOTWORKING
+
     sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung",  this->IBCPointer);
+
+#else
+
+    sensorValuesWidget = new SensorValuesWidget(this, this->alertThread, "Zurück zur Steuerung",  this->starcarprotocol);
+
+#endif
+
     connect(sensorValuesWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(sensorValuesWidget);
 }
 
 void HomeWindow::slotShowClockControlModeWidget(){
 
-    clockcontrolModeWidget = new ClockControllModeWidget(this, this->alertThread, this->IBCPointer);
+#ifndef IBCNOTWORKING
+
+    clockcontrolModeWidget = new ClockControlModeWidget(this, this->alertThread, this->IBCPointer);
+
+#else
+
+    clockcontrolModeWidget = new ClockControlModeWidget(this, this->alertThread, this->starcarprotocol);
+
+#endif
+
     connect(clockcontrolModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     connect(clockcontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(slotShowSensorValuesWidgetAfterControlMode()));
     addWidgetToMainStackWidget(clockcontrolModeWidget);
@@ -144,7 +171,16 @@ void HomeWindow::slotShowClockControlModeWidget(){
 
 void HomeWindow::slotShowControllerControlModeWidget(){
 
+#ifndef IBCNOTWORKING
+
     controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread, this->IBCPointer);
+
+#else
+
+    controllercontrolModeWidget = new ControllerControlModeWidget(this, this->alertThread, this->starcarprotocol);
+
+#endif
+
     connect(controllercontrolModeWidget, SIGNAL(removeWindowfromStack()), this, SLOT(removeActiveWidget()));
     connect(controllercontrolModeWidget, SIGNAL(showsensorvalueswidget()), this, SLOT(slotShowSensorValuesWidgetAfterControlMode()));
     addWidgetToMainStackWidget(controllercontrolModeWidget);
@@ -152,7 +188,7 @@ void HomeWindow::slotShowControllerControlModeWidget(){
 
 void HomeWindow::slotShowOperationModeWidget(){
 
-    IBCactive = true;
+    protocolActive = true;
     operationModeWidget = new OperationModeWidget(this, this->alertThread);
     connect(operationModeWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     connect(operationModeWidget, SIGNAL(showclockcontrollmodewidget()), this, SLOT(slotShowClockControlModeWidget()));
@@ -163,7 +199,16 @@ void HomeWindow::slotShowOperationModeWidget(){
 
 void HomeWindow::slotShowExitWidget(){
 
+#ifndef IBCNOTWORKING
+
     exitWidget = new ExitWidget(this, this->alertThread, &this->IBCPointer, IBCactive);
+
+#else
+
+    exitWidget = new ExitWidget(this, this->alertThread, &this->starcarprotocol, protocolActive);
+
+#endif
+
     connect(exitWidget, SIGNAL(removeWindowformStack()), this, SLOT(removeActiveWidget()));
     addWidgetToMainStackWidget(exitWidget);
 }
@@ -185,7 +230,16 @@ void HomeWindow::slotShowAlertWidget(){
 
 void HomeWindow::slotShowStartWidget(){
 
+#ifndef IBCNOTWORKING
+
     startWidget = new StartWidget(nullptr, this->alertThread, &this->IBCPointer);
+
+#else
+
+    startWidget = new StartWidget(nullptr, this->alertThread, &this->starcarprotocol);
+
+#endif
+
     connect(startWidget,SIGNAL(showOperationMode()),SLOT(slotShowOperationModeWidget()));
     addWidgetToMainStackWidget(startWidget);
 }

@@ -1,26 +1,45 @@
 #ifndef CLOCKCONTROLMODEWIDGET_H
 #define CLOCKCONTROLMODEWIDGET_H
 
+#define IBCNOTWORKING
+
 #include <QObject>
 #include <QWidget>
 #include <alert.h>
-#include <clockcontrolmode.h>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QTimer>
-#include <../../IBP/IBC.hpp>
-#include <../../IBP/IBC_Packet.hpp>
-#include <../../IBP/Serial.hpp>
+#include <QImage>
 
-class ClockControllModeWidget : public QWidget
+#ifndef IBCNOTWORKING
+
+   #include "../IBP/IBC.hpp"
+
+#else
+
+   #include "../StarCarSerialProtocol/StarcarProtocol.h"
+
+#endif
+
+class ClockControlModeWidget : public QWidget
 {
     Q_OBJECT
 
 public:
 
-    explicit ClockControllModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
-                                     IBC *IBCPointer = nullptr);
-    ~ClockControllModeWidget();
+#ifndef IBCNOTWORKING
+
+   explicit ClockControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr, IBC *IBCPointer = nullptr);
+
+#else
+
+    explicit ClockControlModeWidget(QWidget *parent = nullptr, Alert *alertThread = nullptr,
+                                     StarCarProtocol *starcarprotocol = nullptr);
+
+#endif
+
+
+    ~ClockControlModeWidget();
 
 signals:
 
@@ -39,7 +58,6 @@ private:
 
     // Thread
     Alert             *alertThread;
-    ClockControlMode  *manualMode;
 
     // QPushButton
     QPushButton     *pButtonGoBack;
@@ -72,9 +90,18 @@ private:
     // QTimer
     QTimer          *blinkTimer;
 
+
+#ifndef IBCNOTWORKING
+
     // IBC
     IBC             *IBCPointer;
-    Serial          *SerialPortArduino;
+
+#else
+
+    //Protocol
+    StarCarProtocol *starcarprotocol;
+
+#endif
 
     // Vars
     double fontSize = 10;

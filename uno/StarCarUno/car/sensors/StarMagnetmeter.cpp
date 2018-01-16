@@ -21,7 +21,7 @@
 #define HMC5883L_Address 0x0D
 #define ControlRegister1 0x09
 #define ControlRegister2 0x0A
-#define DataRegisterBegin 0x03 // from 00H to 05H
+#define DataRegisterBegin 0x01 // from 00H to 05H
 
 
 // ---------- Public constructors ----------
