@@ -96,7 +96,7 @@ void setup()
     #endif
 
     //car.setMode(StarCarMode::CarMode_Watch);
-    car.setEngineMode(StarCarEngineMode::CarEngineMode_On);
+    //car.setEngineMode(StarCarEngineMode::CarEngineMode_On);
 }
 
 void loop()

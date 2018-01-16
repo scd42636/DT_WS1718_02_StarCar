@@ -9,15 +9,19 @@
 #include "../StarCar.h"
 #include "../../drivers/IbcDriver.h"
 
-#if SERIAL_MODE == SERIAL_MODE_LIBRARY
-#include <ArduinoSerialProtocol.h>
-#endif
-
 
 enum StarBoardResult
 {
     BoardResult_Success = 0,
     BoardResult_Failed = -1,
+};
+
+enum StarBoardRequest
+{
+    BoardRequest_None = 0,
+    BoardRequest_ChangeModeToController = 1,
+    BoardRequest_ChangeModeToWatch = 2,
+    BoardRequest_GetData = 3
 };
 
 enum StarBoardLedPanels
@@ -33,24 +37,26 @@ enum StarBoardLedPanels
     | BoardLedPanel_Right
 };
 
-#if SERIAL_MODE == SERIAL_MODE_LIBRARY
-typedef struct StarBoardExchangeData_t
+#if SERIAL_MODE == SERIAL_MODE_ARDUINO
+typedef struct StarBoardData_t
 {
-    StarCarMode Mode;
-    StarCarSensorRequest Request;
+    byte_t Mode = 0;
+    byte_t Request = 0;
 
-    int_t DistanceFront;
-    int_t DistanceBack;
+    int_t DistanceFront = 0;
+    int_t DistanceBack = 0;
 
-    byte_t DirectionParity;
-    int_t DirectionValue;
+    byte_t OrientationParity = 0;
+    int_t OrientationValue = 0;
 
-    byte_t AccelerationXParity;
-    int_t AccelerationXValue;
+    byte_t AccelerationXParity = 0;
+    int_t AccelerationXValue = 0;
 
-    byte_t AccelerationYParity;
-    int_t AccelerationYValue;
-} StarBoardExchangeData;
+    byte_t AccelerationYParity = 0;
+    int_t AccelerationYValue = 0;
+
+    int_t Checksum = 0;
+} StarBoardData;
 #endif
 
 class StarBoard : public StarCarModule
@@ -71,12 +77,8 @@ private:
     bool rightLedOn;
     pin_t rightLedPin;
 
+    bool isStartupSequence;
     StarCarEngineMode previousEngineMode;
-
-    #if SERIAL_MODE == SERIAL_MODE_LIBRARY
-    StarBoardExchangeData payload;
-    ArduinoSerialProtocol* protocol;
-    #endif
 
     // ---------- Public constructors ----------
 public:
@@ -93,6 +95,13 @@ public:
 
     // ---------- Public methods ----------
 public:
+    void Blink(StarBoardLedPanels panels, int_t times, int_t interval);
+
+    void SignalBlockings(StarCar* car);
+    void SignalEngineTurnedOn(StarCar* car);
+    void SignalMovement(StarCar* car);
+
+    void SwitchLeds(StarBoardLedPanels panels, bool target);
     virtual void Task(StarCar* car);
 
     // ---------- Protected methods ----------
@@ -101,6 +110,9 @@ protected:
 
     // ---------- Private methods ----------
 private:
-    void Blink(StarBoardLedPanels panels, short_t times, short_t interval);
     void SwitchLed(bool* current, bool target, pin_t pin);
+
+    #if SERIAL_MODE == SERIAL_MODE_ARDUINO
+    void ProcessSerialRequests(StarCar* car);
+    #endif
 };
