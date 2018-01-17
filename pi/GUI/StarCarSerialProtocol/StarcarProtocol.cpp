@@ -26,35 +26,9 @@ StarCarProtocol::~StarCarProtocol(){
 void StarCarProtocol::initSerialPort(){
 
 
-    this->serial = new SerialPort("/dev/ttyACM1");
+    this->serial = new SerialPort("/dev/ttyUSB1");
 }
 
-
-void StarCarProtocol::process(){
-
-    while(running){
-
-        if(sendMessage){
-
-            serial->send(&message.Request,sizeof(message.Request));
-            sendMessage = false;
-        }
-
-        if(receiveMessage){
-
-            serial->recv(&message,sizeof(message));
-            receiveMessage = false;
-        }
-
-    }
-
-    emit finished();
-}
-
-void StarCarProtocol::stopProcess(){
-
-    running = false;
-}
 
 void StarCarProtocol::setMode(int mode){
 
@@ -78,12 +52,12 @@ int StarCarProtocol::getRequest(){
 
 void StarCarProtocol::send(){
 
-    sendMessage = true;
+    serial->send(&message.Request,sizeof(message.Request));
 }
 
 void StarCarProtocol::receive(){
 
-    receiveMessage = true;
+    serial->recv(&message,sizeof(message));
 }
 
 bool StarCarProtocol::messagevalid(){
