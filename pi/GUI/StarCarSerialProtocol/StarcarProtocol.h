@@ -51,6 +51,20 @@ public:
 
     bool messagevalid();
 
+    bool running        = false;
+    bool sendMessage    = false;
+    bool receiveMessage = false;
+
+    void stopProcess();
+
+public slots:
+
+    void process();
+
+signals:
+
+    void finished();
+
 private:
 
     SerialPort                      *serial;

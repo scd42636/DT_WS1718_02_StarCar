@@ -30,6 +30,32 @@ void StarCarProtocol::initSerialPort(){
 }
 
 
+void StarCarProtocol::process(){
+
+    while(running){
+
+        if(sendMessage){
+
+            serial->send(&message.Request,sizeof(message.Request));
+            sendMessage = false;
+        }
+
+        if(receiveMessage){
+
+            serial->recv(&message,sizeof(message));
+            receiveMessage = false;
+        }
+
+    }
+
+    emit finished();
+}
+
+void StarCarProtocol::stopProcess(){
+
+    running = false;
+}
+
 void StarCarProtocol::setMode(int mode){
 
     this->message.Mode = mode;
@@ -52,12 +78,12 @@ int StarCarProtocol::getRequest(){
 
 void StarCarProtocol::send(){
 
-    serial->send(&message.Request,sizeof(message.Request));
+    sendMessage = true;
 }
 
 void StarCarProtocol::receive(){
 
-    serial->recv(&message,sizeof(message));
+    receiveMessage = true;
 }
 
 bool StarCarProtocol::messagevalid(){

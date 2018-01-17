@@ -1,4 +1,5 @@
 #include "initstarcar.h"
+#include <QThread>
 
 #ifndef IBCNOTWORKING
 
@@ -27,8 +28,18 @@ void InitStarCar::startProcess(){
 
     #else
 
+        QThread *thread = new QThread();
+
         *starcarprotocol = new StarCarProtocol();
         (*starcarprotocol)->initSerialPort();
+
+        (*starcarprotocol)->moveToThread(thread);
+        connect(thread, SIGNAL(started()), (*starcarprotocol), SLOT(process()));
+        connect((*starcarprotocol), SIGNAL(finished()), thread, SLOT(quit()));
+        connect((*starcarprotocol), SIGNAL(finished()), (*starcarprotocol), SLOT(deleteLater()));
+        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
+
+        thread->start();
 
     #endif
 
