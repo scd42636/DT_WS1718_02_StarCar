@@ -15,7 +15,7 @@ Kurzes Tutorial zur Benutzung des Protocolls:
 
 Auf Pi Seite : 
 
-	a) suche Zugriff auf das IBC Objekt, dass beim Initialisierungsprozzess erzeugt worden sein muss
+	a) suche Zugriff auf das IBC Objekt, dass beim Initialisierungsprozess erzeugt worden sein muss
 
 	b) fordere vom IBC eine Inbox mit deiner Nachrichtennummer an
 		im folgenden werden Antworten auf diese Nachrichtennummer in dieser Inbox landen
