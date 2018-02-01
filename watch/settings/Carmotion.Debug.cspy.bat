@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\common\bin\cspybat" -f "C:\Users\viado\Desktop\DASN\x\Sports Watch\settings\Carmotion.Debug.general.xcl" --backend -f "C:\Users\viado\Desktop\DASN\x\Sports Watch\settings\Carmotion.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\common\bin\cspybat" -f "C:\Users\viado\Desktop\DT\DT_WS1718_02_StarCar\watch\settings\Carmotion.Debug.general.xcl" --backend -f "C:\Users\viado\Desktop\DT\DT_WS1718_02_StarCar\watch\settings\Carmotion.Debug.driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\common\bin\cspybat" -f "C:\Users\viado\Desktop\DASN\x\Sports Watch\settings\Carmotion.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\viado\Desktop\DASN\x\Sports Watch\settings\Carmotion.Debug.driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\common\bin\cspybat" -f "C:\Users\viado\Desktop\DT\DT_WS1718_02_StarCar\watch\settings\Carmotion.Debug.general.xcl" "--debug_file=%~1" --backend -f "C:\Users\viado\Desktop\DT\DT_WS1718_02_StarCar\watch\settings\Carmotion.Debug.driver.xcl" 
 
 @echo off 
 :end

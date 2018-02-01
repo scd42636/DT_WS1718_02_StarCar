@@ -25,7 +25,7 @@ if not "%~1" == "" goto debugFile
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\common\bin\cspybat" -f "C:\Users\viado\Desktop\DASN\x\Access Point\settings\ez430_chronos_access_point.868MHz_-_Unrestricted_IAR_Workbench_(Europe).general.xcl" --backend -f "C:\Users\viado\Desktop\DASN\x\Access Point\settings\ez430_chronos_access_point.868MHz_-_Unrestricted_IAR_Workbench_(Europe).driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\common\bin\cspybat" -f "C:\Users\viado\Desktop\DT\DT_WS1718_02_StarCar\watch-ap\settings\ez430_chronos_access_point.868MHz_-_Unrestricted_IAR_Workbench_(Europe).general.xcl" --backend -f "C:\Users\viado\Desktop\DT\DT_WS1718_02_StarCar\watch-ap\settings\ez430_chronos_access_point.868MHz_-_Unrestricted_IAR_Workbench_(Europe).driver.xcl" 
 
 @echo off 
 goto end 
@@ -34,7 +34,7 @@ goto end
 
 @echo on 
 
-"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\common\bin\cspybat" -f "C:\Users\viado\Desktop\DASN\x\Access Point\settings\ez430_chronos_access_point.868MHz_-_Unrestricted_IAR_Workbench_(Europe).general.xcl" "--debug_file=%~1" --backend -f "C:\Users\viado\Desktop\DASN\x\Access Point\settings\ez430_chronos_access_point.868MHz_-_Unrestricted_IAR_Workbench_(Europe).driver.xcl" 
+"C:\Program Files (x86)\IAR Systems\Embedded Workbench 7.4\common\bin\cspybat" -f "C:\Users\viado\Desktop\DT\DT_WS1718_02_StarCar\watch-ap\settings\ez430_chronos_access_point.868MHz_-_Unrestricted_IAR_Workbench_(Europe).general.xcl" "--debug_file=%~1" --backend -f "C:\Users\viado\Desktop\DT\DT_WS1718_02_StarCar\watch-ap\settings\ez430_chronos_access_point.868MHz_-_Unrestricted_IAR_Workbench_(Europe).driver.xcl" 
 
 @echo off 
 :end
